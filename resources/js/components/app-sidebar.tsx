@@ -17,6 +17,7 @@ import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
+    SidebarSeparator,
 } from '@/components/ui/sidebar'
 import { dashboard } from '@/routes'
 import type { NavItem } from '@/types'
@@ -59,29 +60,30 @@ export function AppSidebar() {
                     href: dashboard(),
                     icon: LayoutGrid,
                 },
+                ...(userChildren.length > 0
+                    ? [{
+                        title: 'Pengguna',
+                        icon: LayoutGrid,
+                        children: userChildren,
+                    }]
+                    : []),
             ]
         },
 
         {
             label: "Master",
             items: [
-                ...(userChildren.length > 0
-                    ? [{
-                        title: 'Pengguna',
-                        icon: Users,
-                        children: userChildren,
-                    }]
-                    : []),
+                
             ]
         },
     ]
 
     return (
         <Sidebar collapsible="icon" variant="inset">
-            <SidebarHeader className="border-b border-sidebar-border/20 bg-gradient-to-b from-sidebar-accent/30 to-transparent">
+            <SidebarHeader className="pb-2">
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild className="group-data-[collapsible=icon]:p-1.5">
+                        <SidebarMenuButton size="lg" asChild className="group-data-[collapsible=icon]:p-2 hover:bg-sidebar-hover">
                             <Link href={dashboard()} prefetch>
                                 <AppLogo />
                             </Link>
@@ -90,7 +92,9 @@ export function AppSidebar() {
                 </SidebarMenu>
             </SidebarHeader>
 
-            <SidebarContent className="py-2 gap-0">
+            <SidebarSeparator />
+
+            <SidebarContent className="px-1 gap-0">
                 {groups.map((group) => (
                     group.items.length > 0 && (
                         <NavMain
@@ -102,7 +106,9 @@ export function AppSidebar() {
                 ))}
             </SidebarContent>
 
-            <SidebarFooter className="border-t border-sidebar-border/20">
+            <SidebarSeparator />
+
+            <SidebarFooter className="pb-3 gap-1">
                 <NavFooter items={footerNavItems} className="mt-auto" />
                 <NavUser />
             </SidebarFooter>

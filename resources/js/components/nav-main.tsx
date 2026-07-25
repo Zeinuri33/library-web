@@ -10,7 +10,7 @@ import {
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import type { NavItem } from '@/types';
 import { useState, useEffect } from "react"
-import { ChevronDown } from "lucide-react"
+import { ChevronRight } from "lucide-react"
 import {
   Popover,
   PopoverContent,
@@ -43,7 +43,6 @@ export function NavMain({
         }
     }, [items])
 
-    // 🔥 reset kalau collapse
     useEffect(() => {
         if (isCollapsed) {
             setOpenMenu(null)
@@ -51,7 +50,7 @@ export function NavMain({
     }, [isCollapsed])
 
     const toggleMenu = (title: string) => {
-        setTouchedMenu(true) // 🔥 user sudah interaksi
+        setTouchedMenu(true)
         setOpenMenu(openMenu === title ? null : title)
     }
 
@@ -65,7 +64,7 @@ export function NavMain({
     const [touchedMenu, setTouchedMenu] = useState(false)
 
     return (
-        <SidebarGroup className="px-2 py-0">
+        <SidebarGroup className="px-1 py-0.5">
             <SidebarGroupLabel>{label}</SidebarGroupLabel>
 
             <SidebarMenu>
@@ -78,39 +77,32 @@ export function NavMain({
 
                     return (
                         <div key={item.title} className="relative">
-
-                            {/* Vertical line */}
-                            {item.children && isOpen && (
-                                <div className="absolute left-4 top-8 bottom-0 w-px bg-border" />
-                            )}
-
                             <SidebarMenuItem>
                                 {item.children ? (
                                     isCollapsed ? (
-                                        // 🔥 COLLAPSE MODE → FLYOUT
                                         <Popover>
                                             <PopoverTrigger asChild>
                                                 <SidebarMenuButton isActive={active}>
-                                                    {item.icon && <item.icon className="h-4 w-4" />}
+                                                    {item.icon && <item.icon />}
                                                 </SidebarMenuButton>
                                             </PopoverTrigger>
 
                                             <PopoverContent
                                                 side="right"
                                                 align="start"
-                                                className="w-48 p-2"
+                                                className="w-52 p-2 border-sidebar-border/50"
                                             >
-                                                <div className="mb-2 text-xs font-semibold text-muted-foreground">
+                                                <div className="mb-2 px-2 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                                                     {item.title}
                                                 </div>
 
-                                                <div className="space-y-1">
+                                                <div className="space-y-0.5">
                                                     {item.children.map((child) => (
                                                         <Link
                                                             key={child.title}
                                                             href={child.href!}
-                                                            className={`block rounded-md px-2 py-1 text-sm hover:bg-accent ${
-                                                                isCurrentUrl(child.href!) ? "bg-accent" : ""
+                                                            className={`flex items-center rounded-md px-2.5 py-1.5 text-sm transition-colors hover:bg-accent ${
+                                                                isCurrentUrl(child.href!) ? "bg-accent font-medium" : ""
                                                             }`}
                                                         >
                                                             {child.title}
@@ -120,18 +112,18 @@ export function NavMain({
                                             </PopoverContent>
                                         </Popover>
                                     ) : (
-                                        // 🔥 NORMAL MODE
                                         <SidebarMenuButton
                                             onClick={() => toggleMenu(item.title)}
                                             isActive={active}
+                                            className="justify-between"
                                         >
-                                            {item.icon && <item.icon className="mr-2 h-4 w-4" />}
-                                            <span className="flex-1 text-left">
-                                                {item.title}
-                                            </span>
-                                            <ChevronDown
-                                                className={`h-4 w-4 transition-transform ${
-                                                    isOpen ? "rotate-180" : ""
+                                            <div className="flex items-center gap-2.5">
+                                                {item.icon && <item.icon />}
+                                                <span>{item.title}</span>
+                                            </div>
+                                            <ChevronRight
+                                                className={`size-4 shrink-0 text-sidebar-foreground/40 transition-transform duration-200 ${
+                                                    isOpen ? "rotate-90" : ""
                                                 }`}
                                             />
                                         </SidebarMenuButton>
@@ -141,31 +133,32 @@ export function NavMain({
                                         asChild
                                         isActive={isCurrentUrl(item.href!)}
                                     >
-                                        <Link href={item.href!}>
-                                            {item.icon && <item.icon className="mr-2 h-4 w-4" />}
+                                        <Link href={item.href!} className="flex items-center gap-2.5">
+                                            {item.icon && <item.icon />}
                                             {item.title}
                                         </Link>
                                     </SidebarMenuButton>
                                 )}
                             </SidebarMenuItem>
 
-                            {/* Submenu (smooth animation) */}
                             {item.children && !isCollapsed && (
                                 <div
                                     className={`
-                                        ml-6 mt-1 space-y-1 overflow-hidden
-                                        transition-all duration-300 ease-in-out
+                                        relative ml-0 overflow-hidden
+                                        transition-all duration-200 ease-in-out
                                         ${isOpen 
-                                            ? "max-h-96 opacity-100 translate-y-0" 
-                                            : "max-h-0 opacity-0 -translate-y-1"
+                                            ? "max-h-96 opacity-100 mt-0.5 mb-1" 
+                                            : "max-h-0 opacity-0"
                                         }
                                     `}
                                 >
+                                    <div className="absolute left-[20px] top-0 bottom-0 w-px bg-sidebar-border/90" />
                                     {item.children.map((child) => (
                                         <SidebarMenuItem key={child.title}>
                                             <SidebarMenuButton
                                                 asChild
                                                 isActive={isCurrentUrl(child.href!)}
+                                                className="h-8 text-[13px] pl-11 pr-3"
                                             >
                                                 <Link href={child.href!}>
                                                     {child.title}
