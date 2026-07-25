@@ -101,8 +101,8 @@ export function NavMain({
                                                         <Link
                                                             key={child.title}
                                                             href={child.href!}
-                                                            className={`flex items-center rounded-md px-2.5 py-1.5 text-sm transition-colors hover:bg-accent ${
-                                                                isCurrentUrl(child.href!) ? "bg-accent font-medium" : ""
+                                                            className={`flex items-center rounded-md px-2.5 py-1.5 text-sm transition-colors hover:bg-sidebar-hover ${
+                                                                isCurrentUrl(child.href!) ? "bg-sidebar-hover font-medium" : ""
                                                             }`}
                                                         >
                                                             {child.title}
@@ -135,7 +135,7 @@ export function NavMain({
                                     >
                                         <Link href={item.href!} className="flex items-center gap-2.5">
                                             {item.icon && <item.icon />}
-                                            {item.title}
+                                            {!isCollapsed && item.title}
                                         </Link>
                                     </SidebarMenuButton>
                                 )}

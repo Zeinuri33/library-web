@@ -11,7 +11,7 @@ export default function AppSidebarLayout({
     return (
         <AppShell variant="sidebar">
             <AppSidebar />
-            <AppContent variant="sidebar" className="relative overflow-x-hidden">
+            <AppContent variant="sidebar" className="relative overflow-x-hidden border-l border-sidebar-border md:peer-data-[variant=inset]:m-0 md:peer-data-[variant=inset]:rounded-none md:peer-data-[variant=inset]:shadow-none">
                 <div className="pointer-events-none absolute inset-0 -z-10 bg-dot-grid [--dot-color:oklch(0.5_0.01_260/0.15)] dark:[--dot-color:oklch(0.9_0.01_260/0.08)]" />
                 <AppSidebarHeader breadcrumbs={breadcrumbs} />
                 <div className="relative z-0">

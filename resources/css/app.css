@@ -241,7 +241,7 @@
 [data-sidebar="menu-button"][data-active="true"]:hover,
 [data-sidebar="menu-button"][data-active="true"]:active {
     position: relative;
-    background-color: rgb(0 0 0 / 0.04);
+    background-color: rgb(59 130 246 / 0.10);
     color: var(--sidebar-primary) !important;
     font-weight: 700;
 }

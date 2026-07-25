@@ -81,15 +81,9 @@ export function AppSidebar() {
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader className="pb-2">
-                <SidebarMenu>
-                    <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild className="group-data-[collapsible=icon]:p-2">
-                            <Link href={dashboard()} prefetch>
-                                <AppLogo />
-                            </Link>
-                        </SidebarMenuButton>
-                    </SidebarMenuItem>
-                </SidebarMenu>
+                <Link href={dashboard()} prefetch className="flex items-center gap-2.5">
+                    <AppLogo />
+                </Link>
             </SidebarHeader>
 
             <SidebarContent className="px-1 gap-0">
