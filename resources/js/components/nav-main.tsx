@@ -115,7 +115,7 @@ export function NavMain({
                                         <SidebarMenuButton
                                             onClick={() => toggleMenu(item.title)}
                                             isActive={active}
-                                            className="justify-between"
+                                            className="justify-between sidebar-parent"
                                         >
                                             <div className="flex items-center gap-2.5">
                                                 {item.icon && <item.icon />}

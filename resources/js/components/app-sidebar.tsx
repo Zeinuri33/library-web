@@ -63,7 +63,7 @@ export function AppSidebar() {
                 ...(userChildren.length > 0
                     ? [{
                         title: 'Pengguna',
-                        icon: LayoutGrid,
+                        icon: Users,
                         children: userChildren,
                     }]
                     : []),
