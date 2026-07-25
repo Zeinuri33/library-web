@@ -83,7 +83,7 @@ export function AppSidebar() {
             <SidebarHeader className="pb-2">
                 <SidebarMenu>
                     <SidebarMenuItem>
-                        <SidebarMenuButton size="lg" asChild className="group-data-[collapsible=icon]:p-2 hover:bg-sidebar-hover">
+                        <SidebarMenuButton size="lg" asChild className="group-data-[collapsible=icon]:p-2">
                             <Link href={dashboard()} prefetch>
                                 <AppLogo />
                             </Link>
@@ -91,8 +91,6 @@ export function AppSidebar() {
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
-
-            <SidebarSeparator />
 
             <SidebarContent className="px-1 gap-0">
                 {groups.map((group) => (
