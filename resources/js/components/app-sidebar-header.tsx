@@ -1,6 +1,14 @@
+import { usePage } from '@inertiajs/react';
 import { Breadcrumbs } from '@/components/breadcrumbs';
-import AppearanceToggleIcon from '@/components/appearance-tabs';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { UserMenuContent } from '@/components/user-menu-content';
+import { useInitials } from '@/hooks/use-initials';
 import type { BreadcrumbItem as BreadcrumbItemType } from '@/types';
 
 export function AppSidebarHeader({
@@ -8,6 +16,9 @@ export function AppSidebarHeader({
 }: {
     breadcrumbs?: BreadcrumbItemType[];
 }) {
+    const { auth } = usePage().props;
+    const getInitials = useInitials();
+
     return (
         <header className="flex h-14 shrink-0 items-center bg-background/80 backdrop-blur-md px-6 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 md:px-4">
 
@@ -20,8 +31,31 @@ export function AppSidebarHeader({
             </div>
 
             {/* Kanan */}
-            <div className="ml-auto">
-                <AppearanceToggleIcon />
+            <div className="ml-auto flex items-center gap-2">
+                {auth.user && (
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <button className="group flex items-center gap-2 rounded-full px-2 py-1.5 hover:bg-transparent">
+                                <div className="hidden md:flex flex-col items-end leading-tight">
+                                    <span className="text-sm font-medium">{auth.user.name}</span>
+                                    <span className="text-xs text-muted-foreground">{auth.user.email}</span>
+                                </div>
+                                <Avatar className="h-7 w-7 overflow-hidden rounded-full ring-2 ring-transparent transition-all duration-200 group-hover:ring-border">
+                                    <AvatarImage
+                                        src={typeof auth.user.avatar_url === 'string' ? auth.user.avatar_url : undefined}
+                                        alt={auth.user.name}
+                                    />
+                                    <AvatarFallback className="rounded-lg bg-neutral-200 text-xs text-black dark:bg-neutral-700 dark:text-white">
+                                        {getInitials(auth.user.name)}
+                                    </AvatarFallback>
+                                </Avatar>
+                            </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent className="w-56" align="end">
+                            <UserMenuContent user={auth.user} />
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                )}
             </div>
 
         </header>

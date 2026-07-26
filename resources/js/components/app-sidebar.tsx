@@ -1,39 +1,19 @@
 import { Link, usePage } from '@inertiajs/react'
 import {
-    BookOpen,
-    FolderGit2,
     LayoutGrid,
     Users,
  } from 'lucide-react'
 import AppLogo from '@/components/app-logo'
-import { NavFooter } from '@/components/nav-footer'
+import AppearanceToggleIcon from '@/components/appearance-tabs'
 import { NavMain } from '@/components/nav-main'
-import { NavUser } from '@/components/nav-user'
 import {
     Sidebar,
     SidebarContent,
     SidebarFooter,
     SidebarHeader,
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
     SidebarSeparator,
 } from '@/components/ui/sidebar'
 import { dashboard } from '@/routes'
-import type { NavItem } from '@/types'
-
-const footerNavItems: NavItem[] = [
-    {
-        title: 'Repository',
-        href: 'https://github.com/zeinuri33/digilib',
-        icon: FolderGit2,
-    },
-    {
-        title: 'Website',
-        href: '/',
-        icon: BookOpen,
-    },
-]
 
 export function AppSidebar() {
 
@@ -101,8 +81,7 @@ export function AppSidebar() {
             <SidebarSeparator />
 
             <SidebarFooter className="pb-3 gap-1">
-                <NavFooter items={footerNavItems} className="mt-auto" />
-                <NavUser />
+                <AppearanceToggleIcon />
             </SidebarFooter>
         </Sidebar>
     )
