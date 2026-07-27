@@ -181,7 +181,7 @@ export const columns = (onEdit: (user: User) => void): ColumnDef<User>[] => [
               <AlertDialogTrigger asChild>
                 <DropdownMenuItem
                   onSelect={(e) => e.preventDefault()}
-                  className="text-red-500 focus:text-red-500"
+                  className="text-destructive focus:text-destructive"
                 >
                   <Trash2 className="mr-2 h-4 w-4" />
                   Hapus
@@ -198,7 +198,7 @@ export const columns = (onEdit: (user: User) => void): ColumnDef<User>[] => [
                   <AlertDialogCancel>Batal</AlertDialogCancel>
                   <AlertDialogAction
                     onClick={() => handleDelete(user)}
-                    className="bg-red-500 hover:bg-red-600"
+                    className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
                   >
                     Hapus
                   </AlertDialogAction>

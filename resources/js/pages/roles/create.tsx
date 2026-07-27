@@ -162,7 +162,7 @@ export default function CreateRoleModal() {
                   onChange={(e) => setData("name", e.target.value)}
                 />
                 {errors.name && (
-                  <p className="text-red-500 text-sm">{errors.name}</p>
+                  <p className="text-destructive text-sm">{errors.name}</p>
                 )}
               </div>
 
@@ -227,7 +227,7 @@ export default function CreateRoleModal() {
                 </div>
 
                 {errors.permissions && (
-                  <p className="text-red-500 text-sm mt-1">
+                  <p className="text-destructive text-sm mt-1">
                     {errors.permissions}
                   </p>
                 )}

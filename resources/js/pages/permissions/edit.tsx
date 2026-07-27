@@ -138,7 +138,7 @@ export default function EditPermissionModal({
 
           {/* ERROR */}
           {errors.name && (
-            <p className="text-red-500 text-sm">{errors.name}</p>
+            <p className="text-destructive text-sm">{errors.name}</p>
           )}
 
           {/* SUBMIT */}

@@ -170,7 +170,7 @@ if (!open || !user) return null
                       setPreview(null)
                       setData("remove_avatar", true) // ✅ tandai untuk dihapus
                     }}
-                    className="absolute bottom-0 right-0 h-7 w-7 rounded-full bg-red-500 text-white flex items-center justify-center shadow hover:bg-red-600 transition"
+                    className="absolute bottom-0 right-0 h-7 w-7 rounded-full bg-destructive text-destructive-foreground flex items-center justify-center shadow hover:bg-destructive/90 transition"
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -180,7 +180,7 @@ if (!open || !user) return null
 
             {/* Error */}
             {errors.avatar && (
-              <p className="text-sm text-red-500">{errors.avatar}</p>
+              <p className="text-sm text-destructive">{errors.avatar}</p>
             )}
           </div>
 
@@ -192,7 +192,7 @@ if (!open || !user) return null
               value={data.name}
               onChange={(e) => setData("name", e.target.value)}
             />
-            {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+            {errors.name && <p className="text-destructive text-sm">{errors.name}</p>}
           </div>
 
           {/* Username */}
@@ -203,7 +203,7 @@ if (!open || !user) return null
               value={data.username}
               onChange={(e) => setData("username", e.target.value)}
             />
-            {errors.username && <p className="text-red-500 text-sm">{errors.username}</p>}
+            {errors.username && <p className="text-destructive text-sm">{errors.username}</p>}
           </div>
 
           {/* Email */}
@@ -214,7 +214,7 @@ if (!open || !user) return null
               value={data.email}
               onChange={(e) => setData("email", e.target.value)}
             />
-            {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+            {errors.email && <p className="text-destructive text-sm">{errors.email}</p>}
           </div>
 
           {/* Role */}
@@ -239,7 +239,7 @@ if (!open || !user) return null
             </Select>
 
             {errors.role && (
-              <p className="text-red-500 text-sm mt-1">{errors.role}</p>
+              <p className="text-destructive text-sm mt-1">{errors.role}</p>
             )}
           </div>
 
@@ -252,7 +252,7 @@ if (!open || !user) return null
               value={data.password}
               onChange={(e) => setData("password", e.target.value)}
             />
-            {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+            {errors.password && <p className="text-destructive text-sm">{errors.password}</p>}
           </div>
 
           <div>

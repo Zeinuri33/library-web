@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { ChevronsUpDown, ChevronUp, ChevronDown } from "lucide-react"
+import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react"
 import type { Column } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
@@ -29,14 +29,13 @@ export function DataTableSortHeader<TData, TValue>({
       variant="ghost"
       onClick={handleClick}
       className={cn(
-        "group relative gap-1.5 font-semibold",
+        "group relative gap-1.5 font-normal w-full justify-start bg-transparent hover:bg-transparent dark:hover:bg-transparent transition-colors",
         isSorted && "text-foreground",
         className
       )}
     >
       <span>{children}</span>
 
-      {/* Animated sort icon */}
       <span className="relative inline-flex h-4 w-4 items-center justify-center">
         <AnimatePresence mode="wait">
           {isSorted === "asc" && (
@@ -48,7 +47,7 @@ export function DataTableSortHeader<TData, TValue>({
               transition={{ duration: 0.2, ease: "easeInOut" }}
               className="absolute"
             >
-              <ChevronUp className="h-4 w-4 text-primary" />
+              <ArrowUp className="h-3.5 w-3.5" />
             </motion.span>
           )}
           {isSorted === "desc" && (
@@ -60,7 +59,7 @@ export function DataTableSortHeader<TData, TValue>({
               transition={{ duration: 0.2, ease: "easeInOut" }}
               className="absolute"
             >
-              <ChevronDown className="h-4 w-4 text-primary" />
+              <ArrowDown className="h-3.5 w-3.5" />
             </motion.span>
           )}
           {!isSorted && (
@@ -72,7 +71,7 @@ export function DataTableSortHeader<TData, TValue>({
               transition={{ duration: 0.15 }}
               className="absolute"
             >
-              <ChevronsUpDown className="h-4 w-4 text-muted-foreground/50 group-hover:text-muted-foreground transition-colors duration-150" />
+              <ArrowUpDown className="h-3.5 w-3.5 opacity-50 group-hover:text-foreground transition-colors duration-150" />
             </motion.span>
           )}
         </AnimatePresence>

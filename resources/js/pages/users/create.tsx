@@ -94,8 +94,8 @@ const permissions = auth?.permissions ?? []
       {/* Trigger */}
       <DialogTrigger asChild>
           <Button>
-            <Plus className="mr-2 h-4 w-4" />
-            Tambah User
+            <Plus className="h-4 w-4" />
+            Tambah Pengguna
           </Button>
       </DialogTrigger>
 
@@ -156,7 +156,7 @@ const permissions = auth?.permissions ?? []
                       setData("avatar", null)
                       setPreview(null)
                     }}
-                    className="absolute bottom-0 right-0 flex h-7 w-7 items-center justify-center rounded-full bg-red-500 text-white shadow"
+                    className="absolute bottom-0 right-0 flex h-7 w-7 items-center justify-center rounded-full bg-destructive text-destructive-foreground shadow"
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -165,7 +165,7 @@ const permissions = auth?.permissions ?? []
             </div>
 
             {errors.avatar && (
-              <p className="text-sm text-red-500">{errors.avatar}</p>
+              <p className="text-sm text-destructive">{errors.avatar}</p>
             )}
           </div>
 
@@ -177,7 +177,7 @@ const permissions = auth?.permissions ?? []
               value={data.name}
               onChange={(e) => setData("name", e.target.value)}
             />
-            {errors.name && <p className="text-red-500 text-sm">{errors.name}</p>}
+            {errors.name && <p className="text-destructive text-sm">{errors.name}</p>}
           </div>
 
           {/* Username */}
@@ -188,7 +188,7 @@ const permissions = auth?.permissions ?? []
               value={data.username}
               onChange={(e) => setData("username", e.target.value)}
             />
-            {errors.username && <p className="text-red-500 text-sm">{errors.username}</p>}
+            {errors.username && <p className="text-destructive text-sm">{errors.username}</p>}
           </div>
 
           {/* Email */}
@@ -200,7 +200,7 @@ const permissions = auth?.permissions ?? []
               value={data.email}
               onChange={(e) => setData("email", e.target.value)}
             />
-            {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
+            {errors.email && <p className="text-destructive text-sm">{errors.email}</p>}
           </div>
 
           {/* Role */}
@@ -225,7 +225,7 @@ const permissions = auth?.permissions ?? []
             </Select>
 
             {errors.role && (
-              <p className="text-red-500 text-sm mt-1">{errors.role}</p>
+              <p className="text-destructive text-sm mt-1">{errors.role}</p>
             )}
           </div>
 
@@ -238,7 +238,7 @@ const permissions = auth?.permissions ?? []
               value={data.password}
               onChange={(e) => setData("password", e.target.value)}
             />
-            {errors.password && <p className="text-red-500 text-sm">{errors.password}</p>}
+            {errors.password && <p className="text-destructive text-sm">{errors.password}</p>}
           </div>
 
           {/* Konfirmasi Password */}
@@ -251,7 +251,7 @@ const permissions = auth?.permissions ?? []
               onChange={(e) => setData("password_confirmation", e.target.value)}
             />
             {errors.password_confirmation && (
-              <p className="text-red-500 text-sm">
+              <p className="text-destructive text-sm">
                 {errors.password_confirmation}
               </p>
             )}

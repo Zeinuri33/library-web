@@ -1,7 +1,7 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { MoreHorizontal } from "lucide-react"
+import { MoreVertical } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { DataTableSortHeader } from "@/components/data-table-sort-header"
@@ -10,8 +10,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
@@ -115,7 +113,7 @@ export const columns = (
       </DataTableSortHeader>
     ),
     cell: ({ row }) => (
-      <div className="ml-3 font-medium">
+      <div className="ml-3 font-medium text-sm text-foreground">
         {row.getValue("name")}
       </div>
     ),
@@ -127,7 +125,7 @@ export const columns = (
   {
     accessorKey: "created_at",
     header: ({ column }) => (
-      <DataTableSortHeader column={column} className="hidden md:flex">
+      <DataTableSortHeader column={column}>
         Dibuat
       </DataTableSortHeader>
     ),
@@ -140,7 +138,7 @@ export const columns = (
       const date = new Date(row.getValue("created_at"))
 
       return (
-        <div className="ml-3 text-sm hidden md:block">
+        <div className="ml-3 text-sm text-muted-foreground hidden md:block">
           {date.toLocaleDateString("id-ID", {
             day: "2-digit",
             month: "short",
@@ -157,7 +155,7 @@ export const columns = (
   {
     accessorKey: "updated_at",
     header: ({ column }) => (
-      <DataTableSortHeader column={column} className="hidden md:flex">
+      <DataTableSortHeader column={column}>
         Diperbarui
       </DataTableSortHeader>
     ),
@@ -170,7 +168,7 @@ export const columns = (
       const date = new Date(row.getValue("updated_at"))
 
       return (
-        <div className="ml-3 text-sm hidden md:block">
+        <div className="ml-3 text-sm text-muted-foreground hidden md:block">
           {date.toLocaleDateString("id-ID", {
             day: "2-digit",
             month: "short",
@@ -190,15 +188,12 @@ export const columns = (
       <div className="flex justify-end">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <MoreHorizontal className="h-4 w-4" />
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+              <MoreVertical className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
 
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Opsi</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-
+          <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuItem
               onClick={() => onEdit(row.original)}
             >
@@ -209,7 +204,7 @@ export const columns = (
               <AlertDialogTrigger asChild>
                 <DropdownMenuItem
                   onSelect={(e) => e.preventDefault()}
-                  className="text-red-500"
+                  className="text-destructive focus:text-destructive"
                 >
                   Hapus
                 </DropdownMenuItem>
@@ -230,6 +225,7 @@ export const columns = (
                   <AlertDialogCancel>Batal</AlertDialogCancel>
                   <AlertDialogAction
                     onClick={() => handleDelete(row.original)}
+                    className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
                   >
                     Hapus
                   </AlertDialogAction>

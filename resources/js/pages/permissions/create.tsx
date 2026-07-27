@@ -109,7 +109,7 @@ export default function CreatePermissionModal() {
                   onChange={(e) => setData("action", e.target.value)}
                 />
                 {errors.name && (
-                  <p className="text-red-500 text-sm">{errors.name}</p>
+                  <p className="text-destructive text-sm">{errors.name}</p>
                 )}
               </div>
 

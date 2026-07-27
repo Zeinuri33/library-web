@@ -1,25 +1,7 @@
 "use client"
 
 import * as React from "react"
-import {
-  Pagination,
-  PaginationContent,
-  PaginationEllipsis,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination"
 
-import { Field, FieldLabel } from "@/components/ui/field"
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
 import {
   ColumnDef,
   ColumnFiltersState,
@@ -50,7 +32,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-import { Search, X, Columns3 } from "lucide-react"
+import { Search, X, Columns3, ChevronLeft, ChevronRight } from "lucide-react"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -70,7 +52,6 @@ export function DataTable<TData, TValue>({
     React.useState<VisibilityState>({})
   const [rowSelection, setRowSelection] = React.useState({})
 
-  // Debounced search
   const [searchValue, setSearchValue] = React.useState("")
   const debounceRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
 
@@ -95,7 +76,6 @@ export function DataTable<TData, TValue>({
     }
   }
 
-  // Focus search on Ctrl+K or ⌘K
   const searchInputRef = React.useRef<HTMLInputElement>(null)
 
   React.useEffect(() => {
@@ -133,125 +113,109 @@ export function DataTable<TData, TValue>({
     },
   })
 
+  const pageCount = table.getPageCount()
+  const currentPage = table.getState().pagination.pageIndex
+  const perPage = table.getState().pagination.pageSize
+  const totalRows = table.getFilteredRowModel().rows.length
 
-const pageCount = table.getPageCount()
-const currentPage = table.getState().pagination.pageIndex
-
-const generatePages = () => {
-  const pages: (number | "...")[] = []
-
-  if (pageCount <= 5) {
-    return Array.from({ length: pageCount }, (_, i) => i)
+  const generatePageNumbers = () => {
+    const pages: (number | "...")[] = []
+    if (pageCount <= 5) {
+      for (let i = 0; i < pageCount; i++) pages.push(i)
+    } else if (currentPage <= 2) {
+      pages.push(0, 1, 2, 3, "...", pageCount - 1)
+    } else if (currentPage >= pageCount - 3) {
+      pages.push(0, "...", pageCount - 4, pageCount - 3, pageCount - 2, pageCount - 1)
+    } else {
+      pages.push(0, "...", currentPage - 1, currentPage, currentPage + 1, "...", pageCount - 1)
+    }
+    return pages
   }
 
-  if (currentPage < 3) {
-    pages.push(0, 1, 2, 3, "...", pageCount - 1)
-  } else if (currentPage > pageCount - 4) {
-    pages.push(0, "...", pageCount - 4, pageCount - 3, pageCount - 2, pageCount - 1)
-  } else {
-    pages.push(
-      0,
-      "...",
-      currentPage - 1,
-      currentPage,
-      currentPage + 1,
-      "...",
-      pageCount - 1
-    )
-  }
+  const pageNumbers = generatePageNumbers()
 
-  return pages
-}
-
-const pages = generatePages()
+  const startRow = totalRows > 0 ? currentPage * perPage + 1 : 0
+  const endRow = Math.min((currentPage + 1) * perPage, totalRows)
 
   return (
-    <div>
-      {/* Search & Controls Bar */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center py-4">
-        {/* Search — dengan keyboard shortcut, clear button */}
-        <div className="relative flex-1 max-w-md group">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground pointer-events-none transition-colors duration-200 group-focus-within:text-primary" />
-          <input
-            ref={searchInputRef}
-            placeholder="Cari di sini..."
-            value={searchValue}
-            onChange={handleSearchChange}
-            onKeyDown={handleKeyDown}
-            className="h-9 w-full rounded-lg border border-input bg-background/50 pl-9 pr-20 text-sm shadow-xs transition-all duration-200 placeholder:text-muted-foreground focus:border-primary/50 focus:ring-[3px] focus:ring-primary/10 focus:outline-none focus:bg-background"
-          />
-          {/* Clear button */}
-          {searchValue && (
-            <button
-              onClick={clearSearch}
-              className="absolute right-9 top-1/2 -translate-y-1/2 flex items-center justify-center h-5 w-5 rounded-full text-muted-foreground hover:text-foreground hover:bg-accent transition-colors duration-150"
-            >
-              <X className="h-3 w-3" />
-            </button>
-          )}
-          {/* Keyboard shortcut hint */}
-          <div className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-0.5 pointer-events-none">
-            {!searchValue && (
-              <kbd className="hidden sm:inline-flex h-5 items-center gap-0.5 rounded border bg-muted/50 px-1.5 text-[10px] font-medium text-muted-foreground/60">
-                <span>{isMac ? "⌘" : "Ctrl+"}</span>
-                <span>K</span>
-              </kbd>
-            )}
-          </div>
-        </div>
+    <div className="rounded-xl border border-border/80 bg-card shadow-sm overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse">
+          <thead>
+            {/* Summary & Controls Row */}
+            <tr className="border-b border-border/80 bg-muted/20">
+              <td colSpan={columns.length} className="px-4 py-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">
+                    Menampilkan <span className="font-semibold text-foreground">{totalRows}</span> data
+                  </span>
+                  <div className="flex items-center gap-3">
+                    {/* Column toggle */}
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="outline" size="default" className="gap-2 h-9 hover:!bg-sidebar-hover hover:!text-foreground transition-colors">
+                          <Columns3 className="h-4 w-4" />
+                          Kolom
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-48">
+                        <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground border-b border-border/50 mb-1">
+                          Tampilkan kolom
+                        </div>
+                        {table
+                          .getAllColumns()
+                          .filter((column) => column.getCanHide())
+                          .map((column) => (
+                            <DropdownMenuCheckboxItem
+                              key={column.id}
+                              className="capitalize text-sm"
+                              checked={column.getIsVisible()}
+                              onCheckedChange={(value) =>
+                                column.toggleVisibility(!!value)
+                              }
+                            >
+                              {column.id}
+                            </DropdownMenuCheckboxItem>
+                          ))}
+                      </DropdownMenuContent>
+                    </DropdownMenu>
 
-        <div className="flex items-center gap-2 ml-auto">
-          {/* Row count badge */}
-          <div className="hidden sm:flex items-center gap-1.5 rounded-lg border bg-gradient-to-b from-muted/30 to-muted/10 px-3 py-1.5 text-xs text-muted-foreground shadow-xs">
-            <span className="font-semibold text-foreground">{table.getFilteredRowModel().rows.length}</span>
-            <span>data</span>
-          </div>
+                    {/* Search Input */}
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                      <input
+                        ref={searchInputRef}
+                        type="text"
+                        placeholder="Cari di sini..."
+                        value={searchValue}
+                        onChange={handleSearchChange}
+                        onKeyDown={handleKeyDown}
+                        className="h-9 w-64 rounded-lg border border-input bg-background pl-9 pr-3 text-sm shadow-xs placeholder:text-muted-foreground focus:border-primary/50 focus:ring-[3px] focus:ring-primary/10 focus:outline-none transition-all"
+                      />
+                      {searchValue && (
+                        <button
+                          onClick={clearSearch}
+                          className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center justify-center h-5 w-5 rounded-full text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
 
-          {/* Column toggle */}
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm" className="gap-1.5">
-                <Columns3 className="h-3.5 w-3.5" />
-                <span className="text-xs">Kolom</span>
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent align="end" className="w-48">
-              <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground border-b border-border/50 mb-1">
-                Tampilkan kolom
-              </div>
-              {table
-                .getAllColumns()
-                .filter(
-                  (column) => column.getCanHide()
-                )
-                .map((column) => {
-                  return (
-                    <DropdownMenuCheckboxItem
-                      key={column.id}
-                      className="capitalize text-sm"
-                      checked={column.getIsVisible()}
-                      onCheckedChange={(value) =>
-                        column.toggleVisibility(!!value)
-                      }
-                    >
-                      {column.id}
-                    </DropdownMenuCheckboxItem>
-                  )
-                })}
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
-      </div>
-
-      {/* Table */}
-      <div className="overflow-hidden rounded-lg border border-border/60 bg-card shadow-sm">
-        <Table>
-          <TableHeader className="bg-gradient-to-b from-muted/60 to-muted/30">
+            {/* Column Headers */}
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id} className="hover:bg-transparent even:bg-transparent">
+              <TableRow key={headerGroup.id} className="border-b border-border/60 bg-primary/10 hover:bg-transparent even:bg-transparent">
                 {headerGroup.headers.map((header) => {
+                  const canSort = header.column.getCanSort()
                   return (
-                    <TableHead key={header.id} className="h-11 text-xs font-semibold uppercase tracking-wider text-muted-foreground/80">
+                    <TableHead
+                      key={header.id}
+                      className={`h-12 px-4 text-sm font-normal capitalize tracking-wider text-foreground border-r border-border/80 last:border-r-0 ${canSort ? "cursor-pointer select-none hover:bg-sidebar-hover transition-colors" : ""}`}
+                    >
                       {header.isPlaceholder
                         ? null
                         : flexRender(
@@ -263,17 +227,18 @@ const pages = generatePages()
                 })}
               </TableRow>
             ))}
-          </TableHeader>
+          </thead>
+
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row, rowIndex) => (
+              table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className="transition-all duration-150 hover:bg-accent/40 data-[state=selected]:bg-primary/5 even:bg-muted/15"
+                  className="border-b border-border/80 last:border-0 hover:bg-muted/50 transition-colors duration-150 data-[state=selected]:bg-primary/5"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell key={cell.id} className="px-4 py-3 border-r border-border/80 last:border-r-0">
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
@@ -281,15 +246,15 @@ const pages = generatePages()
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-40 text-center text-muted-foreground">
+                <TableCell colSpan={columns.length} className="h-40 text-center">
                   <div className="flex flex-col items-center justify-center gap-3">
                     <div className="flex h-12 w-12 items-center justify-center rounded-full bg-muted/50">
                       <Search className="h-5 w-5 opacity-40" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium">Data tidak ditemukan</p>
+                      <p className="text-sm font-medium text-muted-foreground">Data tidak ditemukan</p>
                       <p className="text-xs text-muted-foreground/70 mt-0.5">
-                        Coba gunakan kata kunci pencarian yang berbeda
+                        Coba ubah filter atau kata kunci pencarian
                       </p>
                     </div>
                   </div>
@@ -297,97 +262,83 @@ const pages = generatePages()
               </TableRow>
             )}
           </TableBody>
-        </Table>
-      </div>
-      
-      <div className="flex items-center justify-between py-4">
 
-        {/* KIRI: Rows per page */}
-        <div className="flex justify-start">
-          <Field orientation="horizontal" className="w-fit">
-            <FieldLabel className="text-xs text-muted-foreground">Rows per page</FieldLabel>
+          {/* Pagination Footer */}
+          {totalRows > 0 && (
+            <tfoot>
+              <tr className="border-t border-border/60 bg-muted/20">
+                <td colSpan={columns.length} className="px-4 py-3">
+                  <div className="flex items-center justify-between">
+                    {/* Left: Range info + Show per page */}
+                    <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                      <span>
+                        {totalRows > 0
+                          ? `${startRow}-${endRow} of ${totalRows}`
+                          : "0 of 0"}
+                      </span>
+                      <div className="h-4 w-px bg-border" />
+                      <span>Show</span>
+                      <select
+                        value={perPage}
+                        onChange={(e) => table.setPageSize(Number(e.target.value))}
+                        className="h-8 rounded-lg border border-input bg-background px-2 text-sm focus:border-primary/50 focus:outline-none cursor-pointer"
+                      >
+                        <option value={10}>10</option>
+                        <option value={25}>25</option>
+                        <option value={50}>50</option>
+                        <option value={100}>100</option>
+                        <option value={totalRows}>All</option>
+                      </select>
+                      <span>per page</span>
+                    </div>
 
-            <Select
-              value={String(table.getState().pagination.pageSize)}
-              onValueChange={(value) => table.setPageSize(Number(value))}
-            >
-              <SelectTrigger className="w-20 h-8 text-xs">
-                <SelectValue />
-              </SelectTrigger>
+                    {/* Right: Page numbers */}
+                    <div className="flex items-center gap-1">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => table.previousPage()}
+                        disabled={!table.getCanPreviousPage()}
+                        className="h-8 w-8 p-0"
+                      >
+                        <ChevronLeft className="h-4 w-4" />
+                      </Button>
 
-              <SelectContent align="start">
-                <SelectGroup>
-                  <SelectItem value="10">10</SelectItem>
-                  <SelectItem value="25">25</SelectItem>
-                  <SelectItem value="50">50</SelectItem>
-                  <SelectItem value="100">100</SelectItem>
-                  <SelectItem value={String(table.getFilteredRowModel().rows.length)}>
-                    Semua
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </Field>
-        </div>
+                      {pageNumbers.map((page, index) =>
+                        page === "..." ? (
+                          <span key={`ellipsis-${index}`} className="px-1 text-muted-foreground">
+                            ...
+                          </span>
+                        ) : (
+                          <Button
+                            key={page}
+                            variant={currentPage === page ? "default" : "outline"}
+                            size="sm"
+                            onClick={() => table.setPageIndex(page)}
+                            className="h-8 w-8 p-0"
+                          >
+                            {page + 1}
+                          </Button>
+                        )
+                      )}
 
-        {/* KANAN: Pagination */}
-        <div className="flex justify-end">
-          <Pagination>
-            <PaginationContent>
-
-              {/* Previous (icon only) */}
-              <PaginationItem>
-                <PaginationPrevious
-                  onClick={() => table.previousPage()}
-                  className={`p-2 hover:bg-accent rounded-lg transition-colors ${
-                    !table.getCanPreviousPage()
-                      ? "pointer-events-none opacity-50"
-                      : ""
-                  }`}
-                />
-              </PaginationItem>
-
-              {/* Pages */}
-              {pages.map((page, index) =>
-                page === "..." ? (
-                  <PaginationItem key={index}>
-                    <PaginationEllipsis />
-                  </PaginationItem>
-                ) : (
-                  <PaginationItem key={index}>
-                    <PaginationLink
-                      isActive={currentPage === page}
-                      onClick={() => table.setPageIndex(page)}
-                      className={`min-w-[32px] h-8 text-xs rounded-lg ${
-                        currentPage === page
-                          ? "bg-primary text-primary-foreground shadow-sm"
-                          : "hover:bg-accent"
-                      }`}
-                    >
-                      {page + 1}
-                    </PaginationLink>
-                  </PaginationItem>
-                )
-              )}
-
-              {/* Next (icon only) */}
-              <PaginationItem>
-                <PaginationNext
-                  onClick={() => table.nextPage()}
-                  className={`p-2 hover:bg-accent rounded-lg transition-colors ${
-                    !table.getCanNextPage()
-                      ? "pointer-events-none opacity-50"
-                      : ""
-                  }`}
-                />
-              </PaginationItem>
-
-            </PaginationContent>
-          </Pagination>
-        </div>
-
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => table.nextPage()}
+                        disabled={!table.getCanNextPage()}
+                        className="h-8 w-8 p-0"
+                      >
+                        <ChevronRight className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tfoot>
+          )}
+        </table>
       </div>
     </div>
-    
   )
 }

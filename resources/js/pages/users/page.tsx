@@ -216,11 +216,11 @@ export default function Users({ users }: { users: User[] }) {
         {/* Header Section */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-xl font-semibold tracking-tight text-blue-500">
+            <h1 className="text-xl font-semibold tracking-tight ">
               Daftar Pengguna
             </h1>
             <div className="flex items-center gap-2 mt-1">
-              <p className="text-xs text-muted-foreground">
+              <p className="text-sm text-foreground">
                 Tercatat {users.length} pengguna sistem
               </p>
             </div>
@@ -230,7 +230,7 @@ export default function Users({ users }: { users: User[] }) {
             {selectedIds.length > 0 && (
               <AlertDialog>
                 <AlertDialogTrigger asChild>
-                  <Button variant="destructive" size="sm" className="gap-2">
+                  <Button className="gap-2 bg-destructive hover:bg-destructive/90 text-destructive-foreground">
                     <Trash2 className="h-4 w-4" />
                     Hapus ({selectedIds.length})
                   </Button>
@@ -244,7 +244,7 @@ export default function Users({ users }: { users: User[] }) {
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Batal</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleBulkDelete} className="bg-red-500 hover:bg-red-600">
+                    <AlertDialogAction onClick={handleBulkDelete} className="bg-destructive hover:bg-destructive/90 text-destructive-foreground">
                       Hapus
                     </AlertDialogAction>
                   </AlertDialogFooter>
@@ -261,7 +261,7 @@ export default function Users({ users }: { users: User[] }) {
             <table className="w-full border-collapse">
               <thead>
                 {/* Summary & Controls Row */}
-                <tr className="border-b border-border/40 bg-muted/20">
+                <tr className="border-b border-border/80 bg-muted/20">
                   <td colSpan={6} className="px-4 py-3">
                     <div className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">
@@ -276,7 +276,7 @@ export default function Users({ users }: { users: User[] }) {
                             className="gap-2 h-9 hover:!bg-sidebar-hover hover:!text-foreground transition-colors"
                           >
                             <X className="h-4 w-4" />
-                            Clear filters
+                            Reset
                           </Button>
                         )}
                         {/* Filter Popover */}
@@ -290,7 +290,7 @@ export default function Users({ users }: { users: User[] }) {
                               <Filter className="h-4 w-4" />
                               Filters
                               {selectedRoles.length > 0 && (
-                                <Badge variant="secondary" className="ml-1 h-5 px-1.5 text-xs">
+                                <Badge variant="secondary" className="ml-1 h-5 px-1.5 text-xs bg-primary/10 text-primary">
                                   {selectedRoles.length}
                                 </Badge>
                               )}
@@ -360,8 +360,8 @@ export default function Users({ users }: { users: User[] }) {
                 </tr>
 
                 {/* Column Headers */}
-                <tr className="border-b border-border/60 bg-muted/30">
-                  <th className="h-12 w-12 px-4 border-r border-border/40">
+                <tr className="border-b border-border/60 bg-primary/10">
+                  <th className="h-12 w-12 px-4 border-r border-border/80">
                     <input
                       type="checkbox"
                       checked={isAllSelected}
@@ -370,11 +370,11 @@ export default function Users({ users }: { users: User[] }) {
                       className="h-4 w-4 rounded border-gray-300 cursor-pointer"
                     />
                   </th>
-                  <th className="h-12 px-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground/80 border-r border-border/40">
+                  <th className="h-12 px-4 text-left text-sm font-normal capitalize tracking-wider text-foreground border-r border-border/80">
                     Member
                   </th>
                   <th
-                    className="h-12 px-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground/80 hidden md:table-cell border-r border-border/40 cursor-pointer select-none hover:bg-sidebar-hover transition-colors"
+                    className="h-12 px-4 text-left text-sm font-normal capitalize tracking-wider text-foreground hidden md:table-cell border-r border-border/80 cursor-pointer select-none hover:bg-sidebar-hover transition-colors"
                     onClick={() => toggleSort("role")}
                   >
                     <div className="flex items-center gap-1.5">
@@ -383,7 +383,7 @@ export default function Users({ users }: { users: User[] }) {
                     </div>
                   </th>
                   <th
-                    className="h-12 px-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground/80 hidden lg:table-cell border-r border-border/40 cursor-pointer select-none hover:bg-sidebar-hover transition-colors"
+                    className="h-12 px-4 text-left text-sm font-normal capitalize tracking-wider text-foreground hidden lg:table-cell border-r border-border/80 cursor-pointer select-none hover:bg-sidebar-hover transition-colors"
                     onClick={() => toggleSort("username")}
                   >
                     <div className="flex items-center gap-1.5">
@@ -392,7 +392,7 @@ export default function Users({ users }: { users: User[] }) {
                     </div>
                   </th>
                   <th
-                    className="h-12 px-4 text-left text-xs font-semibold uppercase tracking-wider text-muted-foreground/80 hidden lg:table-cell border-r border-border/40 cursor-pointer select-none hover:bg-sidebar-hover transition-colors"
+                    className="h-12 px-4 text-left text-sm font-normal capitalize tracking-wider text-foreground hidden lg:table-cell border-r border-border/80 cursor-pointer select-none hover:bg-sidebar-hover transition-colors"
                     onClick={() => toggleSort("created_at")}
                   >
                     <div className="flex items-center gap-1.5">
@@ -400,7 +400,7 @@ export default function Users({ users }: { users: User[] }) {
                       {getSortIcon("created_at")}
                     </div>
                   </th>
-                  <th className="h-12 px-4 text-right text-xs font-semibold uppercase tracking-wider text-muted-foreground/80">
+                  <th className="h-12 px-4 text-right text-sm font-normal capitalize tracking-wider text-foreground">
                     Actions
                   </th>
                 </tr>
@@ -410,10 +410,10 @@ export default function Users({ users }: { users: User[] }) {
                   paginatedUsers.map((user) => (
                     <tr
                       key={user.id}
-                      className="border-b border-border/40 last:border-0 hover:bg-accent/30 transition-colors duration-150"
+                      className="border-b border-border/80 last:border-0 hover:bg-muted/50 transition-colors duration-150"
                     >
                       {/* Checkbox Column */}
-                      <td className="px-4 py-3 border-r border-border/40">
+                      <td className="px-4 py-3 border-r border-border/80">
                         <input
                           type="checkbox"
                           checked={selectedIds.includes(user.id)}
@@ -422,7 +422,7 @@ export default function Users({ users }: { users: User[] }) {
                         />
                       </td>
                       {/* Member Column */}
-                      <td className="px-4 py-3 border-r border-border/40">
+                      <td className="px-4 py-3 border-r border-border/80">
                         <div className="flex items-center gap-3">
                           <Avatar className="h-10 w-10 ring-2 ring-background shadow-sm">
                             <AvatarImage
@@ -445,21 +445,21 @@ export default function Users({ users }: { users: User[] }) {
                       </td>
 
                       {/* Role Column */}
-                      <td className="px-4 py-3 hidden md:table-cell border-r border-border/40">
+                      <td className="px-4 py-3 hidden md:table-cell border-r border-border/80">
                         <Badge variant="outline" className="capitalize">
                           {user.roles?.[0]?.name || user.role || "-"}
                         </Badge>
                       </td>
 
                       {/* Username Column */}
-                      <td className="px-4 py-3 hidden lg:table-cell border-r border-border/40">
+                      <td className="px-4 py-3 hidden lg:table-cell border-r border-border/80">
                         <span className="text-sm text-muted-foreground">
                           @{user.username}
                         </span>
                       </td>
 
                       {/* Created At Column */}
-                      <td className="px-4 py-3 hidden lg:table-cell border-r border-border/40">
+                      <td className="px-4 py-3 hidden lg:table-cell border-r border-border/80">
                         <span className="text-sm text-muted-foreground">
                           {user.created_at ? new Date(user.created_at).toLocaleString("id-ID", {
                             day: "2-digit",
@@ -486,7 +486,7 @@ export default function Users({ users }: { users: User[] }) {
                               <AlertDialogTrigger asChild>
                                 <DropdownMenuItem
                                   onSelect={(e) => e.preventDefault()}
-                                  className="text-red-500 focus:text-red-500"
+                                   className="text-destructive focus:text-destructive"
                                 >
                                   <Trash2 className="mr-2 h-4 w-4" />
                                   Hapus
@@ -503,7 +503,7 @@ export default function Users({ users }: { users: User[] }) {
                                   <AlertDialogCancel>Batal</AlertDialogCancel>
                                   <AlertDialogAction
                                     onClick={() => handleDelete(user)}
-                                    className="bg-red-500 hover:bg-red-600"
+                                    className="bg-destructive hover:bg-destructive/90 text-destructive-foreground"
                                   >
                                     Hapus
                                   </AlertDialogAction>
@@ -530,7 +530,7 @@ export default function Users({ users }: { users: User[] }) {
                         </div>
                         {hasActiveFilters && (
                           <Button variant="outline" size="sm" onClick={clearFilters} className="mt-2">
-                            Clear filters
+                            Reset
                           </Button>
                         )}
                       </div>
