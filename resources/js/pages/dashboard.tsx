@@ -61,7 +61,7 @@ export default function Dashboard({ totalUsers }: DashboardProps) {
                                 {/* Trend indicator */}
                                 <div className="relative z-10 mt-4 flex items-center gap-1.5 text-xs text-muted-foreground">
                                     {stat.trend === 'up' ? (
-                                        <ArrowUp className="h-3.5 w-3.5 text-emerald-500" />
+                                        <ArrowUp className="h-3.5 w-3.5 text-blue-500" />
                                     ) : (
                                         <TrendingUp className="h-3.5 w-3.5 text-muted-foreground/50" />
                                     )}
@@ -90,7 +90,7 @@ export default function Dashboard({ totalUsers }: DashboardProps) {
                                     <a
                                         key={item.label}
                                         href={item.href}
-                                        className="group flex items-center gap-4 rounded-xl border bg-card p-4 shadow-soft transition-all duration-200 hover:shadow-card hover:-translate-y-0.5 hover:border-primary/20"
+                                        className="group flex items-center gap-4 rounded-xl border bg-card p-4 shadow-soft transition-all duration-200 hover:shadow-card hover:-translate-y-0.5 hover:bg-sidebar-hover"
                                     >
                                         <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary transition-colors group-hover:bg-primary/20">
                                             <Icon className="h-5 w-5" />
@@ -113,7 +113,7 @@ export default function Dashboard({ totalUsers }: DashboardProps) {
                         </h2>
                         <div className="rounded-xl border bg-card p-6 shadow-soft">
                             <div className="flex items-start gap-4">
-                                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-lg">
+                                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg">
                                     <Library className="h-7 w-7" />
                                 </div>
                                 <div className="space-y-2">
@@ -125,8 +125,8 @@ export default function Dashboard({ totalUsers }: DashboardProps) {
                                         dan hak akses sistem.
                                     </p>
                                     <div className="flex flex-wrap gap-2 pt-2">
-                                        <span className="inline-flex items-center gap-1 rounded-full border bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-400 dark:border-emerald-800">
-                                            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                                        <span className="inline-flex items-center gap-1 rounded-full border bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800">
+                                            <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
                                             Sistem Aktif
                                         </span>
                                         <span className="inline-flex items-center gap-1 rounded-full border bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">

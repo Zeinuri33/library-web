@@ -1,19 +1,17 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { MoreHorizontal } from "lucide-react"
+import { MoreHorizontal, Pencil, Trash2, Copy, Eye } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { DataTableSortHeader } from "@/components/data-table-sort-header"
-import { Checkbox } from "@/components/ui/checkbox"
+import { Badge } from "@/components/ui/badge"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,24 +23,20 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { router } from "@inertiajs/react"
+import { toast } from "sonner"
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
 export type User = {
   id: string
   name: string
   username: string
   email: string
   avatar_url?: string
-  role?: string //  tambah ini (kalau pakai mapping backend)
-  roles?: { name: string }[] //  alternatif kalau pakai with('roles')
+  role?: string
+  roles?: { name: string }[]
+  created_at?: string
+  updated_at?: string
 }
-
-import { router } from "@inertiajs/react"
-import { toast } from "sonner"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-
 
 const handleDelete = (user: any) => {
   router.delete(`/users/${user.id}`, {
@@ -72,210 +66,148 @@ const handleDelete = (user: any) => {
   })
 }
 
-
 export const columns = (onEdit: (user: User) => void): ColumnDef<User>[] => [
   {
     id: "select",
     header: ({ table }) => (
-      <Checkbox
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-        aria-label="Select all"
+      <input
+        type="checkbox"
+        checked={table.getIsAllPageRowsSelected()}
+        onChange={(e) => table.toggleAllPageRowsSelected(e.target.checked)}
+        className="h-4 w-4 rounded border-gray-300"
       />
     ),
     cell: ({ row }) => (
-      <Checkbox
+      <input
+        type="checkbox"
         checked={row.getIsSelected()}
-        onCheckedChange={(value) => row.toggleSelected(!!value)}
-        aria-label="Select row"
+        onChange={(e) => row.toggleSelected(e.target.checked)}
+        className="h-4 w-4 rounded border-gray-300"
       />
     ),
     enableSorting: false,
     enableHiding: false,
   },
   {
-  id: "pengguna",
-    header: ({ column }) => (
-      <DataTableSortHeader column={column}>
-        Pengguna
-      </DataTableSortHeader>
-    ),
+    id: "pengguna",
+    header: "Member",
     accessorFn: (row) => row.name,
     cell: ({ row }) => {
       const name = row.original.name
       const email = row.original.email
 
       return (
-        <div className="flex items-center gap-3 ml-3">
-          <Avatar className="h-8 w-8">
+        <div className="flex items-center gap-3">
+          <Avatar className="h-10 w-10 ring-2 ring-background shadow-sm">
             <AvatarImage
               src={row.original.avatar_url || undefined}
               alt={name}
             />
-            <AvatarFallback
-              className="rounded-full bg-blue-500 text-xs font-semibold text-white"
-            >
+            <AvatarFallback className="rounded-full bg-gradient-to-br from-primary/80 to-primary text-xs font-bold text-white">
               {name?.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>
-
-          <div className="flex flex-col">
-            <span className="font-medium">{name}</span>
-            <span className="text-xs text-muted-foreground">{email}</span>
+          <div className="flex flex-col min-w-0">
+            <span className="font-medium text-foreground truncate">{name}</span>
+            <span className="text-xs text-muted-foreground truncate">{email}</span>
           </div>
         </div>
       )
     },
   },
   {
-    accessorKey: "username",
-    header: ({ column }) => (
-      <DataTableSortHeader column={column} className="hidden md:flex">
-        Username
-      </DataTableSortHeader>
-    ),
+    id: "role",
+    accessorFn: (row) => row.role || row.roles?.[0]?.name || "",
+    header: "Role",
     cell: ({ row }) => {
-      const username = row.getValue("username") as string
-
+      const role = row.original.role || row.original.roles?.[0]?.name || "-"
       return (
-        <div className="ml-3 hidden md:block">
-          <Badge variant="secondary">
-            {username}
-          </Badge>
-        </div>
+        <Badge variant="outline" className="capitalize">
+          {role}
+        </Badge>
       )
     },
   },
-
   {
-  id: "role",
-    accessorFn: (row) =>
-      row.role || row.roles?.[0]?.name || "", // 🔥 penting untuk sorting
-
-    header: ({ column }) => (
-      <DataTableSortHeader column={column} className="hidden md:flex">
-        Role
-      </DataTableSortHeader>
-    ),
-
+    accessorKey: "username",
+    header: "Username",
     cell: ({ row }) => {
-      const role =
-        row.original.role ||
-        row.original.roles?.[0]?.name ||
-        "-"
-
       return (
-        <div className="ml-3 hidden md:block">
-          <Badge variant="outline">
-            {role}
-          </Badge>
-        </div>
+        <span className="text-sm text-muted-foreground">
+          @{row.original.username}
+        </span>
       )
     },
   },
-
   {
     accessorKey: "created_at",
-    header: ({ column }) => (
-      <DataTableSortHeader column={column} className="hidden md:flex">
-        Dibuat
-      </DataTableSortHeader>
-    ),
+    header: "Dibuat",
     cell: ({ row }) => {
       const date = new Date(row.getValue("created_at") as string)
-
       return (
-        <div className="ml-3 text-sm hidden md:block">
+        <span className="text-sm text-muted-foreground">
           {date.toLocaleString("id-ID", {
             day: "2-digit",
             month: "short",
             year: "numeric",
           })}
-        </div>
+        </span>
       )
     },
   },
-
   {
-    accessorKey: "updated_at",
-    header: ({ column }) => (
-      <DataTableSortHeader column={column} className="hidden md:flex">
-        Diperbarui
-      </DataTableSortHeader>
-    ),
+    id: "actions",
+    header: "Actions",
     cell: ({ row }) => {
-      const date = new Date(row.getValue("updated_at") as string)
-
+      const user = row.original
       return (
-        <div className="ml-3 text-sm hidden md:block">
-          {date.toLocaleString("id-ID", {
-            day: "2-digit",
-            month: "short",
-            year: "numeric",
-          })}
-        </div>
-      )
-    },
-  },
-  
-  {
-    id: "Opsi",
-    cell: ({ row }) => {
-      const payment = row.original
-
-      return (
-        <div className="flex justify-end">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
-                <MoreHorizontal className="h-4 w-4" />
-              </Button>
-            </DropdownMenuTrigger>
-
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Opsi</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              <DropdownMenuItem onClick={() => onEdit(row.original)}>
-                Edit
-              </DropdownMenuItem>
-              <AlertDialog>
-                <AlertDialogTrigger asChild>
-                  <DropdownMenuItem
-                    onSelect={(e) => e.preventDefault()} // 🔥 penting biar dialog kebuka
-                    className="text-red-500"
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+              <MoreHorizontal className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuItem onClick={() => onEdit(user)}>
+              <Pencil className="mr-2 h-4 w-4" />
+              Edit
+            </DropdownMenuItem>
+            <DropdownMenuItem>
+              <Copy className="mr-2 h-4 w-4" />
+              Duplicate
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <DropdownMenuItem
+                  onSelect={(e) => e.preventDefault()}
+                  className="text-red-500 focus:text-red-500"
+                >
+                  <Trash2 className="mr-2 h-4 w-4" />
+                  Hapus
+                </DropdownMenuItem>
+              </AlertDialogTrigger>
+              <AlertDialogContent size="sm">
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Hapus User</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Yakin ingin menghapus user <b>{user.name}</b>?
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Batal</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={() => handleDelete(user)}
+                    className="bg-red-500 hover:bg-red-600"
                   >
                     Hapus
-                  </DropdownMenuItem>
-                </AlertDialogTrigger>
-
-                <AlertDialogContent size="sm">
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Hapus User
-                    </AlertDialogTitle>
-                    <AlertDialogDescription>
-                      Yakin ingin menghapus user <b>{row.original.name}</b>? 
-                    </AlertDialogDescription>
-                  </AlertDialogHeader>
-
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Batal</AlertDialogCancel>
-                    <AlertDialogAction
-                      onClick={() => handleDelete(row.original)}
-                    >
-                      Hapus
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
-            </DropdownMenuContent>
-          </DropdownMenu>
-        </div>
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </DropdownMenuContent>
+        </DropdownMenu>
       )
     },
-  }
+  },
 ]
