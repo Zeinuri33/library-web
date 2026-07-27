@@ -33,7 +33,7 @@ class User extends Authenticatable
     {
         return $this->attributes['avatar']
             ? asset('storage/' . $this->attributes['avatar'])
-            : 'https://ui-avatars.com/api/?name=' . urlencode($this->name);
+            : null;
     }
 
     public function getAuthIdentifierName()

@@ -13,12 +13,12 @@ export function UserInfo({
 
     return (
         <>
-            <Avatar className="h-8 w-8 overflow-hidden rounded-full">
+            <Avatar className="h-9 w-9 overflow-hidden rounded-full border-2 border-green-500">
                 <AvatarImage
                     src={typeof user.avatar_url === "string" ? user.avatar_url : undefined}
                     alt={user.name}
                 />
-                <AvatarFallback className="rounded-lg bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
+                <AvatarFallback className="rounded-full bg-blue-500 text-xs font-semibold text-white">
                     {getInitials(user.name)}
                 </AvatarFallback>
             </Avatar>

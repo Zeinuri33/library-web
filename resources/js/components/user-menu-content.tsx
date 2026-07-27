@@ -27,15 +27,15 @@ export function UserMenuContent({ user }: Props) {
     return (
         <>
             <DropdownMenuLabel className="p-0 font-normal">
-                <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
+                <div className="flex items-center gap-2 px-3 py-1.5 text-left text-sm">
                     <UserInfo user={user} showEmail={true} />
                 </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-                <DropdownMenuItem asChild>
+                <DropdownMenuItem asChild className="hover:bg-sidebar-hover hover:text-blue-500 focus:bg-sidebar-hover focus:text-blue-500 cursor-pointer">
                     <Link
-                        className="block w-full cursor-pointer"
+                        className="block w-full px-3"
                         href={edit()}
                         prefetch
                         onClick={cleanup}
@@ -46,9 +46,9 @@ export function UserMenuContent({ user }: Props) {
                 </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem asChild>
+            <DropdownMenuItem asChild className="hover:bg-sidebar-hover hover:text-blue-500 focus:bg-sidebar-hover focus:text-blue-500 cursor-pointer">
                 <Link
-                    className="block w-full cursor-pointer"
+                    className="block w-full px-3"
                     href={logout()}
                     as="button"
                     onClick={handleLogout}

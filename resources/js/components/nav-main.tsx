@@ -153,12 +153,13 @@ export function NavMain({
                                     `}
                                 >
                                     <div className="absolute left-[20px] top-0 bottom-0 w-px bg-sidebar-border/90" />
+                                    <div className="space-y-0.5">
                                     {item.children.map((child) => (
                                         <SidebarMenuItem key={child.title}>
                                             <SidebarMenuButton
                                                 asChild
                                                 isActive={isCurrentUrl(child.href!)}
-                                                className="h-8 text-[13px] pl-11 pr-3"
+                                                className="h-8 text-[13px] pl-11 pr-3 data-[active=true]:bg-primary/15 data-[active=true]:text-primary data-[active=true]:font-bold"
                                             >
                                                 <Link href={child.href!}>
                                                     {child.title}
@@ -166,6 +167,7 @@ export function NavMain({
                                             </SidebarMenuButton>
                                         </SidebarMenuItem>
                                     ))}
+                                    </div>
                                 </div>
                             )}
 

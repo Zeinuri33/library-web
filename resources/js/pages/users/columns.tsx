@@ -111,16 +111,13 @@ export const columns = (onEdit: (user: User) => void): ColumnDef<User>[] => [
       return (
         <div className="flex items-center gap-3 ml-3">
           <Avatar className="h-8 w-8">
-            <Avatar className="h-8 w-8">
             <AvatarImage
               src={row.original.avatar_url || undefined}
               alt={name}
             />
-            <AvatarFallback>
-              {name?.charAt(0).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
-            <AvatarFallback>
+            <AvatarFallback
+              className="rounded-full bg-blue-500 text-xs font-semibold text-white"
+            >
               {name?.charAt(0).toUpperCase()}
             </AvatarFallback>
           </Avatar>

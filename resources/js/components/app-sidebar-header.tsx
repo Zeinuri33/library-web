@@ -40,12 +40,12 @@ export function AppSidebarHeader({
                                     <span className="text-sm font-medium">{auth.user.name}</span>
                                     <span className="text-xs text-muted-foreground">{auth.user.email}</span>
                                 </div>
-                                <Avatar className="h-6 w-6 overflow-hidden rounded-full ring-2 ring-transparent transition-all duration-200 group-hover:ring-border">
+                                <Avatar className="h-9 w-9 overflow-hidden rounded-full border-2 border-green-500 ring-2 ring-transparent transition-all duration-200 group-hover:ring-border">
                                     <AvatarImage
                                         src={typeof auth.user.avatar_url === 'string' ? auth.user.avatar_url : undefined}
                                         alt={auth.user.name}
                                     />
-                                    <AvatarFallback className="rounded-full bg-blue-500 text-[10px] font-semibold text-white">
+                                    <AvatarFallback className="rounded-full bg-blue-500 text-xs font-semibold text-white">
                                         {getInitials(auth.user.name)}
                                     </AvatarFallback>
                                 </Avatar>
