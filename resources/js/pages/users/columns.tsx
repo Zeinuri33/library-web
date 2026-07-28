@@ -167,16 +167,16 @@ export const columns = (onEdit: (user: User) => void): ColumnDef<User>[] => [
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:!bg-muted hover:!text-foreground">
               <MoreHorizontal className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
-            <DropdownMenuItem onClick={() => onEdit(user)}>
+            <DropdownMenuItem onClick={() => onEdit(user)} className="focus:!bg-muted focus:!text-foreground">
               <Pencil className="mr-2 h-4 w-4" />
               Edit
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem className="focus:!bg-muted focus:!text-foreground">
               <Copy className="mr-2 h-4 w-4" />
               Duplicate
             </DropdownMenuItem>
@@ -185,7 +185,7 @@ export const columns = (onEdit: (user: User) => void): ColumnDef<User>[] => [
               <AlertDialogTrigger asChild>
                 <DropdownMenuItem
                   onSelect={(e) => e.preventDefault()}
-                  className="text-destructive focus:text-destructive"
+                  className="text-destructive focus:!text-destructive focus:!bg-destructive/10"
                 >
                   <Trash2 className="mr-2 h-4 w-4" />
                   Hapus

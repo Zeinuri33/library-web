@@ -231,7 +231,7 @@ if (!open || !user) return null
 
               <SelectContent>
                 {roles?.map((role: string) => (
-                  <SelectItem key={role} value={role}>
+                  <SelectItem key={role} value={role} className="focus:bg-muted focus:text-foreground">
                     {role}
                   </SelectItem>
                 ))}

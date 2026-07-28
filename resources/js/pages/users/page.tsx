@@ -223,7 +223,16 @@ export default function Users({ users }: { users: User[] }) {
             </h1>
             <div className="flex items-center gap-2 mt-1">
               <p className="text-sm text-foreground">
-                Tercatat {users.length} pengguna sistem
+                {(() => {
+                  const roleCounts: Record<string, number> = {}
+                  users.forEach((user) => {
+                    const roleName = user.roles?.[0]?.name || user.role || "Unknown"
+                    roleCounts[roleName] = (roleCounts[roleName] || 0) + 1
+                  })
+                  return Object.entries(roleCounts)
+                    .map(([role, count]) => `${role} ${count}`)
+                    .join(", ")
+                })()}
               </p>
             </div>
           </div>
@@ -476,12 +485,12 @@ export default function Users({ users }: { users: User[] }) {
                       <td className="px-4 py-3 text-right">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+                            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:!bg-muted hover:!text-foreground">
                               <MoreVertical className="h-4 w-4" />
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-48">
-                            <DropdownMenuItem onClick={() => handleEdit(user)}>
+                            <DropdownMenuItem onClick={() => handleEdit(user)} className="focus:!bg-muted focus:!text-foreground">
                               <Pencil className="mr-2 h-4 w-4" />
                               Edit
                             </DropdownMenuItem>
@@ -489,7 +498,7 @@ export default function Users({ users }: { users: User[] }) {
                               <AlertDialogTrigger asChild>
                                 <DropdownMenuItem
                                   onSelect={(e) => e.preventDefault()}
-                                   className="text-destructive focus:text-destructive"
+                                   className="text-destructive focus:!text-destructive focus:!bg-destructive/10"
                                 >
                                   <Trash2 className="mr-2 h-4 w-4" />
                                   Hapus

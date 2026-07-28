@@ -238,7 +238,7 @@ export const columns = (onEdit: (role: Role) => void): ColumnDef<Role>[] => [
       <div className="flex justify-end">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
+            <Button variant="ghost" size="sm" className="h-8 w-8 p-0 hover:!bg-muted hover:!text-foreground">
               <MoreVertical className="h-4 w-4" />
             </Button>
           </DropdownMenuTrigger>
@@ -246,6 +246,7 @@ export const columns = (onEdit: (role: Role) => void): ColumnDef<Role>[] => [
           <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuItem
               onClick={() => onEdit(row.original)}
+              className="focus:!bg-muted focus:!text-foreground"
             >
               Edit
             </DropdownMenuItem>
@@ -254,7 +255,7 @@ export const columns = (onEdit: (role: Role) => void): ColumnDef<Role>[] => [
               <AlertDialogTrigger asChild>
                 <DropdownMenuItem
                   onSelect={(e) => e.preventDefault()}
-                  className="text-destructive focus:text-destructive"
+                   className="text-destructive focus:!text-destructive focus:!bg-destructive/10"
                 >
                   Hapus
                 </DropdownMenuItem>

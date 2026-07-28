@@ -38,11 +38,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  rowSelection?: Record<string, boolean>
+  onRowSelectionChange?: (selection: Record<string, boolean>) => void
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  rowSelection: controlledRowSelection,
+  onRowSelectionChange: controlledOnRowSelectionChange,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -51,7 +55,10 @@ export function DataTable<TData, TValue>({
 
   const [columnVisibility, setColumnVisibility] =
     React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
+  const [internalRowSelection, setInternalRowSelection] = React.useState<Record<string, boolean>>({})
+
+  const rowSelection = controlledRowSelection ?? internalRowSelection
+  const setRowSelection = controlledOnRowSelectionChange ?? setInternalRowSelection
 
   const [searchValue, setSearchValue] = React.useState("")
   const debounceRef = React.useRef<ReturnType<typeof setTimeout> | null>(null)
