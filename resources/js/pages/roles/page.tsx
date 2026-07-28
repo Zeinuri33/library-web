@@ -26,8 +26,8 @@ export default function Roles({ roles }: { roles: Role[] }) {
         {/* Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-xl font-semibold tracking-tight text-primary">
-              Data Role
+            <h1 className="text-xl font-semibold tracking-tight ">
+              Daftar Role
             </h1>
             <div className="flex items-center gap-2 mt-1">
               <p className="text-sm text-foreground">

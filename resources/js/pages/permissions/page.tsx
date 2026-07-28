@@ -25,8 +25,8 @@ export default function Permissions({ permissions }: { permissions: Permission[]
         {/* Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-xl font-semibold tracking-tight text-primary">
-              Data Permission
+            <h1 className="text-xl font-semibold tracking-tight ">
+              Daftar Permission
             </h1>
             <div className="flex items-center gap-2 mt-1">
               <p className="text-sm text-foreground">

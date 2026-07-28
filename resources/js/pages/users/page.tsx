@@ -7,6 +7,7 @@ import CreateUserModal from "./create"
 import EditUserModal from "./edit"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
@@ -34,6 +35,7 @@ import {
 import { router } from "@inertiajs/react"
 import { toast } from "sonner"
 import { Download, MoreVertical, Pencil, Trash2, Search, Filter, X, ArrowUp, ArrowDown, ArrowUpDown, ChevronLeft, ChevronRight } from "lucide-react"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 type SortField = "role" | "username" | "created_at"
 type SortDirection = "asc" | "desc"
@@ -362,12 +364,15 @@ export default function Users({ users }: { users: User[] }) {
                 {/* Column Headers */}
                 <tr className="border-b border-border/60 bg-primary/10">
                   <th className="h-12 w-12 px-4 border-r border-border/80">
-                    <input
-                      type="checkbox"
-                      checked={isAllSelected}
-                      ref={(el) => { if (el) el.indeterminate = isSomeSelected && !isAllSelected }}
-                      onChange={toggleSelectAll}
-                      className="h-4 w-4 rounded border-gray-300 cursor-pointer"
+                    <Checkbox
+                      checked={isAllSelected || (isSomeSelected && "indeterminate")}
+                      onCheckedChange={(value) => {
+                        if (value) {
+                          setSelectedIds((prev) => [...new Set([...prev, ...paginatedUsers.map((u) => u.id)])])
+                        } else {
+                          setSelectedIds((prev) => prev.filter((id) => !paginatedUsers.some((u) => u.id === id)))
+                        }
+                      }}
                     />
                   </th>
                   <th className="h-12 px-4 text-left text-sm font-normal capitalize tracking-wider text-foreground border-r border-border/80">
@@ -414,11 +419,9 @@ export default function Users({ users }: { users: User[] }) {
                     >
                       {/* Checkbox Column */}
                       <td className="px-4 py-3 border-r border-border/80">
-                        <input
-                          type="checkbox"
+                        <Checkbox
                           checked={selectedIds.includes(user.id)}
-                          onChange={() => toggleSelectOne(user.id)}
-                          className="h-4 w-4 rounded border-gray-300 cursor-pointer"
+                          onCheckedChange={() => toggleSelectOne(user.id)}
                         />
                       </td>
                       {/* Member Column */}
@@ -528,11 +531,6 @@ export default function Users({ users }: { users: User[] }) {
                             {hasActiveFilters ? "Coba ubah filter atau kata kunci pencarian" : "Tidak ada data pengguna yang tersedia"}
                           </p>
                         </div>
-                        {hasActiveFilters && (
-                          <Button variant="outline" size="sm" onClick={clearFilters} className="mt-2">
-                            Reset
-                          </Button>
-                        )}
                       </div>
                     </td>
                   </tr>
@@ -554,17 +552,21 @@ export default function Users({ users }: { users: User[] }) {
                           </span>
                           <div className="h-4 w-px bg-border" />
                           <span>Show</span>
-                          <select
-                            value={perPage}
-                            onChange={(e) => handlePerPageChange(Number(e.target.value))}
-                            className="h-8 rounded-lg border border-input bg-background px-2 text-sm focus:border-primary/50 focus:outline-none cursor-pointer"
+                          <Select
+                            value={String(perPage)}
+                            onValueChange={(value) => handlePerPageChange(Number(value))}
                           >
-                            <option value={5}>5</option>
-                            <option value={10}>10</option>
-                            <option value={25}>25</option>
-                            <option value={50}>50</option>
-                            <option value={filteredUsers.length}>All</option>
-                          </select>
+                            <SelectTrigger size="sm" className="h-8 w-auto px-2">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              <SelectItem value="5" className="focus:bg-muted focus:text-foreground">5</SelectItem>
+                              <SelectItem value="10" className="focus:bg-muted focus:text-foreground">10</SelectItem>
+                              <SelectItem value="25" className="focus:bg-muted focus:text-foreground">25</SelectItem>
+                              <SelectItem value="50" className="focus:bg-muted focus:text-foreground">50</SelectItem>
+                              <SelectItem value={String(filteredUsers.length)} className="focus:bg-muted focus:text-foreground">All</SelectItem>
+                            </SelectContent>
+                          </Select>
                           <span>per page</span>
                         </div>
 
@@ -575,7 +577,7 @@ export default function Users({ users }: { users: User[] }) {
                             size="sm"
                             onClick={() => setCurrentPage((p) => Math.max(1, p - 1))}
                             disabled={currentPage === 1}
-                            className="h-8 w-8 p-0"
+                            className="h-8 w-8 p-0 hover:!bg-muted hover:!text-foreground"
                           >
                             <ChevronLeft className="h-4 w-4" />
                           </Button>
@@ -591,7 +593,7 @@ export default function Users({ users }: { users: User[] }) {
                                 variant={currentPage === page ? "default" : "outline"}
                                 size="sm"
                                 onClick={() => setCurrentPage(page)}
-                                className="h-8 w-8 p-0"
+                                className={`h-8 w-8 p-0 ${currentPage === page ? "" : "hover:!bg-muted hover:!text-foreground"}`}
                               >
                                 {page}
                               </Button>
@@ -603,7 +605,7 @@ export default function Users({ users }: { users: User[] }) {
                             size="sm"
                             onClick={() => setCurrentPage((p) => Math.min(totalPages, p + 1))}
                             disabled={currentPage === totalPages}
-                            className="h-8 w-8 p-0"
+                            className="h-8 w-8 p-0 hover:!bg-muted hover:!text-foreground"
                           >
                             <ChevronRight className="h-4 w-4" />
                           </Button>

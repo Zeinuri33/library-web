@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 import { Search, X, Columns3, ChevronLeft, ChevronRight } from "lucide-react"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -278,17 +279,21 @@ export function DataTable<TData, TValue>({
                       </span>
                       <div className="h-4 w-px bg-border" />
                       <span>Show</span>
-                      <select
-                        value={perPage}
-                        onChange={(e) => table.setPageSize(Number(e.target.value))}
-                        className="h-8 rounded-lg border border-input bg-background px-2 text-sm focus:border-primary/50 focus:outline-none cursor-pointer"
+                      <Select
+                        value={String(perPage)}
+                        onValueChange={(value) => table.setPageSize(Number(value))}
                       >
-                        <option value={10}>10</option>
-                        <option value={25}>25</option>
-                        <option value={50}>50</option>
-                        <option value={100}>100</option>
-                        <option value={totalRows}>All</option>
-                      </select>
+                        <SelectTrigger size="sm" className="h-8 w-auto px-2">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="10" className="focus:bg-muted focus:text-foreground">10</SelectItem>
+                          <SelectItem value="25" className="focus:bg-muted focus:text-foreground">25</SelectItem>
+                          <SelectItem value="50" className="focus:bg-muted focus:text-foreground">50</SelectItem>
+                          <SelectItem value="100" className="focus:bg-muted focus:text-foreground">100</SelectItem>
+                          <SelectItem value={String(totalRows)} className="focus:bg-muted focus:text-foreground">All</SelectItem>
+                        </SelectContent>
+                      </Select>
                       <span>per page</span>
                     </div>
 
@@ -299,7 +304,7 @@ export function DataTable<TData, TValue>({
                         size="sm"
                         onClick={() => table.previousPage()}
                         disabled={!table.getCanPreviousPage()}
-                        className="h-8 w-8 p-0"
+                        className="h-8 w-8 p-0 hover:!bg-muted hover:!text-foreground"
                       >
                         <ChevronLeft className="h-4 w-4" />
                       </Button>
@@ -315,7 +320,7 @@ export function DataTable<TData, TValue>({
                             variant={currentPage === page ? "default" : "outline"}
                             size="sm"
                             onClick={() => table.setPageIndex(page)}
-                            className="h-8 w-8 p-0"
+                            className={`h-8 w-8 p-0 ${currentPage === page ? "" : "hover:!bg-muted hover:!text-foreground"}`}
                           >
                             {page + 1}
                           </Button>
@@ -327,7 +332,7 @@ export function DataTable<TData, TValue>({
                         size="sm"
                         onClick={() => table.nextPage()}
                         disabled={!table.getCanNextPage()}
-                        className="h-8 w-8 p-0"
+                        className="h-8 w-8 p-0 hover:!bg-muted hover:!text-foreground"
                       >
                         <ChevronRight className="h-4 w-4" />
                       </Button>

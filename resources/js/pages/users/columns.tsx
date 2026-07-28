@@ -4,6 +4,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal, Pencil, Trash2, Copy, Eye } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
   DropdownMenu,
@@ -70,19 +71,22 @@ export const columns = (onEdit: (user: User) => void): ColumnDef<User>[] => [
   {
     id: "select",
     header: ({ table }) => (
-      <input
-        type="checkbox"
-        checked={table.getIsAllPageRowsSelected()}
-        onChange={(e) => table.toggleAllPageRowsSelected(e.target.checked)}
-        className="h-4 w-4 rounded border-gray-300"
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) =>
+          table.toggleAllPageRowsSelected(!!value)
+        }
       />
     ),
     cell: ({ row }) => (
-      <input
-        type="checkbox"
+      <Checkbox
         checked={row.getIsSelected()}
-        onChange={(e) => row.toggleSelected(e.target.checked)}
-        className="h-4 w-4 rounded border-gray-300"
+        onCheckedChange={(value) =>
+          row.toggleSelected(!!value)
+        }
       />
     ),
     enableSorting: false,
