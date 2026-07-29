@@ -1,7 +1,7 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
-import { MoreHorizontal, Pencil, Trash2, Copy, Eye } from "lucide-react"
+import { MoreHorizontal } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -173,11 +173,9 @@ export const columns = (onEdit: (user: User) => void): ColumnDef<User>[] => [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuItem onClick={() => onEdit(user)} className="focus:!bg-muted focus:!text-foreground">
-              <Pencil className="mr-2 h-4 w-4" />
               Edit
             </DropdownMenuItem>
             <DropdownMenuItem className="focus:!bg-muted focus:!text-foreground">
-              <Copy className="mr-2 h-4 w-4" />
               Duplicate
             </DropdownMenuItem>
             <DropdownMenuSeparator />
@@ -187,8 +185,7 @@ export const columns = (onEdit: (user: User) => void): ColumnDef<User>[] => [
                   onSelect={(e) => e.preventDefault()}
                   className="text-destructive focus:!text-destructive focus:!bg-destructive/10"
                 >
-                  <Trash2 className="mr-2 h-4 w-4" />
-                  Hapus
+                   Hapus
                 </DropdownMenuItem>
               </AlertDialogTrigger>
               <AlertDialogContent size="sm">

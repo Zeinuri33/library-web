@@ -1,11 +1,6 @@
 import { Moon, Sun } from "lucide-react";
 import { useAppearance } from "@/hooks/use-appearance";
 import { useEffect, useState } from "react";
-import {
-    SidebarMenu,
-    SidebarMenuButton,
-    SidebarMenuItem,
-} from "@/components/ui/sidebar";
 
 export default function AppearanceToggleIcon() {
     const { appearance, updateAppearance } = useAppearance();
@@ -25,20 +20,16 @@ export default function AppearanceToggleIcon() {
     };
 
     return (
-        <SidebarMenu>
-            <SidebarMenuItem>
-                <SidebarMenuButton
-                    onClick={toggle}
-                    className="text-sidebar-foreground/60 hover:text-sidebar-foreground/90"
-                >
-                    {isDark ? (
-                        <Sun className="size-[18px]" />
-                    ) : (
-                        <Moon className="size-[18px]" />
-                    )}
-                    <span>{isDark ? 'Mode Terang' : 'Mode Gelap'}</span>
-                </SidebarMenuButton>
-            </SidebarMenuItem>
-        </SidebarMenu>
+        <button
+            onClick={toggle}
+            className="inline-flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-sidebar-foreground/60 transition-colors hover:text-sidebar-foreground/90 hover:bg-sidebar-accent"
+        >
+            {isDark ? (
+                <Sun className="size-[18px]" />
+            ) : (
+                <Moon className="size-[18px]" />
+            )}
+            <span>{isDark ? 'Mode Terang' : 'Mode Gelap'}</span>
+        </button>
     );
 }

@@ -34,7 +34,7 @@ import {
 } from "@/components/ui/popover"
 import { router } from "@inertiajs/react"
 import { toast } from "sonner"
-import { Download, MoreVertical, Pencil, Trash2, Search, Filter, X, ArrowUp, ArrowDown, ArrowUpDown, ChevronLeft, ChevronRight } from "lucide-react"
+import { Download, MoreVertical, Trash2, Search, Filter, X, ArrowUp, ArrowDown, ArrowUpDown, ChevronLeft, ChevronRight } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 type SortField = "role" | "username" | "created_at"
@@ -491,7 +491,6 @@ export default function Users({ users }: { users: User[] }) {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="w-48">
                             <DropdownMenuItem onClick={() => handleEdit(user)} className="focus:!bg-muted focus:!text-foreground">
-                              <Pencil className="mr-2 h-4 w-4" />
                               Edit
                             </DropdownMenuItem>
                             <AlertDialog>
@@ -500,8 +499,7 @@ export default function Users({ users }: { users: User[] }) {
                                   onSelect={(e) => e.preventDefault()}
                                    className="text-destructive focus:!text-destructive focus:!bg-destructive/10"
                                 >
-                                  <Trash2 className="mr-2 h-4 w-4" />
-                                  Hapus
+                                   Hapus
                                 </DropdownMenuItem>
                               </AlertDialogTrigger>
                               <AlertDialogContent size="sm">

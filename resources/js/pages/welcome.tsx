@@ -5,119 +5,51 @@ import { Button } from '@/components/ui/button';
 import { dashboard, login } from '@/routes';
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import AppearanceTabs from '@/components/appearance-tabs';
 import { useTheme } from '@/context/ThemeContext';
-import ContactForm from "@/components/contact-form"
-import {
-    BookOpen,
-    FolderOpen,
-    Search,
-    SearchCheck,
-    BookAudio,
-    Book,
-    FileText,
-    Brain,
-    ChevronDown,
-    Mail,
-    Phone,
-    MapPin,
-    Facebook,
-    Twitter,
-    Instagram,
-} from 'lucide-react';
 import Footer from '@/layouts/footer';
 
 import { router } from '@inertiajs/react';
 
-const COLOR_PRESETS = [
-    {
-        id: 'emerald',
-        name: 'Emerald Green',
-        color: '#10b981',
-        light: { primary: '#059669', fg: '#ffffff' },
-        dark: { primary: '#10b981', fg: '#022c22' },
-    },
-    {
-        id: 'red',
-        name: 'Ruby Red',
-        color: '#ef4444',
-        light: { primary: '#dc2626', fg: '#ffffff' },
-        dark: { primary: '#ef4444', fg: '#fef2f2' },
-    },
-    {
-        id: 'indigo',
-        name: 'Deep Indigo',
-        color: '#6366f1',
-        light: { primary: '#4f46e5', fg: '#ffffff' },
-        dark: { primary: '#818cf8', fg: '#312e81' },
-    },
-];
-
 export default function Welcome() {
     const [inputValue, setInputValue] = useState('');
-    const { themeAccent, setThemeAccent } = useTheme();
+    const { themeAccent } = useTheme();
 
     const themeMaps = {
         emerald: {
             selection: 'selection:bg-emerald-500/30',
-            text: 'text-emerald-600 dark:text-emerald-400',
-            textHover:
-                'group-hover:text-emerald-600 dark:group-hover:text-emerald-400',
-            bgSoft: 'bg-emerald-500/10 dark:bg-emerald-500/20',
-            bgGradient:
-                'bg-gradient-to-r from-emerald-500 to-emerald-600 dark:from-emerald-600 dark:to-emerald-500',
             textGradient:
                 'from-gray-900 via-emerald-600 to-emerald-500 dark:from-white dark:via-emerald-400 dark:to-emerald-500',
-            borderHover:
-                'hover:border-emerald-500/30 dark:hover:border-emerald-500/30',
+            bgGradient:
+                'bg-gradient-to-r from-emerald-500 to-emerald-600 dark:from-emerald-600 dark:to-emerald-500',
             ring: 'focus:ring-emerald-500/50',
-            focusWithinRing: 'focus-within:ring-emerald-500/40',
             shadow: 'hover:shadow-emerald-500/30 dark:hover:shadow-emerald-500/30',
-            shadowGlow: 'dark:shadow-2xl dark:shadow-emerald-500/10',
             glow: 'from-emerald-500/10',
-            line: 'from-emerald-500/60 to-emerald-500',
             orb: 'bg-emerald-500/20 blur-[150px]',
             heroOrb: 'bg-emerald-500/20',
             textWhite: 'text-white',
         },
         red: {
             selection: 'selection:bg-red-500/30',
-            text: 'text-red-600 dark:text-red-400',
-            textHover: 'group-hover:text-red-600 dark:group-hover:text-red-400',
-            bgSoft: 'bg-red-500/10 dark:bg-red-500/20',
-            bgGradient:
-                'bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-500',
             textGradient:
                 'from-gray-900 via-red-600 to-red-500 dark:from-white dark:via-red-400 dark:to-red-500',
-            borderHover: 'hover:border-red-500/30 dark:hover:border-red-500/30',
+            bgGradient:
+                'bg-gradient-to-r from-red-500 to-red-600 dark:from-red-600 dark:to-red-500',
             ring: 'focus:ring-red-500/50',
-            focusWithinRing: 'focus-within:ring-red-500/40',
             shadow: 'hover:shadow-red-500/30 dark:hover:shadow-red-500/30',
-            shadowGlow: 'dark:shadow-2xl dark:shadow-red-500/10',
             glow: 'from-red-500/10',
-            line: 'from-red-500/60 to-red-500',
             orb: 'bg-red-500/20 blur-[150px]',
             heroOrb: 'bg-red-500/20',
             textWhite: 'text-white',
         },
         indigo: {
             selection: 'selection:bg-indigo-500/30',
-            text: 'text-indigo-600 dark:text-indigo-400',
-            textHover:
-                'group-hover:text-indigo-600 dark:group-hover:text-indigo-400',
-            bgSoft: 'bg-indigo-500/10 dark:bg-indigo-500/20',
-            bgGradient:
-                'bg-gradient-to-r from-indigo-500 to-indigo-600 dark:from-indigo-600 dark:to-indigo-500',
             textGradient:
                 'from-gray-900 via-indigo-600 to-indigo-500 dark:from-white dark:via-indigo-400 dark:to-indigo-500',
-            borderHover:
-                'hover:border-indigo-500/30 dark:hover:border-indigo-500/30',
+            bgGradient:
+                'bg-gradient-to-r from-indigo-500 to-indigo-600 dark:from-indigo-600 dark:to-indigo-500',
             ring: 'focus:ring-indigo-500/50',
-            focusWithinRing: 'focus-within:ring-indigo-500/40',
             shadow: 'hover:shadow-indigo-500/30 dark:hover:shadow-indigo-500/30',
-            shadowGlow: 'dark:shadow-2xl dark:shadow-indigo-500/10',
             glow: 'from-indigo-500/10',
-            line: 'from-indigo-500/60 to-indigo-500',
             orb: 'bg-indigo-500/20 blur-[150px]',
             heroOrb: 'bg-indigo-500/20',
             textWhite: 'text-white',
@@ -140,7 +72,6 @@ export default function Welcome() {
     };
 
     const { auth } = usePage().props;
-    const userName = auth.user?.name || 'Pemustaka';
     const [open, setOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
 
@@ -152,43 +83,6 @@ export default function Welcome() {
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
-
-    const [openIndex, setOpenIndex] = useState<number | null>(null);
-
-    const faqs = [
-        {
-            q: 'Apa itu Digilib Ibrahimy?',
-            a: 'Digilib adalah layanan perpustakaan digital yang memudahkan pengguna mengakses berbagai koleksi secara online.',
-        },
-        {
-            q: 'Bagaimana cara mencari buku atau jurnal?',
-            a: 'Gunakan fitur pencarian di halaman utama atau melalui menu OPAC untuk menemukan koleksi yang diinginkan.',
-        },
-        {
-            q: 'Apakah semua koleksi bisa diakses secara gratis?',
-            a: 'Sebagian besar koleksi dapat diakses secara gratis, namun beberapa mungkin memiliki batasan akses tertentu.',
-        },
-        {
-            q: 'Bagaimana cara mengakses e-book?',
-            a: 'Masuk ke menu E-Book, pilih koleksi yang diinginkan, lalu klik untuk membaca atau mengunduh.',
-        },
-        {
-            q: 'Apakah saya perlu login untuk menggunakan layanan?',
-            a: 'Beberapa fitur memerlukan login untuk pengalaman yang lebih lengkap, seperti menyimpan atau mengunduh koleksi.',
-        },
-        {
-            q: 'Apa fungsi Repository?',
-            a: 'Repository berisi karya ilmiah seperti skripsi, tesis, dan publikasi civitas akademika.',
-        },
-        {
-            q: 'Bagaimana cara menggunakan Ibrahimy AI?',
-            a: 'Gunakan fitur Ibrahimy AI untuk membantu pencarian informasi atau rekomendasi koleksi secara cerdas.',
-        },
-        {
-            q: 'Siapa yang bisa menggunakan Digilib?',
-            a: 'Digilib dapat digunakan oleh mahasiswa, dosen, dan masyarakat umum sesuai dengan kebijakan akses.',
-        },
-    ];
 
     //animasi search bar
     const texts = [
@@ -214,7 +108,6 @@ export default function Welcome() {
             setCharIndex((prev) => {
                 const next = prev + 1;
 
-                // kalau sudah selesai ngetik 1 kata
                 if (next > currentText.length) {
                     clearInterval(interval);
 
@@ -232,63 +125,6 @@ export default function Welcome() {
 
         return () => clearInterval(interval);
     }, [charIndex, textIndex, inputValue]);
-
-    const menus = [
-        {
-            title: 'Pedoman Layanan',
-            desc: 'Panduan penggunaan layanan perpustakaan secara lengkap.',
-            href: 'https://digilib.ibrahimy.ac.id/docs',
-            icon: BookOpen,
-        },
-        {
-            title: 'Repository',
-            desc: 'Akses koleksi karya ilmiah dan penelitian digital.',
-            href: 'https://repository.ibrahimy.ac.id/',
-            icon: FolderOpen,
-        },
-        {
-            title: 'OPAC',
-            desc: 'Cari buku dan koleksi perpustakaan dengan cepat.',
-            href: 'https://opac.lib.ibrahimy.ac.id/',
-            icon: Search,
-        },
-        {
-            title: 'E-Book',
-            desc: 'Baca buku digital kapan saja dan di mana saja.',
-            href: 'https://ibrahimy.perpustakaan.co.id/',
-            icon: Book,
-        },
-        {
-            title: 'Titik Baca',
-            desc: 'Temukan dan baca e-book berdasarkan lokasi-lokasi titik baca.',
-            href: 'https://digilib.ibrahimy.ac.id/titikbaca',
-            icon: MapPin,
-        },
-        {
-            title: 'Jurnal Perpustakaan',
-            desc: 'Kumpulan jurnal akademik dan ilmiah terbaru.',
-            href: 'https://imjiss.ibrahimy.ac.id/',
-            icon: FileText,
-        },
-        {
-            title: 'Digilib Search',
-            desc: 'Pencarian referensi dan koleksi perpustakaan dalam satu halaman.',
-            href: 'https://digilib.ibrahimy.ac.id/result',
-            icon: SearchCheck,
-        },
-        {
-            title: 'Katalog Skripsi',
-            desc: 'Katalog online Skripsi dan Tugas Akhir Mahasiswa',
-            href: 'https://layanan.lib.ibrahimy.ac.id/katalog-skripsi',
-            icon: BookAudio,
-        },
-        {
-            title: 'Ibrahimy AI',
-            desc: 'Asisten pintar untuk membantu pencarian informasi.',
-            href: '#',
-            icon: Brain,
-        },
-    ];
 
     return (
         <>
@@ -356,27 +192,6 @@ export default function Welcome() {
                                 >
                                     Home
                                 </a>
-
-                                <a
-                                    href="#layanan"
-                                    className="relative inline-block after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-out hover:after:scale-x-100"
-                                >
-                                    Layanan
-                                </a>
-
-                                <a
-                                    href="#FAQ"
-                                    className="relative inline-block after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-out hover:after:scale-x-100"
-                                >
-                                    FAQ
-                                </a>
-
-                                <a
-                                    href="#kontak"
-                                    className="relative inline-block after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-out hover:after:scale-x-100"
-                                >
-                                    Kontak
-                                </a>
                             </nav>
                             <Link
                                 href='https://digilib.ibrahimy.ac.id/docs'
@@ -384,24 +199,6 @@ export default function Welcome() {
                             >
                                 Panduan
                             </Link>
-
-                            {/* Color Presets */}
-                            <div className="flex items-center gap-2 border-l border-gray-300 pl-6 dark:border-gray-700">
-                                {COLOR_PRESETS.map((p) => (
-                                    <button
-                                        key={p.id}
-                                        onClick={() => setThemeAccent(p.id)}
-                                        className={`h-5 w-5 rounded-full transition-all hover:scale-110 ${themeAccent === p.id
-                                            ? `scale-110 ring-2 ring-offset-2 ${tc.ring}`
-                                            : 'opacity-70'
-                                            }`}
-                                        style={{ backgroundColor: p.color }}
-                                        title={p.name}
-                                    />
-                                ))}
-                            </div>
-
-                            <AppearanceTabs />
                         </div>
 
                         {/* MOBILE BUTTON */}
@@ -466,25 +263,6 @@ export default function Welcome() {
 
                                     {/* RIGHT (GROUP) */}
                                     <div className="flex items-center gap-3">
-                                        <div className="mr-2 flex items-center gap-2">
-                                            {COLOR_PRESETS.map((p) => (
-                                                <button
-                                                    key={p.id}
-                                                    onClick={() => setThemeAccent(p.id)}
-                                                    className={`h-5 w-5 rounded-full transition-all hover:scale-110 ${themeAccent === p.id
-                                                        ? `scale-110 ring-2 ring-offset-2 ${tc.ring}`
-                                                        : 'opacity-70'
-                                                        }`}
-                                                    style={{
-                                                        backgroundColor: p.color,
-                                                    }}
-                                                    title={p.name}
-                                                />
-                                            ))}
-                                        </div>
-
-                                        <AppearanceTabs />
-
                                         <button
                                             onClick={() => setOpen(false)}
                                             className="relative h-6 w-6"
@@ -510,24 +288,6 @@ export default function Welcome() {
                                         onClick={() => setOpen(false)}
                                     >
                                         Home
-                                    </a>
-                                    <a
-                                        href="#layanan"
-                                        onClick={() => setOpen(false)}
-                                    >
-                                        Layanan
-                                    </a>
-                                    <a
-                                        href="#FAQ"
-                                        onClick={() => setOpen(false)}
-                                    >
-                                        FAQ
-                                    </a>
-                                    <a
-                                        href="#kontak"
-                                        onClick={() => setOpen(false)}
-                                    >
-                                        Kontak
                                     </a>
                                 </nav>
 
@@ -557,7 +317,7 @@ export default function Welcome() {
                 {/* HERO */}
                 <section
                     id="home"
-                    className="relative mx-auto max-w-7xl px-6 md:px-12"
+                    className="relative min-h-screen w-full px-6 md:px-12"
                 >
                     {/* BACKGROUND BLUR */}
                     <motion.div
@@ -576,12 +336,12 @@ export default function Welcome() {
 
                     {/* HERO CONTENT */}
                     <motion.div
-                        className="relative ml-auto pt-36"
+                        className="relative ml-auto flex flex-col items-center pt-36 lg:flex-row lg:items-center lg:justify-between"
                         initial={{ opacity: 0, y: 40 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.8, ease: 'easeOut' }}
                     >
-                        <div className="mx-auto text-center lg:w-2/3">
+                        <div className="w-full text-left lg:w-1/2">
                             {/* LOGO */}
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.8 }}
@@ -591,18 +351,18 @@ export default function Welcome() {
                                 <img
                                     src="/kubah.png"
                                     alt="Kubah"
-                                    className="mx-auto w-45 md:w-45 dark:hidden"
+                                    className="w-45 md:w-45 dark:hidden"
                                 />
                                 <img
                                     src="/kubah-putih.png"
                                     alt="Kubah Dark"
-                                    className="mx-auto hidden w-45 md:w-45 dark:block"
+                                    className="hidden w-45 md:w-45 dark:block"
                                 />
                             </motion.div>
 
                             {/* TITLE */}
                             <motion.h1
-                                className="text-center text-4xl leading-[1.05] font-extrabold tracking-normal text-gray-900 md:text-5xl lg:text-6xl xl:text-7xl dark:text-white"
+                                className="text-left text-4xl leading-[1.05] font-extrabold tracking-normal text-gray-900 md:text-5xl lg:text-6xl xl:text-7xl dark:text-white"
                                 initial={{ opacity: 0, y: 30 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.2, duration: 0.6 }}
@@ -617,7 +377,7 @@ export default function Welcome() {
 
                             {/* SEARCH FORM */}
                             <motion.div
-                                className="mt-6 flex justify-center"
+                                className="mt-6 flex"
                                 initial={{ opacity: 0, y: 20 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.35, duration: 0.6 }}
@@ -660,36 +420,21 @@ export default function Welcome() {
                             </motion.p>
                         </div>
 
-                        {/* IMAGE */}
-                        <motion.div
-                            className="perspective-1000 mt-32 hidden md:block"
-                            initial={{ opacity: 0, scale: 0.95, y: 40 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            transition={{
-                                delay: 0.6,
-                                duration: 0.8,
-                                ease: 'easeOut',
-                            }}
-                        >
-                            <div className="relative mx-auto w-[1000px] max-w-full transition-transform duration-700 hover:scale-[1.02]">
-                                {/* Glow behind image */}
-                                <div
-                                    className={`absolute -inset-2 bg-gradient-to-r opacity-40 blur-3xl dark:opacity-20 ${tc.glow}`}
-                                ></div>
+                    </motion.div>
 
-                                <img
-                                    src="/digilib.png"
-                                    alt="Digilib Light"
-                                    className="relative mx-auto w-full rounded-3xl border border-white/40 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] transition-shadow duration-500 hover:shadow-[0_30px_70px_-15px_rgba(0,0,0,0.2)] dark:hidden"
-                                />
-
-                                <img
-                                    src="/digilib-dark.png"
-                                    alt="Digilib Dark"
-                                    className="relative mx-auto hidden w-full rounded-3xl border border-gray-800/60 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] transition-shadow duration-500 hover:shadow-[0_30px_70px_-15px_rgba(0,0,0,0.5)] dark:block"
-                                />
-                            </div>
-                        </motion.div>
+                    {/* RIGHT IMAGE */}
+                    <motion.div
+                        className="pointer-events-none absolute bottom-0 right-0 z-10 hidden lg:block"
+                        initial={{ opacity: 0, x: 60 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.4, duration: 0.8, ease: 'easeOut' }}
+                    >
+                        <img
+                            src="/menara.png"
+                            alt="Menara"
+                            className="h-auto max-h-[90vh] w-auto object-contain"
+                        />
+                        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-slate-50 to-transparent dark:from-slate-950"></div>
                     </motion.div>
 
                     {/* MARQUEE */}
@@ -747,358 +492,7 @@ export default function Welcome() {
                     </motion.div>
                 </section>
 
-                <section id="layanan" className="py-32">
-                    <div className="mx-auto max-w-7xl px-6 lg:px-8">
-                        {/* HEADER */}
-                        <motion.div
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true, amount: 0.4 }}
-                            transition={{ duration: 0.6, ease: 'easeOut' }}
-                            className="mb-16 text-center"
-                        >
-                            <span
-                                className={`inline-block rounded-md px-4 py-1.5 text-sm font-bold tracking-wide ${tc.bgSoft} ${tc.text}`}
-                            >
-                                LAYANAN
-                            </span>
 
-                            <h2 className="mt-6 text-4xl font-extrabold tracking-tight text-gray-900 md:text-5xl dark:text-white">
-                                Akses Cepat
-                            </h2>
-
-                            <p className="mx-auto mt-4 max-w-2xl text-gray-600 dark:text-gray-400">
-                                berbagai layanan digital perpustakaan dengan
-                                mudah, cepat, dan terintegrasi.
-                            </p>
-                        </motion.div>
-
-                        {/* GRID */}
-                        <motion.div
-                            className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3"
-                            initial="hidden"
-                            whileInView="show"
-                            viewport={{ once: true, amount: 0.2 }}
-                            variants={{
-                                hidden: {},
-                                show: {
-                                    transition: {
-                                        staggerChildren: 0.12,
-                                    },
-                                },
-                            }}
-                        >
-                            {menus.map((item, i) => {
-                                const Icon = item.icon;
-
-                                return (
-                                    <motion.a
-                                        key={i}
-                                        href={item.href}
-                                        initial={{ opacity: 0, y: 25 }}
-                                        whileInView={{ opacity: 1, y: 0 }}
-                                        viewport={{ once: true, amount: 0.2 }}
-                                        transition={{
-                                            duration: 0.5,
-                                            ease: 'easeOut',
-                                            delay: i * 0.08,
-                                        }}
-                                        className={`group relative overflow-hidden rounded-xl border border-slate-200/50 bg-white/80 p-10 shadow-lg shadow-slate-200/50 backdrop-blur-md transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl dark:border-slate-800/50 dark:bg-slate-900/80 ${tc.shadowGlow} ${tc.shadow}`}
-                                    >
-                                        {/* GRID DECORATION */}
-                                        <div
-                                            className={`pointer-events-none absolute -top-12 -right-6 h-96 w-96 opacity-[0.07] ${tc.text}`}
-                                            style={{
-                                                backgroundImage: `
-                                                    linear-gradient(to right, currentColor 1px, transparent 1px),
-                                                    linear-gradient(to bottom, currentColor 1px, transparent 1px)
-                                                `,
-                                                backgroundSize: '45px 45px',
-                                                maskImage:
-                                                    'radial-gradient(circle at top right, black 40%, transparent 80%)',
-                                                WebkitMaskImage:
-                                                    'radial-gradient(circle at top right, black 40%, transparent 80%)',
-                                            }}
-                                        ></div>
-                                        {/* GLOW */}
-                                        <div
-                                            className={`absolute inset-0 rounded-xl bg-gradient-to-br via-transparent to-transparent opacity-0 transition duration-500 group-hover:opacity-100 ${tc.glow}`}
-                                        ></div>
-
-                                        {/* CONTENT */}
-                                        <div className="relative z-10 flex h-full flex-col">
-                                            {/* ICON */}
-                                            <div
-                                                className={`mb-8 flex h-16 w-16 items-center justify-center rounded-2xl shadow-inner transition-transform duration-500 group-hover:scale-110 group-hover:-rotate-6 ${tc.bgSoft} ${tc.text}`}
-                                            >
-                                                <Icon className="h-8 w-8 drop-shadow-sm" />
-                                            </div>
-
-                                            {/* TITLE */}
-                                            <h3
-                                                className={`text-2xl font-bold tracking-tight text-gray-900 transition-colors duration-300 dark:text-white ${tc.textHover}`}
-                                            >
-                                                {item.title}
-                                            </h3>
-
-                                            {/* DESC */}
-                                            <p className="mt-3 text-base leading-relaxed font-medium text-gray-600 dark:text-gray-400">
-                                                {item.desc}
-                                            </p>
-                                        </div>
-
-                                        {/* BOTTOM LINE */}
-                                        <span
-                                            className={`absolute bottom-0 inset-x-6 h-[6px] scale-x-0 origin-center rounded-full bg-gradient-to-r transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:scale-x-100 ${tc.line}`}
-                                        ></span>
-                                    </motion.a>
-                                );
-                            })}
-                        </motion.div>
-                    </div>
-                </section>
-
-                <section id="FAQ" className="py-32">
-                    <div className="mx-auto max-w-4xl px-6">
-                        {/* HEADER */}
-                        <motion.div
-                            className="mb-12 text-center"
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true, amount: 0.4 }}
-                            transition={{ duration: 0.6, ease: 'easeOut' }}
-                        >
-                            <span
-                                className={`inline-block rounded-md px-4 py-1.5 text-sm font-bold tracking-wide ${tc.bgSoft} ${tc.text}`}
-                            >
-                                FAQ
-                            </span>
-
-                            <h2 className="mt-6 text-4xl font-extrabold tracking-tight text-gray-900 md:text-5xl dark:text-white">
-                                Pertanyaan Umum
-                            </h2>
-
-                            <p className="mt-4 text-gray-600 dark:text-gray-400">
-                                Berikut beberapa pertanyaan yang sering
-                                ditanyakan terkait layanan Digilib.
-                            </p>
-                        </motion.div>
-
-                        {/* FAQ LIST */}
-                        <motion.div
-                            className="space-y-4"
-                            initial="hidden"
-                            whileInView="show"
-                            viewport={{ once: true, amount: 0.2 }}
-                            variants={{
-                                hidden: {},
-                                show: {
-                                    transition: {
-                                        staggerChildren: 0.1,
-                                    },
-                                },
-                            }}
-                        >
-                            {faqs.map((item, i) => (
-                                <motion.div
-                                    key={i}
-                                    variants={{
-                                        hidden: {
-                                            opacity: 0,
-                                            y: 20,
-                                            scale: 0.98,
-                                        },
-                                        show: { opacity: 1, y: 0, scale: 1 },
-                                    }}
-                                    transition={{
-                                        duration: 0.5,
-                                        ease: 'easeOut',
-                                    }}
-                                    className={`group overflow-hidden rounded-xl border border-slate-200/50 bg-white/80 shadow-lg shadow-slate-200/50 backdrop-blur-md transition-all duration-300 ease-out hover:-translate-y-1 hover:shadow-xl dark:border-slate-800/50 dark:bg-slate-900/80 ${tc.shadowGlow} ${tc.borderHover} ${tc.shadow}`}
-                                >
-                                    {/* QUESTION */}
-                                    <button
-                                        onClick={() =>
-                                            setOpenIndex(
-                                                openIndex === i ? null : i,
-                                            )
-                                        }
-                                        className="flex w-full items-center justify-between px-6 py-5 text-left"
-                                    >
-                                        <span
-                                            className={`font-semibold transition-colors duration-300 ${openIndex === i ? tc.text : `text-gray-900 dark:text-white ${tc.textHover}`}`}
-                                        >
-                                            {item.q}
-                                        </span>
-
-                                        <motion.div
-                                            animate={{
-                                                rotate:
-                                                    openIndex === i ? 180 : 0,
-                                            }}
-                                            transition={{ duration: 0.3 }}
-                                            className={`rounded-full p-1 transition-colors ${openIndex === i ? `${tc.bgSoft} ${tc.text}` : `text-gray-400 ${tc.textHover}`}`}
-                                        >
-                                            <ChevronDown className="h-5 w-5" />
-                                        </motion.div>
-                                    </button>
-
-                                    {/* ANSWER */}
-                                    <AnimatePresence>
-                                        {openIndex === i && (
-                                            <motion.div
-                                                key="content"
-                                                initial={{
-                                                    height: 0,
-                                                    opacity: 0,
-                                                }}
-                                                animate={{
-                                                    height: 'auto',
-                                                    opacity: 1,
-                                                }}
-                                                exit={{ height: 0, opacity: 0 }}
-                                                transition={{
-                                                    duration: 0.3,
-                                                    ease: 'easeInOut',
-                                                }}
-                                                className="overflow-hidden px-5"
-                                            >
-                                                <p className="pb-4 text-sm text-gray-600 dark:text-gray-400">
-                                                    {item.a}
-                                                </p>
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
-                                </motion.div>
-                            ))}
-                        </motion.div>
-
-                        {/* FOOTER */}
-                        <motion.div
-                            className="mt-12 text-center"
-                            initial={{ opacity: 0, y: 20 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.5 }}
-                        >
-                            <p className="text-gray-500 dark:text-gray-400">
-                                Masih punya pertanyaan?
-                            </p>
-
-                            <a
-                                href="https://wa.me/6285111661997"
-                                className={`font-medium hover:underline ${tc.text}`}
-                            >
-                                Hubungi Pustakawan
-                            </a>
-                        </motion.div>
-                    </div>
-                </section>
-
-                <section id="kontak" className="py-32">
-                    <div className="mx-auto max-w-7xl px-6 lg:px-8">
-                        {/* HEADER */}
-                        <motion.div
-                            className="mb-16 text-center"
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true, amount: 0.4 }}
-                            transition={{ duration: 0.6, ease: 'easeOut' }}
-                        >
-                            <span
-                                className={`inline-block rounded-md px-4 py-1.5 text-sm font-bold tracking-wide ${tc.bgSoft} ${tc.text}`}
-                            >
-                                KONTAK
-                            </span>
-
-                            <h2 className="mt-6 text-4xl font-extrabold tracking-tight text-gray-900 md:text-5xl dark:text-white">
-                                Hubungi Kami
-                            </h2>
-
-                            <p className="mx-auto mt-4 max-w-2xl text-gray-600 dark:text-gray-400">
-                                Punya pertanyaan atau butuh bantuan terkait
-                                layanan Digilib? Silakan hubungi kami melalui
-                                form berikut.
-                            </p>
-                        </motion.div>
-
-                        {/* CONTENT GRID */}
-                        <div className="grid items-start gap-12 lg:grid-cols-2">
-                            {/* LEFT INFO */}
-                            <motion.div
-                                initial={{ opacity: 0, x: -40 }}
-                                whileInView={{ opacity: 1, x: 0 }}
-                                viewport={{ once: true, amount: 0.3 }}
-                                transition={{ duration: 0.6, ease: 'easeOut' }}
-                            >
-                                <h3 className="mt-5 text-2xl font-semibold text-gray-900 dark:text-white">
-                                    Mari Terhubung
-                                </h3>
-
-                                <p className="mt-4 text-gray-600 dark:text-gray-400">
-                                    Tim perpustakaan siap membantu Anda dalam
-                                    mengakses layanan Digilib dan menjawab
-                                    pertanyaan Anda.
-                                </p>
-
-                                <div className="mt-8 space-y-6">
-                                    {[
-                                        {
-                                            icon: Mail,
-                                            title: 'Email',
-                                            desc: 'library@ibrahimy.ac.id',
-                                        },
-                                        {
-                                            icon: Phone,
-                                            title: 'Telepon (WhatsApp)',
-                                            desc: '+62 851 1166 1997',
-                                        },
-                                        {
-                                            icon: MapPin,
-                                            title: 'Alamat',
-                                            desc: 'Perpustakaan Ibrahimy\nSitubondo, Jawa Timur',
-                                        },
-                                    ].map((item, i) => {
-                                        const Icon = item.icon;
-
-                                        return (
-                                            <motion.div
-                                                key={i}
-                                                className="flex items-start gap-4"
-                                                initial={{ opacity: 0, y: 20 }}
-                                                whileInView={{
-                                                    opacity: 1,
-                                                    y: 0,
-                                                }}
-                                                viewport={{ once: true }}
-                                                transition={{
-                                                    duration: 0.5,
-                                                    delay: i * 0.1,
-                                                }}
-                                            >
-                                                <Icon
-                                                    className={`mt-1 h-5 w-5 ${tc.text}`}
-                                                />
-
-                                                <div>
-                                                    <p className="font-medium text-gray-900 dark:text-white">
-                                                        {item.title}
-                                                    </p>
-                                                    <p className="whitespace-pre-line text-gray-600 dark:text-gray-400">
-                                                        {item.desc}
-                                                    </p>
-                                                </div>
-                                            </motion.div>
-                                        );
-                                    })}
-                                </div>
-                            </motion.div>
-
-                            {/* RIGHT FORM */}
-                            <ContactForm tc={tc} />
-                        </div>
-                    </div>
-                </section>
 
                 <Footer tc={tc} />
             </div>
