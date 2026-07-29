@@ -34,6 +34,11 @@ class RolePermissionSeeder extends Seeder
             'tambah-akses',
             'edit-akses',
             'hapus-akses',
+
+            'lihat-tentang',
+            'tambah-tentang',
+            'edit-tentang',
+            'hapus-tentang',
         ];
 
         foreach ($permissions as $permission) {

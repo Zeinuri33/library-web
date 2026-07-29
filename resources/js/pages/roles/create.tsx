@@ -91,7 +91,7 @@ export default function CreateRoleModal() {
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    post("/roles", {
+    post("/admin/roles", {
       onSuccess: () => handleSuccess(),
       onError: () => {
         toast("Gagal menyimpan role", {

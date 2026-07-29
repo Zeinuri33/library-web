@@ -2,6 +2,7 @@ import { Link, usePage } from '@inertiajs/react'
 import {
     LayoutGrid,
     Users,
+    Info,
  } from 'lucide-react'
 import AppLogo from '@/components/app-logo'
 import AppearanceToggleIcon from '@/components/appearance-tabs'
@@ -25,9 +26,9 @@ export function AppSidebar() {
 
     // children
     const userChildren = [
-        ...(can('lihat-user') ? [{ title: 'List Pengguna', href: '/users' }] : []),
-        ...(can('lihat-role') ? [{ title: 'Role', href: '/roles' }] : []),
-        ...(can('edit-user') ? [{ title: 'Akses', href: '/permissions' }] : []),
+        ...(can('lihat-user') ? [{ title: 'List Pengguna', href: '/admin/users' }] : []),
+        ...(can('lihat-role') ? [{ title: 'Role', href: '/admin/roles' }] : []),
+        ...(can('edit-user') ? [{ title: 'Akses', href: '/admin/permissions' }] : []),
     ]
 
 
@@ -40,6 +41,25 @@ export function AppSidebar() {
                     href: dashboard(),
                     icon: LayoutGrid,
                 },
+            ]
+        },
+        {
+            label: "Konten",
+            items: [
+                
+                ...(can('lihat-tentang')
+                    ? [{
+                        title: 'Tentang',
+                        icon: Info,
+                        href: '/admin/tentang',
+                    }]
+                    : []),
+            ]
+        },
+
+        {
+            label: "User",
+            items: [
                 ...(userChildren.length > 0
                     ? [{
                         title: 'Pengguna',
@@ -47,13 +67,6 @@ export function AppSidebar() {
                         children: userChildren,
                     }]
                     : []),
-            ]
-        },
-
-        {
-            label: "Master",
-            items: [
-                
             ]
         },
     ]

@@ -34,6 +34,10 @@ return Application::configure(basePath: dirname(__DIR__))
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
         ]);
+
+        $middleware->validateCsrfTokens(except: [
+            '/admin/upload-image',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

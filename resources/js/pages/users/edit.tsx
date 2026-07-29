@@ -92,7 +92,7 @@ export default function EditUserModal({ open, setOpen, user }: any) {
   const submit = (e: any) => {
     e.preventDefault()
 
-    put(`/users/${user.id}`, {
+    put(`/admin/users/${user.id}`, {
       forceFormData: true,
       onSuccess: handleSuccess,
       onError: () => {

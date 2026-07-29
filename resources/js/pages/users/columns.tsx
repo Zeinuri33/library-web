@@ -40,7 +40,7 @@ export type User = {
 }
 
 const handleDelete = (user: any) => {
-  router.delete(`/users/${user.id}`, {
+  router.delete(`/admin/users/${user.id}`, {
     onSuccess: () => {
       const now =
         new Date().toLocaleString("id-ID", {

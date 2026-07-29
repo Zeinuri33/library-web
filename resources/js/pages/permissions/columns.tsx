@@ -42,7 +42,7 @@ export type Permission = {
 // DELETE
 // ==============================
 const handleDelete = (permission: Permission) => {
-  router.delete(`/permissions/${permission.id}`, {
+  router.delete(`/admin/permissions/${permission.id}`, {
     onSuccess: (page) => {
       const flash = page.props.flash as any
 

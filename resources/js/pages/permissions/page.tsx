@@ -39,7 +39,7 @@ export default function Permissions({ permissions }: { permissions: Permission[]
     selectedRows.forEach((index) => {
       const permission = permissions[Number(index)]
       if (permission) {
-        router.delete(`/permissions/${permission.id}`, { only: [] })
+        router.delete(`/admin/permissions/${permission.id}`, { only: [] })
       }
     })
     toast(`${count} permission berhasil dihapus`)
@@ -119,7 +119,7 @@ Permissions.layout = {
   breadcrumbs: [
     {
       title: "Permission",
-      href: "/permissions",
+      href: "/admin/permissions",
     },
   ],
 }

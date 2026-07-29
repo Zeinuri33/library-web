@@ -57,7 +57,7 @@ export default function Users({ users }: { users: User[] }) {
   }
 
   const handleDelete = (user: any) => {
-    router.delete(`/users/${user.id}`, {
+    router.delete(`/admin/users/${user.id}`, {
       onSuccess: () => {
         const now = new Date().toLocaleString("id-ID", {
           weekday: "long",
@@ -184,7 +184,7 @@ export default function Users({ users }: { users: User[] }) {
   const handleBulkDelete = () => {
     const count = selectedIds.length
     selectedIds.forEach((id) => {
-      router.delete(`/users/${id}`, { only: [] })
+      router.delete(`/admin/users/${id}`, { only: [] })
     })
     toast(`${count} user berhasil dihapus`)
     setSelectedIds([])
@@ -643,7 +643,7 @@ Users.layout = {
   breadcrumbs: [
     {
       title: 'Pengguna',
-      href: '/users',
+      href: '/admin/users',
     },
   ],
 }

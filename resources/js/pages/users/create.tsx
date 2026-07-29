@@ -44,7 +44,7 @@ export default function UserCreateModal() {
   const submit = (e: React.FormEvent) => {
     e.preventDefault()
 
-    post("/users", {
+    post("/admin/users", {
       forceFormData: true,
       onSuccess: () => handleSuccess(),
       onError: () => {

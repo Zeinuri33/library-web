@@ -44,7 +44,7 @@ export type Role = {
 // DELETE
 // ==============================
 const handleDelete = (role: Role) => {
-  router.delete(`/roles/${role.id}`, {
+  router.delete(`/admin/roles/${role.id}`, {
     onSuccess: (page) => {
       const flash = page.props.flash as any
 

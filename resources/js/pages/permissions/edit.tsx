@@ -58,7 +58,7 @@ export default function EditPermissionModal({
       .toLowerCase()
       .replace(/\s+/g, "")
 
-    router.put(`/permissions/${permission.id}`, { name }, {
+    router.put(`/admin/permissions/${permission.id}`, { name }, {
       onSuccess: () => handleSuccess(name),
       onError: () => {
         toast("Gagal update permission", {

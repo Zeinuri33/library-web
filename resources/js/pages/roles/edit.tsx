@@ -117,7 +117,7 @@ export default function EditRoleModal({ open, setOpen, role }: any) {
   const submit = (e: any) => {
     e.preventDefault()
 
-    put(`/roles/${role.id}`, {
+    put(`/admin/roles/${role.id}`, {
       onSuccess: () => handleSuccess(),
       onError: () => {
         toast("Gagal update role", {

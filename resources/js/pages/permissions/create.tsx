@@ -38,7 +38,7 @@ export default function CreatePermissionModal() {
       .toLowerCase()
       .replace(/\s+/g, "")
 
-    router.post("/permissions", { name }, {
+    router.post("/admin/permissions", { name }, {
       onSuccess: () => handleSuccess(name),
       onError: () => {
         toast("Gagal menyimpan permission", {

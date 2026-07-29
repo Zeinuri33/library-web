@@ -40,7 +40,7 @@ export default function Roles({ roles }: { roles: Role[] }) {
     selectedRows.forEach((index) => {
       const role = roles[Number(index)]
       if (role) {
-        router.delete(`/roles/${role.id}`, { only: [] })
+        router.delete(`/admin/roles/${role.id}`, { only: [] })
       }
     })
     toast(`${count} role berhasil dihapus`)
@@ -121,7 +121,7 @@ Roles.layout = {
   breadcrumbs: [
     {
       title: 'Role',
-      href: '/roles',
+      href: '/admin/roles',
     },
   ],
 }

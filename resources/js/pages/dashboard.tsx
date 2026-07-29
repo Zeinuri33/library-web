@@ -81,9 +81,9 @@ export default function Dashboard({ totalUsers }: DashboardProps) {
                         </h2>
                         <div className="space-y-3">
                             {[
-                                { label: 'Kelola Pengguna', href: '/users', icon: Users, desc: 'Atur data dan hak akses pengguna' },
-                                { label: 'Kelola Role', href: '/roles', icon: Shield, desc: 'Atur grup dan peran pengguna' },
-                                { label: 'Kelola Akses', href: '/permissions', icon: KeyRound, desc: 'Atur izin akses sistem' },
+                                { label: 'Kelola Pengguna', href: '/admin/users', icon: Users, desc: 'Atur data dan hak akses pengguna' },
+                                { label: 'Kelola Role', href: '/admin/roles', icon: Shield, desc: 'Atur grup dan peran pengguna' },
+                                { label: 'Kelola Akses', href: '/admin/permissions', icon: KeyRound, desc: 'Atur izin akses sistem' },
                             ].map((item) => {
                                 const Icon = item.icon;
                                 return (
