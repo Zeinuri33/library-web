@@ -6,6 +6,8 @@ import { dashboard, login } from '@/routes';
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '@/context/ThemeContext';
+import { useAppearance } from '@/hooks/use-appearance';
+import { Sun, Moon } from 'lucide-react';
 import Footer from '@/layouts/footer';
 
 import { router } from '@inertiajs/react';
@@ -13,6 +15,15 @@ import { router } from '@inertiajs/react';
 export default function Welcome() {
     const [inputValue, setInputValue] = useState('');
     const { themeAccent } = useTheme();
+    const { appearance, updateAppearance } = useAppearance();
+
+    const cycleAppearance = () => {
+        const modes: Array<'light' | 'dark'> = ['light', 'dark'];
+        const idx = modes.indexOf(appearance);
+        updateAppearance(modes[(idx + 1) % modes.length]);
+    };
+
+    const AppearanceIcon = appearance === 'dark' ? Moon : Sun;
 
     const themeMaps = {
         emerald: {
@@ -172,13 +183,13 @@ export default function Welcome() {
                                 }}
                             >
                                 <h1
-                                    className={`text-sm font-bold bg-gradient-to-r bg-clip-text text-transparent ${tc.textGradient}`}
+                                    className={`text-sm font-bold bg-white bg-clip-text text-transparent`}
                                 >
-                                    Digital Library
+                                    Perpustakaan Ibrahimy
                                 </h1>
 
-                                <p className="text-xs text-gray-500 dark:text-gray-400">
-                                    Perpustakaan Ibrahimy
+                                <p className="text-xs text-white dark:text-gray-400">
+                                    NPP: 3512142F2006567
                                 </p>
                             </motion.div>
                         </Link>
@@ -317,7 +328,7 @@ export default function Welcome() {
                 {/* HERO */}
                 <section
                     id="home"
-                    className="relative min-h-screen w-full px-6 md:px-12"
+                    className="relative min-h-screen w-full bg-gradient-to-br from-emerald-700 via-green-600 to-emerald-900"
                 >
                     {/* BACKGROUND BLUR */}
                     <motion.div
@@ -326,22 +337,54 @@ export default function Welcome() {
                         animate={{ opacity: 1 }}
                         transition={{ duration: 1 }}
                     >
-                        <div
+                        <motion.div
                             className={`h-64 rounded-full mix-blend-multiply blur-[130px] dark:mix-blend-lighten ${tc.heroOrb}`}
-                        ></div>
-                        <div
+                            animate={{
+                                y: [0, -30, 0, 20, 0],
+                                x: [0, 20, -20, 10, 0],
+                            }}
+                            transition={{
+                                duration: 12,
+                                repeat: Infinity,
+                                ease: 'easeInOut',
+                            }}
+                        />
+                        <motion.div
                             className={`mt-32 h-64 rounded-full mix-blend-multiply blur-[130px] dark:mix-blend-lighten ${tc.heroOrb}`}
-                        ></div>
+                            animate={{
+                                y: [0, 25, -15, 0],
+                                x: [0, -25, 15, 0],
+                            }}
+                            transition={{
+                                duration: 10,
+                                repeat: Infinity,
+                                ease: 'easeInOut',
+                            }}
+                        />
                     </motion.div>
 
+                    {/* GLASSMORPHISM OVERLAY */}
+                    <div className="pointer-events-none absolute inset-0 z-[1] bg-white/10 backdrop-blur-[2px] dark:bg-black/10"></div>
+
+                    {/* GRID OVERLAY */}
+                    <div
+                        className="pointer-events-none absolute inset-0 z-[1] opacity-30"
+                        style={{
+                            backgroundImage:
+                                'linear-gradient(rgba(255,255,255,0.15) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.15) 1px, transparent 1px)',
+                            backgroundSize: '60px 60px',
+                        }}
+                    ></div>
+
                     {/* HERO CONTENT */}
-                    <motion.div
-                        className="relative ml-auto flex flex-col items-center pt-36 lg:flex-row lg:items-center lg:justify-between"
-                        initial={{ opacity: 0, y: 40 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.8, ease: 'easeOut' }}
-                    >
-                        <div className="w-full text-left lg:w-1/2">
+                    <div className="relative z-[2] mx-auto flex min-h-screen max-w-7xl items-center px-6 md:px-12">
+                        <motion.div
+                            className="flex w-full flex-col items-center lg:flex-row lg:items-center"
+                            initial={{ opacity: 0, y: 40 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8, ease: 'easeOut' }}
+                        >
+                            <div className="w-full text-left text-white lg:w-1/2">
                             {/* LOGO */}
                             <motion.div
                                 initial={{ opacity: 0, scale: 0.8 }}
@@ -349,31 +392,34 @@ export default function Welcome() {
                                 transition={{ duration: 0.6 }}
                             >
                                 <img
-                                    src="/kubah.png"
-                                    alt="Kubah"
-                                    className="w-45 md:w-45 dark:hidden"
-                                />
-                                <img
                                     src="/kubah-putih.png"
-                                    alt="Kubah Dark"
-                                    className="hidden w-45 md:w-45 dark:block"
+                                    alt="Kubah"
+                                    className="w-45 md:w-45"
                                 />
                             </motion.div>
 
                             {/* TITLE */}
                             <motion.h1
-                                className="text-left text-4xl leading-[1.05] font-extrabold tracking-normal text-gray-900 md:text-5xl lg:text-6xl xl:text-7xl dark:text-white"
+                                className="text-left text-5xl leading-[1.05] font-extrabold tracking-normal text-white md:text-6xl lg:text-7xl xl:text-7xl"
                                 initial={{ opacity: 0, y: 30 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: 0.2, duration: 0.6 }}
                             >
-                                Ibrahimy <br />
-                                <span
-                                    className={`bg-gradient-to-r bg-clip-text text-transparent ${tc.textGradient}`}
-                                >
-                                    Digital Library
+                                Perpustakaan<br />
+                                <span className="text-white">
+                                    Ibrahimy
                                 </span>
                             </motion.h1>
+
+                            {/* DESC */}
+                            <motion.p
+                                className="mt-4 text-white text-md"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ delay: 0.5 }}
+                            >
+                                Membangun intelektual paripurna menuju pemberdayaan ummat.
+                            </motion.p>
 
                             {/* SEARCH FORM */}
                             <motion.div
@@ -390,11 +436,11 @@ export default function Welcome() {
                                         type="text"
                                         value={inputValue}
                                         onChange={(e) => setInputValue(e.target.value)}
-                                        className="w-full rounded-xl bg-white dark:bg-gray-900 px-5 py-4 pr-28 text-gray-900 dark:text-gray-100 shadow-lg focus:outline-none"
+                                        className="w-full rounded-xl bg-white/20 px-5 py-4 pr-28 text-white placeholder-white/50 shadow-lg focus:outline-none backdrop-blur-md"
                                     />
 
                                     {inputValue.length === 0 && (
-                                        <div className="absolute left-5 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">
+                                        <div className="absolute left-5 top-1/2 -translate-y-1/2 text-white/50 pointer-events-none">
                                             {displayText}
                                             <span className="animate-pulse">|</span>
                                         </div>
@@ -402,25 +448,18 @@ export default function Welcome() {
 
                                     <button
                                         type="submit"
-                                        className={`absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-md px-6 py-2.5 text-sm font-semibold transition-all duration-300 ${tc.bgGradient} ${tc.textWhite} ${tc.shadow} ${tc.ring} shadow-md`}
+                                        className={`absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-md px-6 py-2.5 text-sm font-semibold text-emerald-700 bg-white shadow-lg transition-all duration-300 hover:bg-emerald-50 ${tc.ring}`}
                                     >
                                         Cari
                                     </button>
                                 </form>
                             </motion.div>
 
-                            {/* DESC */}
-                            <motion.p
-                                className="mt-4 text-gray-400 dark:text-gray-400 text-sm"
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ delay: 0.5 }}
-                            >
-                                Digilib memudahkan pengguna mengakses dan menelusuri koleksi.
-                            </motion.p>
+                            
                         </div>
 
                     </motion.div>
+                    </div>
 
                     {/* RIGHT IMAGE */}
                     <motion.div
@@ -434,65 +473,21 @@ export default function Welcome() {
                             alt="Menara"
                             className="h-auto max-h-[90vh] w-auto object-contain"
                         />
-                        <div className="pointer-events-none absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-slate-50 to-transparent dark:from-slate-950"></div>
                     </motion.div>
 
-                    {/* MARQUEE */}
-                    <motion.div
-                        className="relative my-21 overflow-hidden"
-                        initial={{ opacity: 0 }}
-                        whileInView={{ opacity: 1 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.6 }}
-                        style={{
-                            WebkitMaskImage:
-                                'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
-                            maskImage:
-                                'linear-gradient(to right, transparent, black 10%, black 90%, transparent)',
-                        }}
-                    >
-                        <div
-                            className="flex w-max items-center gap-12"
-                            style={{ animation: 'marquee 25s linear infinite' }}
-                        >
-                            {[...Array(2)]
-                                .flatMap(() => [
-                                    '/apps-logo/0.png',
-                                    '/apps-logo/1.png',
-                                    '/apps-logo/2.png',
-                                    '/apps-logo/3.png',
-                                    '/apps-logo/4.png',
-                                    '/apps-logo/5.png',
-                                    '/apps-logo/6.png',
-                                    '/apps-logo/7.png',
-                                    '/apps-logo/8.png',
-                                ])
-                                .map((src, i) => (
-                                    <a
-                                        key={i}
-                                        className="group flex items-center justify-center"
-                                    >
-                                        <img
-                                            src={src}
-                                            className="h-9 w-auto grayscale transition duration-300 group-hover:grayscale-0"
-                                            loading="lazy"
-                                            alt={`logo-${i}`}
-                                        />
-                                    </a>
-                                ))}
-                        </div>
-                        <style>
-                            {`
-                            @keyframes marquee {
-                                0% { transform: translateX(0); }
-                                100% { transform: translateX(-50%); }
-                            }
-                            `}
-                        </style>
-                    </motion.div>
+
                 </section>
 
 
+
+                {/* FLOATING THEME TOGGLE */}
+                <button
+                    onClick={cycleAppearance}
+                    className="fixed right-6 bottom-6 z-50 flex h-12 w-12 items-center justify-center rounded-full bg-white shadow-lg backdrop-blur-md transition-all duration-300 hover:scale-110 hover:shadow-xl dark:bg-gray-800 dark:text-white"
+                    title={`Mode: ${appearance}`}
+                >
+                    <AppearanceIcon className="h-5 w-5" />
+                </button>
 
                 <Footer tc={tc} />
             </div>
