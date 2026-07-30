@@ -39,6 +39,17 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog"
 
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+
 import { useEffect, useState, useRef } from "react"
 
 import Heading from "@/components/heading"
@@ -387,14 +398,25 @@ export default function EditTentang({ tentang }: { tentang: any }) {
         )
     }
 
+    const [showUnsavedDialog, setShowUnsavedDialog] = useState(false)
+
     const handleBack = (e: React.MouseEvent) => {
         if (isDirty || uploadedRef.current.length > 0) {
-            if (!window.confirm('Ada perubahan yang belum disimpan. Yakin ingin meninggalkan halaman?')) {
-                e.preventDefault()
-                return
-            }
+            e.preventDefault()
+            setShowUnsavedDialog(true)
+            return
         }
         deleteUploaded()
+    }
+
+    const confirmLeave = () => {
+        setShowUnsavedDialog(false)
+        deleteUploaded()
+        router.visit('/admin/tentang')
+    }
+
+    const cancelLeave = () => {
+        setShowUnsavedDialog(false)
     }
 
     return (
@@ -409,7 +431,7 @@ export default function EditTentang({ tentang }: { tentang: any }) {
                     />
 
                     <Link href="/admin/tentang" onClick={handleBack}>
-                        <Button variant="outline">
+                        <Button variant="outline" className="hover:bg-muted hover:text-foreground">
                             Kembali
                         </Button>
                     </Link>
@@ -766,6 +788,25 @@ export default function EditTentang({ tentang }: { tentang: any }) {
                     </div>
                 </div>
             </div>
+
+            <AlertDialog open={showUnsavedDialog} onOpenChange={setShowUnsavedDialog}>
+                <AlertDialogContent size="sm">
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Perubahan Belum Disimpan</AlertDialogTitle>
+                        <AlertDialogDescription>
+                            Ada perubahan yang belum disimpan. Yakin ingin meninggalkan halaman?
+                        </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                        <AlertDialogCancel onClick={cancelLeave}>
+                            Batal
+                        </AlertDialogCancel>
+                        <AlertDialogAction variant="destructive" onClick={confirmLeave}>
+                            Tinggalkan
+                        </AlertDialogAction>
+                    </AlertDialogFooter>
+                </AlertDialogContent>
+            </AlertDialog>
         </>
     )
 }
