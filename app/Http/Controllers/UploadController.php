@@ -9,11 +9,21 @@ class UploadController extends Controller
 {
     public function store(Request $request)
     {
+        \Log::info('UploadController::store called', [
+            'has_file' => $request->hasFile('file'),
+            'file_name' => $request->file('file')?->getClientOriginalName(),
+            'file_size' => $request->file('file')?->getSize(),
+            'all_files' => array_keys($request->allFiles()),
+            'headers' => $request->headers->all(),
+        ]);
+
         $request->validate([
             'file' => 'required|image|max:5120',
         ]);
 
         $path = $request->file('file')->store('tentang', 'public');
+
+        \Log::info('File stored', ['path' => $path, 'full_path' => storage_path('app/public/' . $path)]);
 
         return response()->json([
             'url' => asset('storage/' . $path),

@@ -22,7 +22,7 @@ export default function AppearanceToggleIcon() {
     return (
         <button
             onClick={toggle}
-            className="inline-flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-sidebar-foreground/60 transition-colors hover:text-sidebar-foreground/90 hover:bg-sidebar-accent"
+            className="inline-flex items-center gap-2 rounded-md px-2 py-1.5 text-sm text-sidebar-foreground/60 transition-colors hover:text-sidebar-foreground/90 hover:bg-sidebar-hover"
         >
             {isDark ? (
                 <Sun className="size-[18px]" />

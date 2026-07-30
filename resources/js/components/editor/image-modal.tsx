@@ -97,11 +97,13 @@ export default function ImageModal({
         try {
             setUploading(true)
 
-            const csrf = (
-                document.querySelector(
-                    'meta[name="csrf-token"]'
-                ) as HTMLMetaElement
-            )?.content
+            const csrfEl = document.querySelector(
+                'meta[name="csrf-token"]'
+            ) as HTMLMetaElement
+
+            const csrf = csrfEl?.content
+
+            console.log("CSRF meta:", csrfEl, "CSRF value:", csrf)
 
             const response = await fetch(
                 "/admin/upload-image",
@@ -119,7 +121,18 @@ export default function ImageModal({
                 }
             )
 
+            console.log("Upload response status:", response.status)
+
+            if (!response.ok) {
+                const text = await response.text()
+                console.error("Upload error body:", text)
+                alert("Upload gagal (status " + response.status + ")")
+                return
+            }
+
             const data = await response.json()
+
+            console.log("Upload response data:", data)
 
             if (data.url) {
                 onInsert(data.url)
@@ -127,11 +140,13 @@ export default function ImageModal({
                 resetModal()
 
                 onClose()
+            } else {
+                alert("Upload gagal: URL tidak ditemukan dalam response")
             }
         } catch (error) {
             console.error(error)
 
-            alert("Upload gagal")
+            alert("Upload gagal: " + (error instanceof Error ? error.message : "Unknown error"))
         } finally {
             setUploading(false)
         }

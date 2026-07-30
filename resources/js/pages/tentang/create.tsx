@@ -77,7 +77,7 @@ function Toolbar({
     `
 
     return (
-        <div className="mb-5 flex flex-wrap gap-2 border-b border-gray-200 pb-5 dark:border-white/10">
+            <div className="flex flex-wrap gap-2">
             <button
                 type="button"
                 onClick={() => editor.chain().focus().toggleBold().run()}
@@ -210,6 +210,7 @@ export default function CreateTentang() {
 
     const [isDirty, setIsDirty] = useState(false)
     const uploadedRef = useRef<string[]>([])
+    const savingRef = useRef(false)
 
     const deleteUploaded = () => {
         uploadedRef.current.forEach((url) => {
@@ -234,7 +235,7 @@ export default function CreateTentang() {
 
     useEffect(() => {
         return () => {
-            if (isDirty || uploadedRef.current.length > 0) {
+            if (!savingRef.current && (isDirty || uploadedRef.current.length > 0)) {
                 deleteUploaded()
             }
         }
@@ -247,7 +248,7 @@ export default function CreateTentang() {
             }
         }
         const unloadHandler = () => {
-            if (uploadedRef.current.length > 0) {
+            if (!savingRef.current && uploadedRef.current.length > 0) {
                 deleteUploadedBeacon()
             }
         }
@@ -405,6 +406,8 @@ export default function CreateTentang() {
             return
         }
 
+        savingRef.current = true
+
         router.post(
             "/admin/tentang",
             {
@@ -416,6 +419,7 @@ export default function CreateTentang() {
                 preserveScroll: true,
 
                 onSuccess: () => {
+                    savingRef.current = false
                     localStorage.removeItem(STORAGE_KEY)
                     uploadedRef.current = []
 
@@ -423,11 +427,10 @@ export default function CreateTentang() {
                         `Tentang ${nama} berhasil dibuat`,
                         { description: getNow() }
                     )
-
-                    router.visit("/admin/tentang")
                 },
 
                 onError: () => {
+                    savingRef.current = false
                     toast(
                         "Gagal menyimpan tentang",
                         { description: "Periksa kembali data." }
@@ -467,43 +470,41 @@ export default function CreateTentang() {
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
                     <div className="lg:col-span-2 space-y-4">
-                        <div className="bg-muted/50 border rounded-lg p-4">
-                            <Toolbar
-                                editor={editor}
-                                onImageClick={() =>
-                                    setShowImageModal(true)
-                                }
-                                onLinkClick={() => {
-                                    const previousUrl =
-                                        editor
-                                            ?.getAttributes("link")
-                                            ?.href || ""
+                        <div className="rounded-xl border border-border/80 bg-card shadow-sm overflow-hidden">
+                            <div className="border-b border-border/80">
+                                    <div className="px-4 pt-4 pb-5">
+                                        <Toolbar
+                                            editor={editor}
+                                            onImageClick={() =>
+                                                setShowImageModal(true)
+                                            }
+                                            onLinkClick={() => {
+                                                const previousUrl =
+                                                    editor
+                                                        ?.getAttributes("link")
+                                                        ?.href || ""
 
-                                    const selectedText =
-                                        editor
-                                            ?.state.doc.textBetween(
-                                                editor.state.selection.from,
-                                                editor.state.selection.to,
-                                                " "
-                                            ) || ""
+                                                const selectedText =
+                                                    editor
+                                                        ?.state.doc.textBetween(
+                                                            editor.state.selection.from,
+                                                            editor.state.selection.to,
+                                                            " "
+                                                        ) || ""
 
-                                    setLinkForm({
-                                        url: previousUrl,
-                                        text: selectedText,
-                                    })
+                                                setLinkForm({
+                                                    url: previousUrl,
+                                                    text: selectedText,
+                                                })
 
-                                    setShowLinkModal(true)
-                                }}
-                            />
-
-                            <Separator className="mb-4" />
-
+                                                setShowLinkModal(true)
+                                            }}
+                                        />
+                                    </div>
+                                </div>
                             <div
                                 className="
                                     min-h-[700px]
-                                    rounded-xl
-                                    border
-                                    bg-background
                                     p-6
                                 "
                             >
@@ -517,6 +518,10 @@ export default function CreateTentang() {
 
                                         [&_.ProseMirror]:min-h-[650px]
                                         [&_.ProseMirror]:outline-none
+                                        [&_.ProseMirror]:border
+                                        [&_.ProseMirror]:border-border/80
+                                        [&_.ProseMirror]:rounded-lg
+                                        [&_.ProseMirror]:p-4
 
                                         [&_.ProseMirror_h1]:text-4xl
                                         [&_.ProseMirror_h1]:font-black
@@ -685,6 +690,11 @@ export default function CreateTentang() {
                                                                     ? "default"
                                                                     : "outline"
                                                             }
+                                                            className={
+                                                                imageForm.align !== item.value
+                                                                    ? "hover:bg-muted hover:text-foreground"
+                                                                    : ""
+                                                            }
                                                             onClick={() =>
                                                                 setImageForm({
                                                                     ...imageForm,
@@ -715,6 +725,11 @@ export default function CreateTentang() {
                                                                     ? "default"
                                                                     : "outline"
                                                             }
+                                                            className={
+                                                                imageForm.size !== item.value
+                                                                    ? "hover:bg-muted hover:text-foreground"
+                                                                    : ""
+                                                            }
                                                             onClick={() =>
                                                                 setImageForm({
                                                                     ...imageForm,
@@ -729,6 +744,7 @@ export default function CreateTentang() {
                                             </div>
 
                                             <Button
+                                                variant="default"
                                                 className="w-full"
                                                 onClick={() => {
                                                     editor
@@ -755,46 +771,50 @@ export default function CreateTentang() {
                     </div>
 
                     <div className="space-y-4 lg:sticky lg:top-6">
-                        <div className="bg-muted/50 border rounded-lg p-4 space-y-4">
-                            <h3 className="font-semibold text-base">
-                                Informasi Halaman
-                            </h3>
-
-                            <Separator />
-
-                            <div>
-                                <Label className="pb-2">Nama</Label>
-                                <Input
-                                    value={nama}
-                                    onChange={(e) => {
-                                        setNama(e.target.value)
-                                        if (
-                                            !slug ||
-                                            slug === nama.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")
-                                        ) {
-                                            generateSlug(e.target.value)
-                                        }
-                                    }}
-                                    placeholder="Contoh: Visi & Misi"
-                                />
+                        <div className="rounded-xl border border-border/80 bg-card shadow-sm overflow-hidden">
+                            <div className="border-b border-border/80">
+                                <div className="px-4 pt-4 pb-5 min-h-[44px] flex items-center">
+                                    <h3 className="font-semibold text-base">
+                                        Informasi Halaman
+                                    </h3>
+                                </div>
                             </div>
 
-                            <div>
-                                <Label className="pb-2">Slug</Label>
-                                <Input
-                                    value={slug}
-                                    onChange={(e) => setSlug(e.target.value)}
-                                    placeholder="Contoh: visi-misi"
-                                />
-                            </div>
+                            <div className="p-4 space-y-4">
+                                <div>
+                                    <Label className="pb-2">Nama</Label>
+                                    <Input
+                                        value={nama}
+                                        onChange={(e) => {
+                                            setNama(e.target.value)
+                                            if (
+                                                !slug ||
+                                                slug === nama.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")
+                                            ) {
+                                                generateSlug(e.target.value)
+                                            }
+                                        }}
+                                        placeholder="Contoh: Visi & Misi"
+                                    />
+                                </div>
 
-                            <Button
-                                onClick={handleSubmit}
-                                className="w-full gap-2"
-                            >
-                                <Save className="h-4 w-4" />
-                                Simpan Tentang
-                            </Button>
+                                <div>
+                                    <Label className="pb-2">Slug</Label>
+                                    <Input
+                                        value={slug}
+                                        onChange={(e) => setSlug(e.target.value)}
+                                        placeholder="Contoh: visi-misi"
+                                    />
+                                </div>
+
+                                <Button
+                                    onClick={handleSubmit}
+                                    className="w-full gap-2"
+                                >
+                                    <Save className="h-4 w-4" />
+                                    Simpan Tentang
+                                </Button>
+                            </div>
                         </div>
                     </div>
                 </div>
