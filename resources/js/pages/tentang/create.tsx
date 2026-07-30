@@ -52,7 +52,6 @@ import {
 
 import { useEffect, useState, useRef } from "react"
 
-import Heading from "@/components/heading"
 import ImageModal from "@/components/editor/image-modal"
 
 import { toast } from "sonner"
@@ -478,11 +477,17 @@ export default function CreateTentang() {
             <Head title="Tambah Tentang" />
 
             <div className="p-6 space-y-6">
-                <div className="flex justify-between">
-                    <Heading
-                        title="Tambah Tentang"
-                        description="Buat halaman tentang menggunakan editor modern."
-                    />
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <h1 className="text-xl font-semibold tracking-tight">
+                            Tambah Tentang
+                        </h1>
+                        <div className="flex items-center gap-2 mt-1">
+                            <p className="text-sm text-foreground">
+                                Buat halaman tentang menggunakan editor modern.
+                            </p>
+                        </div>
+                    </div>
 
                     <Link href="/admin/tentang" onClick={handleBack}>
                         <Button variant="outline" className="hover:bg-muted hover:text-foreground">
