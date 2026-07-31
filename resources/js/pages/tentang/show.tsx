@@ -5,11 +5,11 @@ import { motion } from "framer-motion"
 import { ChevronRight, Link2, Moon, Sun } from "lucide-react"
 import { FaFacebookF, FaInstagram, FaWhatsapp } from "react-icons/fa"
 import { toast } from "sonner"
-import { Button } from "@/components/ui/button"
 import PublicHeader from "@/components/public-header"
-import Footer from "@/layouts/footer"
-import { useThemeClasses } from "@/hooks/use-theme-classes"
+import { Button } from "@/components/ui/button"
 import { useAppearance } from "@/hooks/use-appearance"
+import { useThemeClasses } from "@/hooks/use-theme-classes"
+import Footer from "@/layouts/footer"
 
 export default function ShowTentang({
     tentang,

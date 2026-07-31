@@ -1,8 +1,12 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import { useForm, usePage } from "@inertiajs/react"
+import { useEffect, useState } from "react"
 
+import { toast } from "sonner"
+import Heading from "@/components/heading"
+import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Dialog,
   DialogContent,
@@ -11,10 +15,6 @@ import {
 
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import Heading from "@/components/heading"
-import { toast } from "sonner"
 import { Separator } from "@/components/ui/separator"
 
 // ==============================
@@ -29,7 +29,9 @@ const groupPermissions = (permissions: any[]) => {
     const parts = p.name.split("-")
     const group = parts[parts.length - 1]
 
-    if (!groups[group]) groups[group] = []
+    if (!groups[group]) {
+groups[group] = []
+}
 
     groups[group].push(p)
   })
@@ -40,6 +42,7 @@ const groupPermissions = (permissions: any[]) => {
 // format label (lihat → Lihat)
 const formatPermission = (name: string) => {
   const action = name.split("-")[0]
+
   return action.charAt(0).toUpperCase() + action.slice(1)
 }
 
@@ -149,7 +152,9 @@ export default function EditRoleModal({ open, setOpen, role }: any) {
     })
   }
 
-  if (!open || !role) return null
+  if (!open || !role) {
+return null
+}
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

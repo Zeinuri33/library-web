@@ -1,11 +1,10 @@
 "use client"
 
-import { useState } from "react"
 import { Head, router, Link } from "@inertiajs/react"
-import { columns, Tentang } from "./columns"
-import { DataTable } from "@/components/data-table"
-import { Button } from "@/components/ui/button"
 import { Plus, Trash2 } from "lucide-react"
+import { useState } from "react"
+import { toast } from "sonner"
+import { DataTable } from "@/components/data-table"
 import {
     AlertDialog,
     AlertDialogAction,
@@ -17,7 +16,9 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { toast } from "sonner"
+import { Button } from "@/components/ui/button"
+import { columns } from "./columns"
+import type { Tentang } from "./columns";
 
 export default function TentangPage({ tentangs }: { tentangs: Tentang[] }) {
     const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({})
@@ -29,6 +30,7 @@ export default function TentangPage({ tentangs }: { tentangs: Tentang[] }) {
         const count = selectedRows.length
         selectedRows.forEach((index) => {
             const tentang = tentangs[Number(index)]
+
             if (tentang) {
                 router.delete(`/admin/tentang/${tentang.id}`, { only: [] })
             }

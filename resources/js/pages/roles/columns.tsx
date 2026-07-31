@@ -1,18 +1,11 @@
 "use client"
 
-import { ColumnDef } from "@tanstack/react-table"
+import { router } from "@inertiajs/react"
+import type { ColumnDef } from "@tanstack/react-table"
 import { MoreVertical } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
+import { toast } from "sonner"
 import { DataTableSortHeader } from "@/components/data-table-sort-header"
-import { Checkbox } from "@/components/ui/checkbox"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,10 +17,17 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-
-import { router } from "@inertiajs/react"
-import { toast } from "sonner"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+
+
 
 // ==============================
 // TYPE
@@ -63,6 +63,7 @@ const handleDelete = (role: Role) => {
 
       if (flash?.error) {
         toast(flash.error, { description: now })
+
         return
       }
 
@@ -178,6 +179,7 @@ export const columns = (onEdit: (role: Role) => void): ColumnDef<Role>[] => [
     sortingFn: (rowA, rowB) => {
       const a = new Date(rowA.getValue("created_at")).getTime()
       const b = new Date(rowB.getValue("created_at")).getTime()
+
       return a - b
     },
 
@@ -211,6 +213,7 @@ export const columns = (onEdit: (role: Role) => void): ColumnDef<Role>[] => [
     sortingFn: (rowA, rowB) => {
       const a = new Date(rowA.getValue("updated_at")).getTime()
       const b = new Date(rowB.getValue("updated_at")).getTime()
+
       return a - b
     },
 

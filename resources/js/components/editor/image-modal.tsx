@@ -1,9 +1,30 @@
 import {
+    ImagePlus,
+    Link2,
+    Upload,
+    X,
+    Loader2,
+} from "lucide-react"
+import {
+    useEffect,
+    useRef,
+    useState,
+} from "react"
+import Heading from "@/components/heading"
+import { Button } from "@/components/ui/button"
+import {
     Dialog,
     DialogContent,
     DialogHeader,
 } from "@/components/ui/dialog"
 
+
+
+import { Input } from "@/components/ui/input"
+
+import { Label } from "@/components/ui/label"
+
+import { Separator } from "@/components/ui/separator"
 import {
     Tabs,
     TabsContent,
@@ -11,29 +32,8 @@ import {
     TabsTrigger,
 } from "@/components/ui/tabs"
 
-import { Button } from "@/components/ui/button"
 
-import { Input } from "@/components/ui/input"
 
-import { Label } from "@/components/ui/label"
-
-import { Separator } from "@/components/ui/separator"
-
-import Heading from "@/components/heading"
-
-import {
-    ImagePlus,
-    Link2,
-    Upload,
-    X,
-    Loader2,
-} from "lucide-react"
-
-import {
-    useEffect,
-    useRef,
-    useState,
-} from "react"
 
 interface Props {
     open: boolean
@@ -127,6 +127,7 @@ export default function ImageModal({
                 const text = await response.text()
                 console.error("Upload error body:", text)
                 alert("Upload gagal (status " + response.status + ")")
+
                 return
             }
 
@@ -156,7 +157,11 @@ export default function ImageModal({
         e: React.ChangeEvent<HTMLInputElement>
     ) => {
         const file = e.target.files?.[0]
-        if (!file) return
+
+        if (!file) {
+return
+}
+
         await doUpload(file)
     }
 
@@ -228,6 +233,7 @@ export default function ImageModal({
                                 e.preventDefault()
                                 e.stopPropagation()
                                 dragCounterRef.current--
+
                                 if (dragCounterRef.current <= 0) {
                                     dragCounterRef.current = 0
                                     setIsDragOver(false)
@@ -239,6 +245,7 @@ export default function ImageModal({
                                 dragCounterRef.current = 0
                                 setIsDragOver(false)
                                 const file = e.dataTransfer?.files?.[0]
+
                                 if (file?.type.startsWith("image/")) {
                                     await doUpload(file)
                                 }
@@ -265,6 +272,7 @@ export default function ImageModal({
                                             e.preventDefault()
                                             e.stopPropagation()
                                             setPreview(null)
+
                                             if (fileRef.current) {
                                                 fileRef.current.value = ""
                                             }
@@ -346,7 +354,9 @@ export default function ImageModal({
                             type="button"
                             className="w-full"
                             onClick={() => {
-                                if (!url) return
+                                if (!url) {
+return
+}
 
                                 onInsert(url)
 

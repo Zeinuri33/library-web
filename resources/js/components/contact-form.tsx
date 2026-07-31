@@ -1,7 +1,7 @@
 "use client"
 
-import { motion } from "framer-motion"
 import { useForm } from "@inertiajs/react"
+import { motion } from "framer-motion"
 import { toast } from "sonner"
 
 type Props = {

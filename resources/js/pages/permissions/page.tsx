@@ -1,13 +1,10 @@
 "use client"
 
-import { useState } from "react"
 import { Head, router } from "@inertiajs/react"
-import { columns, Permission } from "./columns"
-import { DataTable } from "@/components/data-table"
-import CreatePermissionModal from "./create"
-import EditPermissionModal from "./edit"
-import { Button } from "@/components/ui/button"
 import { Trash2 } from "lucide-react"
+import { useState } from "react"
+import { toast } from "sonner"
+import { DataTable } from "@/components/data-table"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,7 +16,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { toast } from "sonner"
+import { Button } from "@/components/ui/button"
+import type { Permission } from "./columns";
+import { columns } from "./columns"
+import CreatePermissionModal from "./create"
+import EditPermissionModal from "./edit"
 
 export default function Permissions({ permissions }: { permissions: Permission[] }) {
   const [openEdit, setOpenEdit] = useState(false)
@@ -38,6 +39,7 @@ export default function Permissions({ permissions }: { permissions: Permission[]
     const count = selectedRows.length
     selectedRows.forEach((index) => {
       const permission = permissions[Number(index)]
+
       if (permission) {
         router.delete(`/admin/permissions/${permission.id}`, { only: [] })
       }

@@ -1,12 +1,12 @@
 "use client"
 
-import * as React from "react"
 
-import {
+import type {
   ColumnDef,
   ColumnFiltersState,
   SortingState,
-  VisibilityState,
+  VisibilityState} from "@tanstack/react-table";
+import {
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
@@ -15,15 +15,9 @@ import {
   getPaginationRowModel,
 } from "@tanstack/react-table"
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
 
+import { Search, X, Columns3, ChevronLeft, ChevronRight } from "lucide-react"
+import * as React from "react"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -32,8 +26,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-import { Search, X, Columns3, ChevronLeft, ChevronRight } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -66,7 +67,11 @@ export function DataTable<TData, TValue>({
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value
     setSearchValue(value)
-    if (debounceRef.current) clearTimeout(debounceRef.current)
+
+    if (debounceRef.current) {
+clearTimeout(debounceRef.current)
+}
+
     debounceRef.current = setTimeout(() => {
       table.setGlobalFilter(value)
     }, 250)
@@ -74,7 +79,11 @@ export function DataTable<TData, TValue>({
 
   const clearSearch = () => {
     setSearchValue("")
-    if (debounceRef.current) clearTimeout(debounceRef.current)
+
+    if (debounceRef.current) {
+clearTimeout(debounceRef.current)
+}
+
     table.setGlobalFilter("")
   }
 
@@ -94,6 +103,7 @@ export function DataTable<TData, TValue>({
       }
     }
     document.addEventListener("keydown", handleGlobalKeyDown)
+
     return () => document.removeEventListener("keydown", handleGlobalKeyDown)
   }, [])
 
@@ -128,8 +138,11 @@ export function DataTable<TData, TValue>({
 
   const generatePageNumbers = () => {
     const pages: (number | "...")[] = []
+
     if (pageCount <= 5) {
-      for (let i = 0; i < pageCount; i++) pages.push(i)
+      for (let i = 0; i < pageCount; i++) {
+pages.push(i)
+}
     } else if (currentPage <= 2) {
       pages.push(0, 1, 2, 3, "...", pageCount - 1)
     } else if (currentPage >= pageCount - 3) {
@@ -137,6 +150,7 @@ export function DataTable<TData, TValue>({
     } else {
       pages.push(0, "...", currentPage - 1, currentPage, currentPage + 1, "...", pageCount - 1)
     }
+
     return pages
   }
 
@@ -219,6 +233,7 @@ export function DataTable<TData, TValue>({
               <TableRow key={headerGroup.id} className="border-b border-border/60 bg-primary/10 hover:bg-transparent even:bg-transparent">
                 {headerGroup.headers.map((header) => {
                   const canSort = header.column.getCanSort()
+
                   return (
                     <TableHead
                       key={header.id}

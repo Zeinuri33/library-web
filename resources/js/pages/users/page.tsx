@@ -1,21 +1,10 @@
 "use client"
 
-import { useState, useMemo } from "react"
 import { Head } from '@inertiajs/react'
-import { User } from "./columns"
-import CreateUserModal from "./create"
-import EditUserModal from "./edit"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { router } from "@inertiajs/react"
+import { Download, MoreVertical, Trash2, Search, Filter, X, ArrowUp, ArrowDown, ArrowUpDown, ChevronLeft, ChevronRight } from "lucide-react"
+import { useState, useMemo } from "react"
+import { toast } from "sonner"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -27,15 +16,26 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import EditUserModal from "./edit"
+import { Checkbox } from "@/components/ui/checkbox"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { router } from "@inertiajs/react"
-import { toast } from "sonner"
-import { Download, MoreVertical, Trash2, Search, Filter, X, ArrowUp, ArrowDown, ArrowUpDown, ChevronLeft, ChevronRight } from "lucide-react"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import type { User } from "./columns"
+import CreateUserModal from "./create"
 
 type SortField = "role" | "username" | "created_at"
 type SortDirection = "asc" | "desc"
@@ -85,8 +85,12 @@ export default function Users({ users }: { users: User[] }) {
     const roles = new Set<string>()
     users.forEach((user) => {
       const roleName = user.roles?.[0]?.name || user.role
-      if (roleName) roles.add(roleName)
+
+      if (roleName) {
+roles.add(roleName)
+}
     })
+
     return Array.from(roles).sort()
   }, [users])
 
@@ -97,7 +101,7 @@ export default function Users({ users }: { users: User[] }) {
   }
 
   const filteredUsers = useMemo(() => {
-    let result = users.filter((user) => {
+    const result = users.filter((user) => {
       const matchesSearch =
         searchQuery === "" ||
         user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -128,6 +132,7 @@ export default function Users({ users }: { users: User[] }) {
         }
 
         const comparison = aVal.localeCompare(bVal)
+
         return sortDirection === "asc" ? comparison : -comparison
       })
     }
@@ -158,6 +163,7 @@ export default function Users({ users }: { users: User[] }) {
     if (sortField !== field) {
       return <ArrowUpDown className="h-3.5 w-3.5 opacity-50" />
     }
+
     return sortDirection === "asc"
       ? <ArrowUp className="h-3.5 w-3.5" />
       : <ArrowDown className="h-3.5 w-3.5" />
@@ -197,8 +203,11 @@ export default function Users({ users }: { users: User[] }) {
 
   const generatePageNumbers = () => {
     const pages: (number | "...")[] = []
+
     if (totalPages <= 5) {
-      for (let i = 1; i <= totalPages; i++) pages.push(i)
+      for (let i = 1; i <= totalPages; i++) {
+pages.push(i)
+}
     } else if (currentPage <= 3) {
       pages.push(1, 2, 3, 4, "...", totalPages)
     } else if (currentPage >= totalPages - 2) {
@@ -206,6 +215,7 @@ export default function Users({ users }: { users: User[] }) {
     } else {
       pages.push(1, "...", currentPage - 1, currentPage, currentPage + 1, "...", totalPages)
     }
+
     return pages
   }
 
@@ -229,6 +239,7 @@ export default function Users({ users }: { users: User[] }) {
                     const roleName = user.roles?.[0]?.name || user.role || "Unknown"
                     roleCounts[roleName] = (roleCounts[roleName] || 0) + 1
                   })
+
                   return Object.entries(roleCounts)
                     .map(([role, count]) => `${role} ${count}`)
                     .join(", ")
@@ -313,6 +324,7 @@ export default function Users({ users }: { users: User[] }) {
                               <div className="space-y-0.5">
                                 {uniqueRoles.map((role) => {
                                   const isSelected = selectedRoles.includes(role)
+
                                   return (
                                     <button
                                       key={role}

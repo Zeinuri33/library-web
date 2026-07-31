@@ -1,6 +1,6 @@
 import { Moon, Sun } from "lucide-react";
-import { useAppearance } from "@/hooks/use-appearance";
 import { useEffect, useState } from "react";
+import { useAppearance } from "@/hooks/use-appearance";
 
 export default function AppearanceToggleIcon() {
     const { appearance, updateAppearance } = useAppearance();

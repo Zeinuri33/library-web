@@ -1,23 +1,20 @@
 "use client"
 
-import { useState } from "react"
 import { useForm, usePage } from "@inertiajs/react"
-
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Upload, X, Plus } from "lucide-react"
-import Heading from "@/components/heading"
-import { toast } from "sonner"
-import { Separator } from "@/components/ui/separator"
+import { useState } from "react"
 
+import { toast } from "sonner"
+import Heading from "@/components/heading"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTrigger,
 } from "@/components/ui/dialog"
-
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import {
   Select,
   SelectContent,
@@ -25,6 +22,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Separator } from "@/components/ui/separator"
+
+
 
 export default function UserCreateModal() {
   const [open, setOpen] = useState(false)
@@ -141,6 +141,7 @@ const permissions = auth?.permissions ?? []
                     className="hidden"
                     onChange={(e) => {
                       const file = e.target.files?.[0]
+
                       if (file) {
                         setData("avatar", file)
                         setPreview(URL.createObjectURL(file))

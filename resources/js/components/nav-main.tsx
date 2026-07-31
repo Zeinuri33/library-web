@@ -1,4 +1,11 @@
 import { Link } from '@inertiajs/react';
+import { ChevronRight } from "lucide-react"
+import { useState, useEffect } from "react"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
 import {
     SidebarGroup,
     SidebarGroupLabel,
@@ -9,13 +16,6 @@ import {
 } from '@/components/ui/sidebar';
 import { useCurrentUrl } from '@/hooks/use-current-url';
 import type { NavItem } from '@/types';
-import { useState, useEffect } from "react"
-import { ChevronRight } from "lucide-react"
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '@/components/ui/popover'
 
 export function NavMain({ 
     items = [], 
@@ -35,6 +35,7 @@ export function NavMain({
             if (item.children) {
                 return item.children.some(child => isCurrentUrl(child.href!))
             }
+
             return false
         })
 
@@ -55,10 +56,14 @@ export function NavMain({
     }
 
     const isParentActive = (item: NavItem) => {
-        if (item.href && isCurrentUrl(item.href)) return true
+        if (item.href && isCurrentUrl(item.href)) {
+return true
+}
+
         if (item.children) {
             return item.children.some(child => isCurrentUrl(child.href!))
         }
+
         return false
     }
     const [touchedMenu, setTouchedMenu] = useState(false)

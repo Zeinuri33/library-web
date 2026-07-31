@@ -1,18 +1,11 @@
 "use client"
 
-import { ColumnDef } from "@tanstack/react-table"
+import { Link, router } from "@inertiajs/react"
+import type { ColumnDef } from "@tanstack/react-table"
 import { MoreVertical } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
+import { toast } from "sonner"
 import { DataTableSortHeader } from "@/components/data-table-sort-header"
-import { Checkbox } from "@/components/ui/checkbox"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-
 import {
     AlertDialog,
     AlertDialogAction,
@@ -24,9 +17,16 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
-import { Link, router } from "@inertiajs/react"
-import { toast } from "sonner"
+
 
 export type Tentang = {
     id: number
@@ -57,6 +57,7 @@ const handleDelete = (tentang: Tentang) => {
 
             if (flash?.error) {
                 toast(flash.error, { description: now })
+
                 return
             }
 
@@ -131,10 +132,12 @@ export const columns: ColumnDef<Tentang>[] = [
         sortingFn: (rowA, rowB) => {
             const a = new Date(rowA.getValue("created_at")).getTime()
             const b = new Date(rowB.getValue("created_at")).getTime()
+
             return a - b
         },
         cell: ({ row }) => {
             const date = new Date(row.getValue("created_at"))
+
             return (
                 <div className="ml-3 text-sm text-muted-foreground hidden md:block">
                     {date.toLocaleDateString("id-ID", {

@@ -17,8 +17,15 @@ export const CustomImage = Image.extend({
                 default: "center",
                 parseHTML: (element) => {
                     const cls = element.className || ""
-                    if (cls.includes("mr-auto")) return "left"
-                    if (cls.includes("ml-auto")) return "right"
+
+                    if (cls.includes("mr-auto")) {
+return "left"
+}
+
+                    if (cls.includes("ml-auto")) {
+return "right"
+}
+
                     return "center"
                 },
                 renderHTML: (attributes) => {
@@ -38,10 +45,23 @@ export const CustomImage = Image.extend({
 
                 parseHTML: (element) => {
                     const cls = element.className || ""
-                    if (cls.includes("w-1/4")) return "small"
-                    if (cls.includes("w-1/2")) return "medium"
-                    if (cls.includes("w-3/4")) return "large"
-                    if (cls.includes("w-full")) return "full"
+
+                    if (cls.includes("w-1/4")) {
+return "small"
+}
+
+                    if (cls.includes("w-1/2")) {
+return "medium"
+}
+
+                    if (cls.includes("w-3/4")) {
+return "large"
+}
+
+                    if (cls.includes("w-full")) {
+return "full"
+}
+
                     return "large"
                 },
 

@@ -1,23 +1,23 @@
 "use client"
 
-import { useState } from "react"
 import { useForm, usePage } from "@inertiajs/react"
-
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Plus } from "lucide-react"
-import Heading from "@/components/heading"
-import { toast } from "sonner"
-import { Separator } from "@/components/ui/separator"
+import { useState } from "react"
 
+import { toast } from "sonner"
+import Heading from "@/components/heading"
+import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Separator } from "@/components/ui/separator"
+
 
 export default function CreateRoleModal() {
   const [open, setOpen] = useState(false)

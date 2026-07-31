@@ -1,18 +1,9 @@
 "use client"
 
-import { ColumnDef } from "@tanstack/react-table"
+import { router } from "@inertiajs/react"
+import type { ColumnDef } from "@tanstack/react-table"
 import { MoreHorizontal } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+import { toast } from "sonner"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -24,8 +15,17 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { router } from "@inertiajs/react"
-import { toast } from "sonner"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 export type User = {
   id: string
@@ -125,6 +125,7 @@ export const columns = (onEdit: (user: User) => void): ColumnDef<User>[] => [
     header: "Role",
     cell: ({ row }) => {
       const role = row.original.role || row.original.roles?.[0]?.name || "-"
+
       return (
         <Badge variant="outline" className="capitalize">
           {role}
@@ -148,6 +149,7 @@ export const columns = (onEdit: (user: User) => void): ColumnDef<User>[] => [
     header: "Dibuat",
     cell: ({ row }) => {
       const date = new Date(row.getValue("created_at") as string)
+
       return (
         <span className="text-sm text-muted-foreground">
           {date.toLocaleString("id-ID", {
@@ -164,6 +166,7 @@ export const columns = (onEdit: (user: User) => void): ColumnDef<User>[] => [
     header: "Actions",
     cell: ({ row }) => {
       const user = row.original
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>

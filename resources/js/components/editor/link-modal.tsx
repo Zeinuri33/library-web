@@ -1,22 +1,22 @@
+import { Link2, Trash2 } from "lucide-react"
+import { useEffect, useState } from "react"
+import Heading from "@/components/heading"
+import { Button } from "@/components/ui/button"
 import {
     Dialog,
     DialogContent,
     DialogHeader,
 } from "@/components/ui/dialog"
 
-import Heading from "@/components/heading"
-
-import { Separator } from "@/components/ui/separator"
-
-import { Label } from "@/components/ui/label"
 
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Separator } from "@/components/ui/separator"
 
-import { Button } from "@/components/ui/button"
 
-import { Link2, Trash2 } from "lucide-react"
 
-import { useEffect, useState } from "react"
+
+
 
 interface Props {
     open: boolean
@@ -102,7 +102,10 @@ export default function LinkModal({
                             type="button"
                             className="flex-1"
                             onClick={() => {
-                                if (!url) return
+                                if (!url) {
+return
+}
+
                                 onInsert(url, text)
                                 handleClose()
                             }}

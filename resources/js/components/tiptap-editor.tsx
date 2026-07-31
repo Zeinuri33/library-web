@@ -1,28 +1,28 @@
-import { useEditor, EditorContent } from '@tiptap/react'
-import { NodeSelection } from 'prosemirror-state'
-import StarterKit from '@tiptap/starter-kit'
-import Underline from '@tiptap/extension-underline'
-import Link from '@tiptap/extension-link'
-import TextAlign from '@tiptap/extension-text-align'
-import Placeholder from '@tiptap/extension-placeholder'
 import Highlight from '@tiptap/extension-highlight'
-import ResizableImage from '@/extensions/resizable-image'
+import Link from '@tiptap/extension-link'
+import Placeholder from '@tiptap/extension-placeholder'
+import TextAlign from '@tiptap/extension-text-align'
+import Underline from '@tiptap/extension-underline'
+import { useEditor, EditorContent } from '@tiptap/react'
+import StarterKit from '@tiptap/starter-kit'
 import {
     Bold, Italic, Underline as UnderlineIcon, Strikethrough,
     List, ListOrdered, Quote, Heading1, Heading2, Heading3,
     Undo, Redo, Code, Code2, Minus, AlignLeft, AlignCenter, AlignRight, AlignJustify,
     Highlighter, Link as LinkIcon, RemoveFormatting, Image as ImageIcon,
 } from 'lucide-react'
-import { Toggle } from '@/components/ui/toggle'
+import { NodeSelection } from 'prosemirror-state'
+import { useState, useRef, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
 } from '@/components/ui/popover'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { useState, useRef, useCallback } from 'react'
+import { Toggle } from '@/components/ui/toggle'
+import ResizableImage from '@/extensions/resizable-image'
 
 const ALIGN_MAP: Record<string, string> = {
     left: 'float:left;margin-right:1rem',
@@ -75,30 +75,39 @@ export default function TiptapEditor({
             },
             handleClick: (view, pos, event) => {
                 const target = event.target as HTMLElement
+
                 if (target.tagName === 'IMG') {
                     const $pos = view.state.doc.resolve(pos)
+
                     if ($pos.nodeAfter?.type.name === 'image') {
                         view.dispatch(view.state.tr.setSelection(new NodeSelection($pos)))
                     }
+
                     return true
                 }
+
                 return false
             },
         },
     })
 
-    if (!editor) return null
+    if (!editor) {
+return null
+}
 
     const isImageSelected = useCallback(() => {
         const { selection } = editor.state
+
         return selection instanceof NodeSelection && selection.node.type.name === 'image'
     }, [editor])
 
     const getImageAttrs = useCallback(() => {
         const { selection } = editor.state
+
         if (selection instanceof NodeSelection && selection.node.type.name === 'image') {
             return selection.node.attrs
         }
+
         return {}
     }, [editor])
 
@@ -108,6 +117,7 @@ export default function TiptapEditor({
         } else {
             editor.chain().focus().extendMarkRange('link').setLink({ href: linkUrl }).run()
         }
+
         setLinkUrl('')
         setLinkOpen(false)
     }
@@ -121,8 +131,10 @@ export default function TiptapEditor({
     const setImageAlign = (align: string) => {
         if (!isImageSelected()) {
             editor.chain().focus().setTextAlign(align as any).run()
+
             return
         }
+
         const attrs = getImageAttrs()
         const currentStyle = attrs.style || ''
 
@@ -147,8 +159,10 @@ export default function TiptapEditor({
                 right: 'float:right',
             }
             const style = getImageAttrs().style || ''
+
             return style.includes(map[align] || '')
         }
+
         return editor.isActive({ textAlign: align })
     }
 
@@ -163,11 +177,15 @@ export default function TiptapEditor({
                 body: form,
                 credentials: 'same-origin',
             })
+
             if (!res.ok) {
                 const text = await res.text()
+
                 throw new Error(text.slice(0, 200))
             }
+
             const data = await res.json()
+
             if (data.url) {
                 onUpload?.(data.url)
                 editor
@@ -179,12 +197,17 @@ export default function TiptapEditor({
         } catch (err: any) {
             alert('Gagal upload: ' + (err.message || 'unknown error'))
         }
+
         setUploading(false)
     }
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
-        if (file) uploadImage(file)
+
+        if (file) {
+uploadImage(file)
+}
+
         e.target.value = ''
     }
 

@@ -1,9 +1,13 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import { useForm } from "@inertiajs/react"
+import { usePage } from "@inertiajs/react"
 import { Camera, X } from "lucide-react"
+import { useEffect, useState } from "react"
 
+import { toast } from "sonner"
+import Heading from "@/components/heading"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -13,12 +17,6 @@ import {
 
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import Heading from "@/components/heading"
-import { toast } from "sonner"
-import { Separator } from "@/components/ui/separator"
-import { usePage } from "@inertiajs/react"
-
 import {
   Select,
   SelectContent,
@@ -26,6 +24,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { Separator } from "@/components/ui/separator"
+
 
 export default function EditUserModal({ open, setOpen, user }: any) {
   const [preview, setPreview] = useState<string | null>(null)
@@ -106,7 +106,9 @@ export default function EditUserModal({ open, setOpen, user }: any) {
   const { roles } = usePage().props as any
   
 
-if (!open || !user) return null
+if (!open || !user) {
+return null
+}
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -152,6 +154,7 @@ if (!open || !user) return null
                     accept="image/*"
                     onChange={(e) => {
                       const file = e.target.files?.[0]
+
                       if (file) {
                         setData("avatar", file)
                         setPreview(URL.createObjectURL(file))

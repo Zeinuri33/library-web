@@ -49,7 +49,7 @@ export default function PublicHeader({ tentangs }: PublicHeaderProps) {
                     <Link href="/" className="flex items-center gap-3 justify-self-start">
                         <img
                             src="/kubah.png"
-                            className={`h-10 ${scrolled ? '' : 'hidden'}`}
+                            className={`h-10 ${scrolled ? 'dark:hidden' : 'hidden'}`}
                             alt="Logo"
                         />
 
@@ -119,7 +119,7 @@ export default function PublicHeader({ tentangs }: PublicHeaderProps) {
                                         <DropdownMenuItem key={t.slug} asChild>
                                             <Link
                                                 href={`/tentang/${t.slug}`}
-                                                className="relative flex flex-col items-start gap-0 py-1.5 pr-6 dark:focus:bg-black dark:focus:text-white"
+                                                className="relative flex flex-col items-start gap-0 py-1.5 pr-6 focus:bg-gray-200! focus:text-black! dark:focus:bg-black! dark:focus:text-white!"
                                             >
                                                 <span className="font-medium leading-none">
                                                     {t.nama}
@@ -139,7 +139,7 @@ export default function PublicHeader({ tentangs }: PublicHeaderProps) {
                     </nav>
 
                     {/* RIGHT SIDE */}
-                    <div className="flex items-center justify-self-end gap-6">
+                    <div className="col-start-3 flex items-center justify-self-end gap-6">
                         <Link
                             href='https://digilib.ibrahimy.ac.id/docs'
                             className={`hidden items-center justify-center gap-2 rounded-md px-7 py-2.5 text-sm font-semibold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-green-500/30 focus:ring-2 focus:ring-offset-2 focus:outline-none active:scale-95 disabled:pointer-events-none disabled:opacity-50 md:inline-flex dark:hover:shadow-green-500/30 ${tc.bgGradient} ${tc.textWhite} ${tc.ring}`}

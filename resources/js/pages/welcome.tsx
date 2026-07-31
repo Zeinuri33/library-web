@@ -1,13 +1,13 @@
 'use client';
 
 import { Head, router } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { useAppearance } from '@/hooks/use-appearance';
 import { Sun, Moon } from 'lucide-react';
-import Footer from '@/layouts/footer';
+import { useEffect, useState } from 'react';
 import PublicHeader from '@/components/public-header';
+import { useAppearance } from '@/hooks/use-appearance';
 import { useThemeClasses } from '@/hooks/use-theme-classes';
+import Footer from '@/layouts/footer';
 
 export default function Welcome({ tentangs }: { tentangs?: { nama: string; slug: string; deskripsi?: string }[] }) {
     const [inputValue, setInputValue] = useState('');
@@ -25,7 +25,9 @@ export default function Welcome({ tentangs }: { tentangs?: { nama: string; slug:
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!inputValue.trim()) return;
+        if (!inputValue.trim()) {
+return;
+}
 
         router.get('/result', {
             q: inputValue,
@@ -46,7 +48,9 @@ export default function Welcome({ tentangs }: { tentangs?: { nama: string; slug:
     const [charIndex, setCharIndex] = useState(0);
 
     useEffect(() => {
-        if (inputValue.length > 0) return;
+        if (inputValue.length > 0) {
+return;
+}
 
         const currentText = texts[textIndex];
 

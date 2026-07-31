@@ -6,9 +6,9 @@ import TextLink from '@/components/text-link'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useTheme } from '@/context/ThemeContext'
 import { login } from '@/routes'
 import { email } from '@/routes/password'
-import { useTheme } from '@/context/ThemeContext'
 
 export default function ForgotPassword({
     status,

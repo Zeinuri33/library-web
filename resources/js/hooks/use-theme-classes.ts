@@ -45,5 +45,6 @@ export const themeMaps = {
 export function useThemeClasses() {
     const { themeAccent } = useTheme();
     const tc = themeMaps[themeAccent as keyof typeof themeMaps] || themeMaps.emerald;
+
     return { tc, themeAccent };
 }

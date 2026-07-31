@@ -2,18 +2,16 @@
 
 import { Head, router, usePage, Link } from "@inertiajs/react"
 
-import { useEditor, EditorContent } from "@tiptap/react"
 
-import StarterKit from "@tiptap/starter-kit"
-import Underline from "@tiptap/extension-underline"
-import TextAlign from "@tiptap/extension-text-align"
-import Highlight from "@tiptap/extension-highlight"
-import { CustomImage } from "@/extensions/custom-image"
-import LinkExtension from "@tiptap/extension-link"
-import { TextStyle } from "@tiptap/extension-text-style"
 import Color from "@tiptap/extension-color"
+import Highlight from "@tiptap/extension-highlight"
+import LinkExtension from "@tiptap/extension-link"
 import Placeholder from "@tiptap/extension-placeholder"
-import LinkModal from "@/components/editor/link-modal"
+import TextAlign from "@tiptap/extension-text-align"
+import { TextStyle } from "@tiptap/extension-text-style"
+import Underline from "@tiptap/extension-underline"
+import { useEditor, EditorContent } from "@tiptap/react"
+import StarterKit from "@tiptap/starter-kit"
 
 import {
     AlignCenter,
@@ -36,13 +34,14 @@ import {
     Undo2,
 } from "lucide-react"
 
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog"
 
+
+import { useEffect, useState, useRef } from "react"
+
+
+import { toast } from "sonner"
+import ImageModal from "@/components/editor/image-modal"
+import LinkModal from "@/components/editor/link-modal"
 import {
     AlertDialog,
     AlertDialogAction,
@@ -54,17 +53,18 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 
-import { useEffect, useState, useRef } from "react"
-
-import ImageModal from "@/components/editor/image-modal"
-
-import { toast } from "sonner"
-
 import { Button } from "@/components/ui/button"
+import {
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 import { Separator } from "@/components/ui/separator"
+import { CustomImage } from "@/extensions/custom-image"
 
 const STORAGE_KEY = "create-tentang-draft"
 
@@ -77,7 +77,9 @@ function Toolbar({
     onImageClick: () => void
     onLinkClick: () => void
 }) {
-    if (!editor) return null
+    if (!editor) {
+return null
+}
 
     const getTextAlign = () =>
         editor.state.selection.$from.parent.attrs.textAlign || null
@@ -308,6 +310,7 @@ export default function CreateTentang() {
         }
         window.addEventListener('beforeunload', handler)
         window.addEventListener('unload', unloadHandler)
+
         return () => {
             window.removeEventListener('beforeunload', handler)
             window.removeEventListener('unload', unloadHandler)
@@ -316,7 +319,10 @@ export default function CreateTentang() {
 
     useEffect(() => {
         const saved = localStorage.getItem(STORAGE_KEY)
-        if (!saved) return
+
+        if (!saved) {
+return
+}
 
         try {
             const parsed = JSON.parse(saved)
@@ -366,6 +372,7 @@ export default function CreateTentang() {
                     })
 
                     setShowImageSetting(true)
+
                     return true
                 }
 
@@ -393,13 +400,19 @@ export default function CreateTentang() {
     })
 
     useEffect(() => {
-        if (!editor) return
+        if (!editor) {
+return
+}
 
         const saved = localStorage.getItem(STORAGE_KEY)
-        if (!saved) return
+
+        if (!saved) {
+return
+}
 
         try {
             const parsed = JSON.parse(saved)
+
             if (parsed.isi) {
                 editor.commands.setContent(parsed.isi)
             }
@@ -409,7 +422,9 @@ export default function CreateTentang() {
     }, [editor])
 
     useEffect(() => {
-        if (!editor) return
+        if (!editor) {
+return
+}
 
         localStorage.setItem(
             STORAGE_KEY,
@@ -445,15 +460,19 @@ export default function CreateTentang() {
         })
 
     const handleSubmit = () => {
-        if (!editor) return
+        if (!editor) {
+return
+}
 
         if (!nama.trim()) {
             toast("Nama wajib diisi")
+
             return
         }
 
         if (!slug.trim()) {
             toast("Slug wajib diisi")
+
             return
         }
 
@@ -461,6 +480,7 @@ export default function CreateTentang() {
 
         if (html === "<p></p>") {
             toast("Konten wajib diisi")
+
             return
         }
 
@@ -504,8 +524,10 @@ export default function CreateTentang() {
         if (isDirty || uploadedRef.current.length > 0) {
             e.preventDefault()
             setShowUnsavedDialog(true)
+
             return
         }
+
         deleteUploaded()
     }
 
@@ -862,6 +884,7 @@ export default function CreateTentang() {
                                         value={nama}
                                         onChange={(e) => {
                                             setNama(e.target.value)
+
                                             if (
                                                 !slug ||
                                                 slug === nama.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")

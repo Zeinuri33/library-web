@@ -1,6 +1,6 @@
 import { Head } from '@inertiajs/react';
-import { dashboard } from '@/routes';
 import { Users, Shield, KeyRound, Library, ArrowUpRight, TrendingUp, ArrowUp } from 'lucide-react';
+import { dashboard } from '@/routes';
 
 interface DashboardProps {
     totalUsers?: number;
@@ -35,6 +35,7 @@ export default function Dashboard({ totalUsers }: DashboardProps) {
                 <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
                     {stats.map((stat) => {
                         const Icon = stat.icon;
+
                         return (
                             <div
                                 key={stat.title}
@@ -86,6 +87,7 @@ export default function Dashboard({ totalUsers }: DashboardProps) {
                                 { label: 'Kelola Akses', href: '/admin/permissions', icon: KeyRound, desc: 'Atur izin akses sistem' },
                             ].map((item) => {
                                 const Icon = item.icon;
+
                                 return (
                                     <a
                                         key={item.label}

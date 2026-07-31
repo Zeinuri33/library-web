@@ -1,9 +1,12 @@
 "use client"
 
-import { useEffect } from "react"
 import { useForm } from "@inertiajs/react"
 import { router } from "@inertiajs/react"
+import { useEffect } from "react"
 
+import { toast } from "sonner"
+import Heading from "@/components/heading"
+import { Button } from "@/components/ui/button"
 import {
   Dialog,
   DialogContent,
@@ -12,9 +15,6 @@ import {
 
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import Heading from "@/components/heading"
-import { toast } from "sonner"
 import { Separator } from "@/components/ui/separator"
 
 export default function EditPermissionModal({
@@ -51,6 +51,7 @@ export default function EditPermissionModal({
 
     if (!data.action || !data.module) {
       toast("Aksi dan kategori wajib diisi")
+
       return
     }
 
@@ -90,7 +91,9 @@ export default function EditPermissionModal({
     })
   }
 
-  if (!open || !permission) return null
+  if (!open || !permission) {
+return null
+}
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>

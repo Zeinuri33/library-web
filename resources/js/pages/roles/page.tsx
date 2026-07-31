@@ -1,13 +1,10 @@
 "use client"
 
-import { useState } from "react"
 import { Head, router } from '@inertiajs/react'
-import { columns, Role } from "./columns"
-import { DataTable } from "@/components/data-table"
-import CreateRoleModal from "./create"
-import EditRoleModal from "./edit"
-import { Button } from "@/components/ui/button"
 import { Trash2 } from "lucide-react"
+import { useState } from "react"
+import { toast } from "sonner"
+import { DataTable } from "@/components/data-table"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -19,7 +16,11 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { toast } from "sonner"
+import { Button } from "@/components/ui/button"
+import type { Role } from "./columns";
+import { columns } from "./columns"
+import CreateRoleModal from "./create"
+import EditRoleModal from "./edit"
 
 export default function Roles({ roles }: { roles: Role[] }) {
 
@@ -39,6 +40,7 @@ export default function Roles({ roles }: { roles: Role[] }) {
     const count = selectedRows.length
     selectedRows.forEach((index) => {
       const role = roles[Number(index)]
+
       if (role) {
         router.delete(`/admin/roles/${role.id}`, { only: [] })
       }

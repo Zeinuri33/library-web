@@ -1,9 +1,9 @@
 "use client"
 
-import * as React from "react"
+import type { Column } from "@tanstack/react-table"
 import { motion, AnimatePresence } from "framer-motion"
 import { ArrowUpDown, ArrowUp, ArrowDown } from "lucide-react"
-import type { Column } from "@tanstack/react-table"
+import * as React from "react"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
