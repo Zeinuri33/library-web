@@ -2,7 +2,9 @@
 
 import { Head, Link } from "@inertiajs/react"
 import { motion } from "framer-motion"
-import { ChevronRight, Moon, Sun } from "lucide-react"
+import { ChevronRight, Link2, Moon, Sun } from "lucide-react"
+import { FaFacebookF, FaInstagram, FaWhatsapp } from "react-icons/fa"
+import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import PublicHeader from "@/components/public-header"
 import Footer from "@/layouts/footer"
@@ -26,6 +28,20 @@ export default function ShowTentang({
     }
 
     const AppearanceIcon = appearance === 'dark' ? Moon : Sun
+
+    const handleCopy = async () => {
+        try {
+            await navigator.clipboard.writeText(window.location.href)
+            toast('Tautan disalin')
+        } catch {
+            toast('Gagal menyalin tautan')
+        }
+    }
+
+    const pageUrl = typeof window !== 'undefined' ? window.location.href : ''
+
+    const waShare = `https://wa.me/?text=${encodeURIComponent(`${tentang.nama} - ${pageUrl}`)}`
+    const fbShare = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`
 
     return (
         <>
@@ -136,6 +152,46 @@ export default function ShowTentang({
                     <article className="max-w-none [&_h1]:text-4xl [&_h1]:font-black [&_h2]:text-3xl [&_h2]:font-bold [&_p]:leading-8 [&_p]:min-h-[2rem] [&_ul]:list-disc [&_ul]:ml-6 [&_ol]:list-decimal [&_ol]:ml-6 [&_blockquote]:border-l-4 [&_blockquote]:pl-4 [&_blockquote]:italic [&_a]:text-primary [&_a]:underline [&_a]:underline-offset-4 [&_a]:font-medium [&_img]:my-4 [&_img]:rounded-none">
                         <div dangerouslySetInnerHTML={{ __html: tentang.isi }} />
                     </article>
+
+                    <div className="mt-10 border-t pt-8">
+                        <p className="mb-4 text-sm font-semibold text-muted-foreground">
+                            Bagikan halaman ini
+                        </p>
+                        <div className="flex flex-wrap items-center gap-3">
+                            <a
+                                href={waShare}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title="Bagikan ke WhatsApp"
+                                className="flex h-11 w-11 items-center justify-center rounded-full bg-[#25D366] text-white shadow-md transition-transform duration-200 hover:scale-110"
+                            >
+                                <FaWhatsapp className="h-5 w-5" />
+                            </a>
+                            <a
+                                href={fbShare}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                title="Bagikan ke Facebook"
+                                className="flex h-11 w-11 items-center justify-center rounded-full bg-[#1877F2] text-white shadow-md transition-transform duration-200 hover:scale-110"
+                            >
+                                <FaFacebookF className="h-5 w-5" />
+                            </a>
+                            <button
+                                onClick={handleCopy}
+                                title="Bagikan ke Instagram"
+                                className="flex h-11 w-11 items-center justify-center rounded-full bg-[#E4405F] text-white shadow-md transition-transform duration-200 hover:scale-110"
+                            >
+                                <FaInstagram className="h-5 w-5" />
+                            </button>
+                            <button
+                                onClick={handleCopy}
+                                className="flex h-11 items-center gap-2 rounded-full border px-5 text-sm font-medium shadow-md transition-colors duration-200 hover:bg-muted"
+                            >
+                                <Link2 className="h-4 w-4" />
+                                Salin Tautan
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <button
