@@ -9,7 +9,7 @@ import Footer from '@/layouts/footer';
 import PublicHeader from '@/components/public-header';
 import { useThemeClasses } from '@/hooks/use-theme-classes';
 
-export default function Welcome({ tentangs }: { tentangs?: { nama: string; slug: string }[] }) {
+export default function Welcome({ tentangs }: { tentangs?: { nama: string; slug: string; deskripsi?: string }[] }) {
     const [inputValue, setInputValue] = useState('');
     const { appearance, updateAppearance } = useAppearance();
     const { tc } = useThemeClasses();
@@ -211,7 +211,7 @@ export default function Welcome({ tentangs }: { tentangs?: { nama: string; slug:
 
                                     <button
                                         type="submit"
-                                        className={`absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-md px-6 py-2.5 text-sm font-semibold text-emerald-700 bg-white shadow-lg transition-all duration-300 hover:bg-emerald-50 ${tc.ring}`}
+                                        className={`absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-md px-6 py-2.5 text-sm font-semibold text-emerald-700 bg-white shadow-lg transition-all duration-300 hover:bg-green-500 hover:text-white ${tc.ring}`}
                                     >
                                         Cari
                                     </button>

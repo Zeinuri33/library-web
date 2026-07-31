@@ -16,7 +16,7 @@ export default function ShowTentang({
     tentangs,
 }: {
     tentang: any
-    tentangs?: { nama: string; slug: string }[]
+    tentangs?: { nama: string; slug: string; deskripsi?: string }[]
 }) {
     const { tc } = useThemeClasses()
     const { appearance, updateAppearance } = useAppearance()

@@ -62,10 +62,9 @@ export default function Footer({ tc }: FooterProps) {
                                     rel="noopener noreferrer"
                                     className={`
                                         group flex h-11 w-11 items-center justify-center rounded-2xl
-                                        border transition-all duration-300 hover:scale-110
+                                        border transition-all duration-300 hover:scale-110 hover:border-green-500 hover:bg-green-500
                                         ${tc.socialBorder}
                                         ${tc.bgSoft}
-                                        ${tc.socialHover}
                                     `}
                                 >
                                     <Icon
@@ -94,7 +93,7 @@ export default function Footer({ tc }: FooterProps) {
                             <ul className="space-y-2 text-gray-600 dark:text-gray-400">
                                 <li>
                                     <a
-                                        className={`transition-colors duration-300 ${tc.linkHover}`}
+                                        className={`transition-colors duration-300 hover:text-green-500`}
                                         href="https://repository.ibrahimy.ac.id/"
                                     >
                                         Repository
@@ -103,7 +102,7 @@ export default function Footer({ tc }: FooterProps) {
 
                                 <li>
                                     <a
-                                        className={`transition-colors duration-300 ${tc.linkHover}`}
+                                        className={`transition-colors duration-300 hover:text-green-500`}
                                         href="https://opac.lib.ibrahimy.ac.id/"
                                     >
                                         OPAC
@@ -112,7 +111,7 @@ export default function Footer({ tc }: FooterProps) {
 
                                 <li>
                                     <a
-                                        className={`transition-colors duration-300 ${tc.linkHover}`}
+                                        className={`transition-colors duration-300 hover:text-green-500`}
                                         href="https://ibrahimy.perpustakaan.co.id/"
                                     >
                                         E-Book
@@ -121,7 +120,7 @@ export default function Footer({ tc }: FooterProps) {
 
                                 <li>
                                     <a
-                                        className={`transition-colors duration-300 ${tc.linkHover}`}
+                                        className={`transition-colors duration-300 hover:text-green-500`}
                                         href="https://imjiss.ibrahimy.ac.id/"
                                     >
                                         Jurnal
@@ -130,7 +129,7 @@ export default function Footer({ tc }: FooterProps) {
 
                                 <li>
                                     <a
-                                        className={`transition-colors duration-300 ${tc.linkHover}`}
+                                        className={`transition-colors duration-300 hover:text-green-500`}
                                         href="#"
                                     >
                                         Ibrahimy AI
@@ -150,7 +149,7 @@ export default function Footer({ tc }: FooterProps) {
                             <ul className="space-y-2 text-gray-600 dark:text-gray-400">
                                 <li>
                                     <a
-                                        className={`transition-colors duration-300 ${tc.linkHover}`}
+                                        className={`transition-colors duration-300 hover:text-green-500`}
                                         href="https://www.lib.ibrahimy.ac.id/sejarah"
                                     >
                                         Profil
@@ -159,7 +158,7 @@ export default function Footer({ tc }: FooterProps) {
 
                                 <li>
                                     <a
-                                        className={`transition-colors duration-300 ${tc.linkHover}`}
+                                        className={`transition-colors duration-300 hover:text-green-500`}
                                         href="https://www.lib.ibrahimy.ac.id/berita"
                                     >
                                         Berita
@@ -168,7 +167,7 @@ export default function Footer({ tc }: FooterProps) {
 
                                 <li>
                                     <a
-                                        className={`transition-colors duration-300 ${tc.linkHover}`}
+                                        className={`transition-colors duration-300 hover:text-green-500`}
                                         href="#kontak"
                                     >
                                         Kontak
@@ -188,7 +187,7 @@ export default function Footer({ tc }: FooterProps) {
                             <ul className="space-y-2 text-gray-600 dark:text-gray-400">
                                 <li>
                                     <a
-                                        className={`transition-colors duration-300 ${tc.linkHover}`}
+                                        className={`transition-colors duration-300 hover:text-green-500`}
                                         href="#"
                                     >
                                         FAQ
@@ -197,7 +196,7 @@ export default function Footer({ tc }: FooterProps) {
 
                                 <li>
                                     <a
-                                        className={`transition-colors duration-300 ${tc.linkHover}`}
+                                        className={`transition-colors duration-300 hover:text-green-500`}
                                         href="#"
                                     >
                                         Panduan
@@ -206,7 +205,7 @@ export default function Footer({ tc }: FooterProps) {
 
                                 <li>
                                     <a
-                                        className={`transition-colors duration-300 ${tc.linkHover}`}
+                                        className={`transition-colors duration-300 hover:text-green-500`}
                                         href="#"
                                     >
                                         Kebijakan

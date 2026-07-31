@@ -67,7 +67,7 @@ class TentangController extends Controller
 
     public function show(Tentang $tentang)
     {
-        $tentangs = Tentang::select('nama', 'slug')->get();
+        $tentangs = Tentang::select('nama', 'slug', 'isi')->get();
 
         return Inertia::render('tentang/show', [
             'tentang' => $tentang,
