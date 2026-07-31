@@ -32,6 +32,9 @@ createInertiaApp({
     case name === 'ebook/baca':
       return null;
 
+    case name === 'tentang/show':
+      return null;
+
     case name.startsWith('auth/'):
       return AuthLayout;
 

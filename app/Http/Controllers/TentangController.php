@@ -65,6 +65,16 @@ class TentangController extends Controller
             ->with('success', 'Tentang berhasil diperbarui');
     }
 
+    public function show(Tentang $tentang)
+    {
+        $tentangs = Tentang::select('nama', 'slug')->get();
+
+        return Inertia::render('tentang/show', [
+            'tentang' => $tentang,
+            'tentangs' => $tentangs,
+        ]);
+    }
+
     public function destroy(Tentang $tentang)
     {
         $tentang->delete();

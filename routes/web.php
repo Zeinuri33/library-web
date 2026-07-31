@@ -8,7 +8,8 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
 
-Route::inertia('/', 'welcome')->name('home');
+Route::get('/', [\App\Http\Controllers\DashboardController::class, 'welcome'])->name('home');
+Route::get('/tentang/{tentang:slug}', [TentangController::class, 'show'])->name('tentang.show');
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
