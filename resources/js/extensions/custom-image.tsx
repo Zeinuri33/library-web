@@ -15,6 +15,12 @@ export const CustomImage = Image.extend({
 
             align: {
                 default: "center",
+                parseHTML: (element) => {
+                    const cls = element.className || ""
+                    if (cls.includes("mr-auto")) return "left"
+                    if (cls.includes("ml-auto")) return "right"
+                    return "center"
+                },
                 renderHTML: (attributes) => {
                     return {
                         class:
@@ -29,6 +35,15 @@ export const CustomImage = Image.extend({
 
             size: {
                 default: "large",
+
+                parseHTML: (element) => {
+                    const cls = element.className || ""
+                    if (cls.includes("w-1/4")) return "small"
+                    if (cls.includes("w-1/2")) return "medium"
+                    if (cls.includes("w-3/4")) return "large"
+                    if (cls.includes("w-full")) return "full"
+                    return "large"
+                },
 
                 renderHTML: (attributes) => {
                     let sizeClass = ""

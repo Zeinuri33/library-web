@@ -16,6 +16,10 @@ import Placeholder from "@tiptap/extension-placeholder"
 import LinkModal from "@/components/editor/link-modal"
 
 import {
+    AlignCenter,
+    AlignJustify,
+    AlignLeft,
+    AlignRight,
     Bold,
     Heading1,
     Heading2,
@@ -74,6 +78,9 @@ function Toolbar({
     onLinkClick: () => void
 }) {
     if (!editor) return null
+
+    const getTextAlign = () =>
+        editor.state.selection.$from.parent.attrs.textAlign || null
 
     const buttonClass = (active: boolean) =>
         `
@@ -152,6 +159,42 @@ function Toolbar({
                 <Quote className="h-4 w-4" />
             </button>
 
+            <Separator orientation="vertical" className="h-10" />
+
+            <button
+                type="button"
+                onClick={() => editor.chain().focus().setTextAlign("left").run()}
+                className={buttonClass(getTextAlign() === "left")}
+            >
+                <AlignLeft className="h-4 w-4" />
+            </button>
+
+            <button
+                type="button"
+                onClick={() => editor.chain().focus().setTextAlign("center").run()}
+                className={buttonClass(getTextAlign() === "center")}
+            >
+                <AlignCenter className="h-4 w-4" />
+            </button>
+
+            <button
+                type="button"
+                onClick={() => editor.chain().focus().setTextAlign("right").run()}
+                className={buttonClass(getTextAlign() === "right")}
+            >
+                <AlignRight className="h-4 w-4" />
+            </button>
+
+            <button
+                type="button"
+                onClick={() => editor.chain().focus().setTextAlign("justify").run()}
+                className={buttonClass(getTextAlign() === "justify")}
+            >
+                <AlignJustify className="h-4 w-4" />
+            </button>
+
+            <Separator orientation="vertical" className="h-10" />
+
             <button
                 type="button"
                 onClick={onImageClick}
@@ -221,6 +264,7 @@ export default function CreateTentang() {
     const [isDirty, setIsDirty] = useState(false)
     const uploadedRef = useRef<string[]>([])
     const savingRef = useRef(false)
+    const [, forceUpdate] = useState(0)
 
     const deleteUploaded = () => {
         uploadedRef.current.forEach((url) => {
@@ -328,6 +372,10 @@ export default function CreateTentang() {
                 return false
             },
 
+        },
+
+        onSelectionUpdate: () => {
+            forceUpdate((n) => n + 1)
         },
 
         content: "",
@@ -496,8 +544,8 @@ export default function CreateTentang() {
                     </Link>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
-                    <div className="lg:col-span-2 space-y-4">
+                <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+                    <div className="lg:col-span-3 space-y-4">
                         <div className="rounded-xl border border-border/80 bg-card shadow-sm overflow-hidden">
                             <div className="border-b border-border/80">
                                     <div className="px-4 pt-4 pb-5">
@@ -532,7 +580,7 @@ export default function CreateTentang() {
                                 </div>
                             <div
                                 className="
-                                    min-h-[700px]
+                                    h-[500px] overflow-y-auto
                                     p-6
                                 "
                             >
@@ -544,7 +592,6 @@ export default function CreateTentang() {
                                         dark:prose-invert
                                         max-w-none
 
-                                        [&_.ProseMirror]:min-h-[650px]
                                         [&_.ProseMirror]:outline-none
                                         [&_.ProseMirror]:border
                                         [&_.ProseMirror]:border-border/80
