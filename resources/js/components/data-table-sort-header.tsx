@@ -29,7 +29,7 @@ export function DataTableSortHeader<TData, TValue>({
       variant="ghost"
       onClick={handleClick}
       className={cn(
-        "group relative gap-1.5 font-normal w-full justify-start bg-transparent hover:bg-transparent dark:hover:bg-transparent transition-colors",
+        "group relative gap-1.5 font-normal w-full justify-start bg-transparent hover:!bg-transparent hover:!text-foreground dark:hover:!bg-transparent dark:hover:!text-foreground transition-colors",
         isSorted && "text-foreground",
         className
       )}

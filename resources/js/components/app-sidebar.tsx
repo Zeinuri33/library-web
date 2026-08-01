@@ -3,7 +3,8 @@ import {
     LayoutGrid,
     Users,
     Info,
- } from 'lucide-react'
+    MapPin,
+} from 'lucide-react'
 import AppLogo from '@/components/app-logo'
 import AppearanceToggleIcon from '@/components/appearance-tabs'
 import { NavMain } from '@/components/nav-main'
@@ -52,6 +53,13 @@ export function AppSidebar() {
                         title: 'Tentang',
                         icon: Info,
                         href: '/admin/tentang',
+                    }]
+                    : []),
+                ...(can('lihat-lokasi')
+                    ? [{
+                        title: 'Lokasi',
+                        icon: MapPin,
+                        href: '/admin/lokasi',
                     }]
                     : []),
             ]

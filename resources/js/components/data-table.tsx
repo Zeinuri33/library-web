@@ -217,7 +217,7 @@ pages.push(i)
                       {searchValue && (
                         <button
                           onClick={clearSearch}
-                          className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center justify-center h-5 w-5 rounded-full text-muted-foreground hover:text-foreground hover:bg-accent transition-colors"
+                          className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center justify-center h-5 w-5 rounded-full text-muted-foreground hover:text-foreground hover:!bg-muted transition-colors"
                         >
                           <X className="h-3 w-3" />
                         </button>

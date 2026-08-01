@@ -1,14 +1,15 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\LokasiController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TentangController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DashboardController;
 
-Route::get('/', [\App\Http\Controllers\DashboardController::class, 'welcome'])->name('home');
+Route::get('/', [DashboardController::class, 'welcome'])->name('home');
 Route::get('/tentang/{tentang:slug}', [TentangController::class, 'show'])->name('tentang.show');
 
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -80,6 +81,27 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/tentang/{tentang}', [TentangController::class, 'destroy'])
             ->middleware('permission:hapus-tentang')
             ->name('tentang.destroy');
+
+        /**
+         * Lokasi
+         */
+        Route::get('/lokasi', [LokasiController::class, 'index'])
+            ->middleware('permission:lihat-lokasi')
+            ->name('lokasi.index');
+        Route::get('/lokasi/create', [LokasiController::class, 'create'])
+            ->middleware('permission:tambah-lokasi')
+            ->name('lokasi.create');
+        Route::post('/lokasi', [LokasiController::class, 'store'])
+            ->middleware('permission:tambah-lokasi');
+        Route::get('/lokasi/{lokasi}/edit', [LokasiController::class, 'edit'])
+            ->middleware('permission:edit-lokasi')
+            ->name('lokasi.edit');
+        Route::put('/lokasi/{lokasi}', [LokasiController::class, 'update'])
+            ->middleware('permission:edit-lokasi')
+            ->name('lokasi.update');
+        Route::delete('/lokasi/{lokasi}', [LokasiController::class, 'destroy'])
+            ->middleware('permission:hapus-lokasi')
+            ->name('lokasi.destroy');
     });
 });
 
