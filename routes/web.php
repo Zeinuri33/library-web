@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HariLiburController;
+use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\LokasiController;
+use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TentangController;
@@ -102,6 +105,57 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/lokasi/{lokasi}', [LokasiController::class, 'destroy'])
             ->middleware('permission:hapus-lokasi')
             ->name('lokasi.destroy');
+
+        /**
+         * Hari Libur
+         */
+        Route::get('/hari-libur', [HariLiburController::class, 'index'])
+            ->middleware('permission:lihat-hari-libur')
+            ->name('hari-libur.index');
+        Route::post('/hari-libur', [HariLiburController::class, 'store'])
+            ->middleware('permission:tambah-hari-libur');
+        Route::put('/hari-libur/{hari_libur}', [HariLiburController::class, 'update'])
+            ->middleware('permission:edit-hari-libur')
+            ->name('hari-libur.update');
+        Route::delete('/hari-libur/{hari_libur}', [HariLiburController::class, 'destroy'])
+            ->middleware('permission:hapus-hari-libur')
+            ->name('hari-libur.destroy');
+
+        /**
+         * Pengumuman
+         */
+        Route::get('/pengumuman', [PengumumanController::class, 'index'])
+            ->middleware('permission:lihat-pengumuman')
+            ->name('pengumuman.index');
+        Route::get('/pengumuman/create', [PengumumanController::class, 'create'])
+            ->middleware('permission:tambah-pengumuman')
+            ->name('pengumuman.create');
+        Route::post('/pengumuman', [PengumumanController::class, 'store'])
+            ->middleware('permission:tambah-pengumuman');
+        Route::get('/pengumuman/{pengumuman}/edit', [PengumumanController::class, 'edit'])
+            ->middleware('permission:edit-pengumuman')
+            ->name('pengumuman.edit');
+        Route::put('/pengumuman/{pengumuman}', [PengumumanController::class, 'update'])
+            ->middleware('permission:edit-pengumuman')
+            ->name('pengumuman.update');
+        Route::delete('/pengumuman/{pengumuman}', [PengumumanController::class, 'destroy'])
+            ->middleware('permission:hapus-pengumuman')
+            ->name('pengumuman.destroy');
+
+        /**
+         * Kegiatan
+         */
+        Route::get('/kegiatan', [KegiatanController::class, 'index'])
+            ->middleware('permission:lihat-kegiatan')
+            ->name('kegiatan.index');
+        Route::post('/kegiatan', [KegiatanController::class, 'store'])
+            ->middleware('permission:tambah-kegiatan');
+        Route::put('/kegiatan/{kegiatan}', [KegiatanController::class, 'update'])
+            ->middleware('permission:edit-kegiatan')
+            ->name('kegiatan.update');
+        Route::delete('/kegiatan/{kegiatan}', [KegiatanController::class, 'destroy'])
+            ->middleware('permission:hapus-kegiatan')
+            ->name('kegiatan.destroy');
     });
 });
 

@@ -4,6 +4,9 @@ import {
     Users,
     Info,
     MapPin,
+    CalendarOff,
+    Megaphone,
+    CalendarDays,
 } from 'lucide-react'
 import AppLogo from '@/components/app-logo'
 import AppearanceToggleIcon from '@/components/appearance-tabs'
@@ -60,6 +63,27 @@ export function AppSidebar() {
                         title: 'Lokasi',
                         icon: MapPin,
                         href: '/admin/lokasi',
+                    }]
+                    : []),
+                ...(can('lihat-pengumuman')
+                    ? [{
+                        title: 'Pengumuman',
+                        icon: Megaphone,
+                        href: '/admin/pengumuman',
+                    }]
+                    : []),
+                ...(can('lihat-kegiatan')
+                    ? [{
+                        title: 'Kegiatan',
+                        icon: CalendarDays,
+                        href: '/admin/kegiatan',
+                    }]
+                    : []),
+                ...(can('lihat-hari-libur')
+                    ? [{
+                        title: 'Hari Libur',
+                        icon: CalendarOff,
+                        href: '/admin/hari-libur',
                     }]
                     : []),
             ]
