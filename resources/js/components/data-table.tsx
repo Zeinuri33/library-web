@@ -237,7 +237,7 @@ pages.push(i)
                   return (
                     <TableHead
                       key={header.id}
-                      className={`h-12 px-4 text-sm font-normal capitalize tracking-wider text-foreground border-r border-border/80 last:border-r-0 ${canSort ? "cursor-pointer select-none hover:bg-sidebar-hover transition-colors" : ""}`}
+                      className={`h-12 px-4 text-sm font-normal capitalize tracking-wider text-foreground border-r border-border/80 last:border-r-0 ${header.column.id === "select" ? "w-12 max-w-12" : ""} ${canSort ? "cursor-pointer select-none hover:bg-sidebar-hover transition-colors" : ""}`}
                     >
                       {header.isPlaceholder
                         ? null
@@ -261,7 +261,7 @@ pages.push(i)
                   className="border-b border-border/80 last:border-0 hover:bg-muted/50 transition-colors duration-150 data-[state=selected]:bg-primary/5"
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id} className="px-4 py-3 border-r border-border/80 last:border-r-0">
+                    <TableCell key={cell.id} className={`px-4 py-3 border-r border-border/80 last:border-r-0 ${cell.column.id === "select" ? "w-12 max-w-12" : ""}`}>
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}

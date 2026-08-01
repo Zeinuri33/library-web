@@ -21,6 +21,8 @@ class Lokasi extends Model
 
     protected $with = ['jamBuka'];
 
+    protected $appends = ['ringkasan_jam_buka'];
+
     protected function casts(): array
     {
         return [
@@ -36,10 +38,10 @@ class Lokasi extends Model
         return $this->hasMany(JamBuka::class)->orderBy('hari')->orderBy('shif');
     }
 
-    public function getRingkasanJamBukaAttribute(): string
+    public function getRingkasanJamBukaAttribute(): array
     {
         if ($this->jamBuka->isEmpty()) {
-            return 'Belum diatur';
+            return ['Belum diatur'];
         }
 
         $namaHari = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
@@ -54,7 +56,9 @@ class Lokasi extends Model
         $prev = null;
         $prevPola = null;
 
-        for ($i = 0; $i <= 6; $i++) {
+        $urutanHari = [6, 0, 1, 2, 3, 4, 5];
+
+        foreach ($urutanHari as $i) {
             $pola = $this->polaHari($lookup, $i);
 
             if ($pola === null) {
@@ -74,7 +78,7 @@ class Lokasi extends Model
                 continue;
             }
 
-            if ($pola === $prevPola && $i === $prev + 1) {
+            if ($pola === $prevPola && (($prev + 1) % 7) === $i) {
                 $prev = $i;
 
                 continue;
@@ -90,10 +94,10 @@ class Lokasi extends Model
             $ranges[] = $this->formatRange($start, $prev, $prevPola, $namaHari);
         }
 
-        $ringkasan = implode(', ', array_slice($ranges, 0, 3));
+        $ringkasan = array_slice($ranges, 0, 3);
 
         if (count($ranges) > 3) {
-            $ringkasan .= ' …';
+            $ringkasan[] = '…';
         }
 
         return $ringkasan;
@@ -111,12 +115,15 @@ class Lokasi extends Model
                 return null;
             }
 
-            $label = match ($jb->mode) {
-                'closed' => 'Tutup',
-                default => substr((string) $jb->jam_buka, 0, 5).'–'.substr((string) $jb->jam_tutup, 0, 5),
-            };
+            if ($jb->mode === 'closed') {
+                continue;
+            }
 
-            $parts[] = $namaShif[$shif].' '.$label;
+            $parts[] = $namaShif[$shif].' '.substr((string) $jb->jam_buka, 0, 5).'–'.substr((string) $jb->jam_tutup, 0, 5);
+        }
+
+        if (empty($parts)) {
+            return null;
         }
 
         return implode(', ', $parts);

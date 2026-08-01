@@ -37,7 +37,7 @@ export type Lokasi = {
     deskripsi: string | null
     latitude: number | null
     longitude: number | null
-    ringkasan_jam_buka: string
+    ringkasan_jam_buka: string[]
     created_at: string
     updated_at: string
 }
@@ -125,15 +125,20 @@ export const columns: ColumnDef<Lokasi>[] = [
         accessorKey: "ringkasan_jam_buka",
         header: "Jam Buka",
         cell: ({ row }) => {
-            const ringkasan = row.getValue<string>("ringkasan_jam_buka")
+            const ringkasan = row.getValue<string[]>("ringkasan_jam_buka")
 
             return (
-                <Badge
-                    variant="outline"
-                    className="ml-3 max-w-[220px] truncate"
-                >
-                    {ringkasan}
-                </Badge>
+                <div className="ml-3 flex flex-wrap gap-1.5">
+                    {ringkasan.map((item, i) => (
+                        <Badge
+                            key={i}
+                            variant="outline"
+                            className="items-start justify-start whitespace-normal text-left"
+                        >
+                            {item}
+                        </Badge>
+                    ))}
+                </div>
             )
         },
     },

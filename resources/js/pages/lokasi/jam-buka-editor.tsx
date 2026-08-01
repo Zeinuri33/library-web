@@ -21,13 +21,13 @@ import {
 } from "@/components/ui/select"
 
 export const DAYS = [
+    { value: 6, label: "Sabtu" },
     { value: 0, label: "Minggu" },
     { value: 1, label: "Senin" },
     { value: 2, label: "Selasa" },
     { value: 3, label: "Rabu" },
     { value: 4, label: "Kamis" },
     { value: 5, label: "Jumat" },
-    { value: 6, label: "Sabtu" },
 ]
 
 export const SHIFTS = [
@@ -86,6 +86,8 @@ export function ringkasanJamBuka(items: JamBukaItem[]): string {
         items.map((item) => [`${item.hari}-${item.shif}`, item] as const)
     )
 
+    const urutanHari = [6, 0, 1, 2, 3, 4, 5]
+
     const polaHari = (hari: number): string | null => {
         const parts: string[] = []
 
@@ -96,7 +98,15 @@ export function ringkasanJamBuka(items: JamBukaItem[]): string {
                 return null
             }
 
+            if (item.mode === "closed") {
+                continue
+            }
+
             parts.push(`${s.label} ${labelWaktu(item)}`)
+        }
+
+        if (parts.length === 0) {
+            return null
         }
 
         return parts.join(", ")
@@ -114,7 +124,7 @@ export function ringkasanJamBuka(items: JamBukaItem[]): string {
     let prev = 0
     let prevPola = ""
 
-    for (let i = 0; i <= 6; i++) {
+    for (const i of urutanHari) {
         const pola = polaHari(i)
 
         if (pola === null) {
@@ -134,7 +144,7 @@ export function ringkasanJamBuka(items: JamBukaItem[]): string {
             continue
         }
 
-        if (pola === prevPola && i === prev + 1) {
+        if (pola === prevPola && (prev + 1) % 7 === i) {
             prev = i
 
             continue

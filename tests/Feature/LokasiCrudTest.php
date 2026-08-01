@@ -61,7 +61,7 @@ class LokasiCrudTest extends TestCase
         $this->assertNotNull($lokasi);
         $this->assertDatabaseCount('jam_buka', 21);
         $this->assertSame(
-            'Min–Sab: Pagi 07:00–11:00, Siang 13:00–17:00, Malam Tutup',
+            ['Sab–Jum: Pagi 07:00–11:00, Siang 13:00–17:00'],
             $lokasi->ringkasan_jam_buka
         );
     }
