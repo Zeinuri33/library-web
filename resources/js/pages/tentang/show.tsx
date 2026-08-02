@@ -149,7 +149,7 @@ export default function ShowTentang({
                 </section>
 
                 <div className="mx-auto max-w-4xl px-4 py-12">
-                    <article className="max-w-none [&_h1]:text-4xl [&_h1]:font-black [&_h2]:text-3xl [&_h2]:font-bold [&_p]:leading-8 [&_p]:min-h-[2rem] [&_ul]:list-disc [&_ul]:ml-6 [&_ol]:list-decimal [&_ol]:ml-6 [&_blockquote]:border-l-4 [&_blockquote]:pl-4 [&_blockquote]:italic [&_a]:text-primary [&_a]:underline [&_a]:underline-offset-4 [&_a]:font-medium [&_img]:my-4 [&_img]:rounded-none">
+                    <article className="max-w-none [&_h1]:text-4xl [&_h1]:font-black [&_h2]:text-3xl [&_h2]:font-bold [&_p]:leading-7 [&_p]:min-h-[2rem] [&_ul]:list-disc [&_ul]:ml-6 [&_ol]:list-decimal [&_ol]:ml-6 [&_blockquote]:border-l-4 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-sm [&_blockquote]:text-muted-foreground [&_blockquote_p]:!leading-6 [&_blockquote_p]:!min-h-0 [&_a]:text-primary [&_a]:underline [&_a]:underline-offset-4 [&_a]:font-medium [&_img]:my-4 [&_img]:rounded-none">
                         <div dangerouslySetInnerHTML={{ __html: tentang.isi }} />
                     </article>
 
