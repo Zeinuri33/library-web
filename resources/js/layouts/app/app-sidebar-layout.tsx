@@ -17,6 +17,21 @@ export default function AppSidebarLayout({
                 <div className="relative z-0">
                     {children}
                 </div>
+                <footer className="mt-auto border-t px-6 py-2.5">
+                    <div className="flex flex-col items-center justify-between gap-0.5 text-xs text-muted-foreground/80 sm:flex-row">
+                        <p>
+                            © {new Date().getFullYear()} Ibrahimy Website.
+                            All rights reserved.
+                        </p>
+
+                        <p>
+                            Developed by{" "}
+                            <span className="font-medium text-muted-foreground">
+                                @Zeinuri
+                            </span>
+                        </p>
+                    </div>
+                </footer>
             </AppContent>
         </AppShell>
     );

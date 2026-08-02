@@ -4,10 +4,9 @@ import {
     Users,
     Info,
     MapPin,
-    CalendarOff,
-    Megaphone,
-    CalendarDays,
+    LayoutList,
     Newspaper,
+    HandPlatter,
 } from 'lucide-react'
 import AppLogo from '@/components/app-logo'
 import AppearanceToggleIcon from '@/components/appearance-tabs'
@@ -36,6 +35,12 @@ export function AppSidebar() {
         ...(can('edit-user') ? [{ title: 'Akses', href: '/admin/permissions' }] : []),
     ]
 
+    const informasiChildren = [
+        ...(can('lihat-pengumuman') ? [{ title: 'Pengumuman', href: '/admin/pengumuman' }] : []),
+        ...(can('lihat-kegiatan') ? [{ title: 'Kegiatan', href: '/admin/kegiatan' }] : []),
+        ...(can('lihat-hari-libur') ? [{ title: 'Hari Libur', href: '/admin/hari-libur' }] : []),
+    ]
+
 
     const groups = [
         {
@@ -59,20 +64,6 @@ export function AppSidebar() {
                         href: '/admin/tentang',
                     }]
                     : []),
-                ...(can('lihat-lokasi')
-                    ? [{
-                        title: 'Lokasi',
-                        icon: MapPin,
-                        href: '/admin/lokasi',
-                    }]
-                    : []),
-                ...(can('lihat-pengumuman')
-                    ? [{
-                        title: 'Pengumuman',
-                        icon: Megaphone,
-                        href: '/admin/pengumuman',
-                    }]
-                    : []),
                 ...(can('lihat-berita')
                     ? [{
                         title: 'Berita',
@@ -80,20 +71,28 @@ export function AppSidebar() {
                         href: '/admin/berita',
                     }]
                     : []),
-                ...(can('lihat-kegiatan')
+                ...(can('lihat-layanan')
                     ? [{
-                        title: 'Kegiatan',
-                        icon: CalendarDays,
-                        href: '/admin/kegiatan',
+                        title: 'Layanan',
+                        icon: HandPlatter,
+                        href: '/admin/layanan',
                     }]
                     : []),
-                ...(can('lihat-hari-libur')
+                ...(can('lihat-lokasi')
                     ? [{
-                        title: 'Hari Libur',
-                        icon: CalendarOff,
-                        href: '/admin/hari-libur',
+                        title: 'Lokasi',
+                        icon: MapPin,
+                        href: '/admin/lokasi',
                     }]
                     : []),
+                ...(informasiChildren.length > 0
+                    ? [{
+                        title: 'Informasi',
+                        icon: LayoutList,
+                        children: informasiChildren,
+                    }]
+                    : []),
+
             ]
         },
 

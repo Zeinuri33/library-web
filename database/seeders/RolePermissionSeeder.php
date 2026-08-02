@@ -62,6 +62,11 @@ class RolePermissionSeeder extends Seeder
             'tambah-kegiatan',
             'edit-kegiatan',
             'hapus-kegiatan',
+
+            'lihat-layanan',
+            'tambah-layanan',
+            'edit-layanan',
+            'hapus-layanan',
         ];
 
         foreach ($permissions as $permission) {

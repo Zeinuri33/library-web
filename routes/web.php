@@ -3,7 +3,9 @@
 use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HariLiburController;
+use App\Http\Controllers\JenisLayananController;
 use App\Http\Controllers\KegiatanController;
+use App\Http\Controllers\LayananController;
 use App\Http\Controllers\LokasiController;
 use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\PermissionController;
@@ -18,7 +20,7 @@ Route::get('/tentang/{tentang:slug}', [TentangController::class, 'show'])->name(
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    Route::prefix('admin')->group(function () {
+    Route::prefix('admin')->middleware('log.activity')->group(function () {
 
         Route::get('dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
@@ -163,6 +165,24 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/pengumuman/{pengumuman}', [PengumumanController::class, 'destroy'])
             ->middleware('permission:hapus-pengumuman')
             ->name('pengumuman.destroy');
+
+        /**
+         * Layanan
+         */
+        Route::get('/layanan', [LayananController::class, 'index'])
+            ->middleware('permission:lihat-layanan')
+            ->name('layanan.index');
+        Route::post('/layanan', [LayananController::class, 'store'])
+            ->middleware('permission:tambah-layanan');
+        Route::put('/layanan/{layanan}', [LayananController::class, 'update'])
+            ->middleware('permission:edit-layanan')
+            ->name('layanan.update');
+        Route::delete('/layanan/{layanan}', [LayananController::class, 'destroy'])
+            ->middleware('permission:hapus-layanan')
+            ->name('layanan.destroy');
+        Route::delete('/jenis-layanan/{jenisLayanan}', [JenisLayananController::class, 'destroy'])
+            ->middleware('permission:hapus-layanan')
+            ->name('jenis-layanan.destroy');
 
         /**
          * Kegiatan

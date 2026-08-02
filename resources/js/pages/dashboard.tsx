@@ -1,23 +1,133 @@
 import { Head } from '@inertiajs/react';
-import { Users, Shield, KeyRound, Library, ArrowUpRight, TrendingUp, ArrowUp } from 'lucide-react';
+import { Users, Shield, ArrowUpRight, TrendingUp, ArrowUp, Newspaper, Megaphone, CalendarDays, CalendarOff, MapPin, Info, HandPlatter } from 'lucide-react';
 import { dashboard } from '@/routes';
+
+interface ActivityLogItem {
+    id: number;
+    method: string;
+    path: string;
+    deskripsi: string | null;
+    created_at: string;
+    user: { id: number; name: string } | null;
+}
 
 interface DashboardProps {
     totalUsers?: number;
+    totalBerita?: number;
+    totalKegiatan?: number;
+    totalPengumuman?: number;
+    totalHariLibur?: number;
+    totalLokasi?: number;
+    totalLayanan?: number;
+    totalTentang?: number;
+    activityLogs?: ActivityLogItem[];
 }
 
-export default function Dashboard({ totalUsers }: DashboardProps) {
+export default function Dashboard({
+    totalUsers,
+    totalBerita,
+    totalKegiatan,
+    totalPengumuman,
+    totalHariLibur,
+    totalLokasi,
+    totalLayanan,
+    totalTentang,
+    activityLogs = [],
+}: DashboardProps) {
     const stats = [
         {
             title: 'Pengguna',
-            value: totalUsers ?? '—',
+            value: totalUsers ?? 0,
             icon: Users,
             color: 'from-violet-500/20 to-violet-600/10',
             iconColor: 'text-violet-600 dark:text-violet-400',
             bgIcon: 'bg-violet-100 dark:bg-violet-900/30',
-            trend: totalUsers && totalUsers > 0 ? 'up' : 'neutral' as const,
+        },
+        {
+            title: 'Berita',
+            value: totalBerita ?? 0,
+            icon: Newspaper,
+            color: 'from-sky-500/20 to-sky-600/10',
+            iconColor: 'text-sky-600 dark:text-sky-400',
+            bgIcon: 'bg-sky-100 dark:bg-sky-900/30',
+        },
+        {
+            title: 'Kegiatan',
+            value: totalKegiatan ?? 0,
+            icon: CalendarDays,
+            color: 'from-emerald-500/20 to-emerald-600/10',
+            iconColor: 'text-emerald-600 dark:text-emerald-400',
+            bgIcon: 'bg-emerald-100 dark:bg-emerald-900/30',
+        },
+        {
+            title: 'Pengumuman',
+            value: totalPengumuman ?? 0,
+            icon: Megaphone,
+            color: 'from-amber-500/20 to-amber-600/10',
+            iconColor: 'text-amber-600 dark:text-amber-400',
+            bgIcon: 'bg-amber-100 dark:bg-amber-900/30',
+        },
+        {
+            title: 'Hari Libur',
+            value: totalHariLibur ?? 0,
+            icon: CalendarOff,
+            color: 'from-rose-500/20 to-rose-600/10',
+            iconColor: 'text-rose-600 dark:text-rose-400',
+            bgIcon: 'bg-rose-100 dark:bg-rose-900/30',
+        },
+        {
+            title: 'Lokasi',
+            value: totalLokasi ?? 0,
+            icon: MapPin,
+            color: 'from-blue-500/20 to-blue-600/10',
+            iconColor: 'text-blue-600 dark:text-blue-400',
+            bgIcon: 'bg-blue-100 dark:bg-blue-900/30',
+        },
+        {
+            title: 'Layanan',
+            value: totalLayanan ?? 0,
+            icon: HandPlatter,
+            color: 'from-teal-500/20 to-teal-600/10',
+            iconColor: 'text-teal-600 dark:text-teal-400',
+            bgIcon: 'bg-teal-100 dark:bg-teal-900/30',
+        },
+        {
+            title: 'Tentang',
+            value: totalTentang ?? 0,
+            icon: Info,
+            color: 'from-orange-500/20 to-orange-600/10',
+            iconColor: 'text-orange-600 dark:text-orange-400',
+            bgIcon: 'bg-orange-100 dark:bg-orange-900/30',
         },
     ];
+
+    const quickLinks = [
+        { label: 'Kelola Pengguna', href: '/admin/users', icon: Users, desc: 'Atur data dan hak akses pengguna' },
+        { label: 'Kelola Role', href: '/admin/roles', icon: Shield, desc: 'Atur grup dan peran pengguna' },
+        { label: 'Kelola Berita', href: '/admin/berita', icon: Newspaper, desc: 'Kelola berita perpustakaan' },
+        { label: 'Kelola Kegiatan', href: '/admin/kegiatan', icon: CalendarDays, desc: 'Catat kegiatan dan acara' },
+        { label: 'Kelola Pengumuman', href: '/admin/pengumuman', icon: Megaphone, desc: 'Terbitkan pengumuman' },
+        { label: 'Kelola Hari Libur', href: '/admin/hari-libur', icon: CalendarOff, desc: 'Atur hari libur perpustakaan' },
+        { label: 'Kelola Lokasi', href: '/admin/lokasi', icon: MapPin, desc: 'Kelola data lokasi dan jam buka' },
+        { label: 'Kelola Layanan', href: '/admin/layanan', icon: HandPlatter, desc: 'Kelola layanan perpustakaan' },
+        { label: 'Kelola Tentang', href: '/admin/tentang', icon: Info, desc: 'Kelola profil dan informasi' },
+    ];
+
+    const methodStyles: Record<string, string> = {
+        POST: 'bg-emerald-500',
+        PUT: 'bg-amber-500',
+        PATCH: 'bg-amber-500',
+        DELETE: 'bg-rose-500',
+    };
+
+    const formatDate = (value: string) =>
+        new Date(value).toLocaleString('id-ID', {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+        });
 
     return (
         <>
@@ -35,6 +145,7 @@ export default function Dashboard({ totalUsers }: DashboardProps) {
                 <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-4">
                     {stats.map((stat) => {
                         const Icon = stat.icon;
+                        const hasValue = stat.value > 0;
 
                         return (
                             <div
@@ -50,7 +161,7 @@ export default function Dashboard({ totalUsers }: DashboardProps) {
                                             {stat.title}
                                         </p>
                                         <p className="text-3xl font-bold tracking-tight">
-                                            {typeof stat.value === 'number' ? stat.value.toLocaleString('id-ID') : stat.value}
+                                            {stat.value.toLocaleString('id-ID')}
                                         </p>
                                     </div>
 
@@ -61,31 +172,27 @@ export default function Dashboard({ totalUsers }: DashboardProps) {
 
                                 {/* Trend indicator */}
                                 <div className="relative z-10 mt-4 flex items-center gap-1.5 text-xs text-muted-foreground">
-                                    {stat.trend === 'up' ? (
+                                    {hasValue ? (
                                         <ArrowUp className="h-3.5 w-3.5 text-blue-500" />
                                     ) : (
                                         <TrendingUp className="h-3.5 w-3.5 text-muted-foreground/50" />
                                     )}
-                                    <span>{typeof stat.value === 'number' ? 'Tersedia' : 'Memuat...'}</span>
+                                    <span>{hasValue ? 'Tersedia' : 'Belum ada data'}</span>
                                 </div>
                             </div>
                         );
                     })}
                 </div>
 
-                {/* Quick Links */}
+                {/* Quick Links + Riwayat Log */}
                 <div className="grid gap-6 lg:grid-cols-3">
-                    {/* Quick Actions */}
-                    <div className="lg:col-span-1 space-y-4">
+                    {/* Quick Links */}
+                    <div className="space-y-4 lg:col-span-2">
                         <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
                             AKSI CEPAT
                         </h2>
-                        <div className="space-y-3">
-                            {[
-                                { label: 'Kelola Pengguna', href: '/admin/users', icon: Users, desc: 'Atur data dan hak akses pengguna' },
-                                { label: 'Kelola Role', href: '/admin/roles', icon: Shield, desc: 'Atur grup dan peran pengguna' },
-                                { label: 'Kelola Akses', href: '/admin/permissions', icon: KeyRound, desc: 'Atur izin akses sistem' },
-                            ].map((item) => {
+                        <div className="grid gap-3 grid-cols-1 sm:grid-cols-3">
+                            {quickLinks.map((item) => {
                                 const Icon = item.icon;
 
                                 return (
@@ -108,35 +215,32 @@ export default function Dashboard({ totalUsers }: DashboardProps) {
                         </div>
                     </div>
 
-                    {/* Info Panel */}
-                    <div className="lg:col-span-2 space-y-4">
+                    {/* Riwayat Log Sistem */}
+                    <div className="flex flex-col space-y-4">
                         <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
-                            INFORMASI
+                            RIWAYAT LOG SISTEM
                         </h2>
-                        <div className="rounded-xl border bg-card p-6 shadow-soft">
-                            <div className="flex items-start gap-4">
-                                <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 text-white shadow-lg">
-                                    <Library className="h-7 w-7" />
+                        <div className="flex min-h-0 flex-1 flex-col rounded-xl border bg-card p-4 shadow-soft">
+                            {activityLogs.length === 0 ? (
+                                <p className="text-sm text-muted-foreground">Belum ada aktivitas.</p>
+                            ) : (
+                                <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto pr-1">
+                                    {activityLogs.map((log) => (
+                                        <div
+                                            key={log.id}
+                                            className="flex items-start gap-3 rounded-lg p-2 transition-colors hover:bg-muted/50"
+                                        >
+                                            <span className={`mt-1.5 h-2 w-2 shrink-0 rounded-full ${methodStyles[log.method] ?? 'bg-muted-foreground/40'}`} />
+                                            <div className="min-w-0 flex-1 space-y-0.5">
+                                                <p className="text-sm leading-snug">{log.deskripsi}</p>
+                                                <p className="text-xs text-muted-foreground">
+                                                    {log.user?.name ?? 'System'} &bull; {formatDate(log.created_at)}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
-                                <div className="space-y-2">
-                                    <h3 className="font-semibold text-lg">
-                                        Sistem Manajemen
-                                    </h3>
-                                    <p className="text-sm text-muted-foreground leading-relaxed">
-                                        Selamat datang di panel administrasi. Kelola pengguna, role, 
-                                        dan hak akses sistem.
-                                    </p>
-                                    <div className="flex flex-wrap gap-2 pt-2">
-                                        <span className="inline-flex items-center gap-1 rounded-full border bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-800">
-                                            <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
-                                            Sistem Aktif
-                                        </span>
-                                        <span className="inline-flex items-center gap-1 rounded-full border bg-muted px-3 py-1 text-xs font-medium text-muted-foreground">
-                                            v1.0.0
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
+                            )}
                         </div>
                     </div>
                 </div>
