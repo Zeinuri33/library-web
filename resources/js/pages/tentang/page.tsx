@@ -83,7 +83,7 @@ export default function TentangPage({ tentangs }: { tentangs: Tentang[] }) {
                         )}
                         <Link href="/admin/tentang/create">
                             <Button>
-                                <Plus className="mr-2 h-4 w-4" />
+                                <Plus className="h-4 w-4" />
                                 Tambah Tentang
                             </Button>
                         </Link>

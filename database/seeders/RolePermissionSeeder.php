@@ -53,6 +53,11 @@ class RolePermissionSeeder extends Seeder
             'edit-pengumuman',
             'hapus-pengumuman',
 
+            'lihat-berita',
+            'tambah-berita',
+            'edit-berita',
+            'hapus-berita',
+
             'lihat-kegiatan',
             'tambah-kegiatan',
             'edit-kegiatan',

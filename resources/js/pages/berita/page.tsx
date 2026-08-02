@@ -3,7 +3,6 @@
 import { Head, router, Link } from "@inertiajs/react"
 import { Plus, Trash2 } from "lucide-react"
 import { useState } from "react"
-
 import { toast } from "sonner"
 import { DataTable } from "@/components/data-table"
 import {
@@ -19,9 +18,13 @@ import {
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
 import { columns } from "./columns"
-import type { Lokasi } from "./columns"
+import type { Berita } from "./columns"
 
-export default function LokasiPage({ lokasis }: { lokasis: Lokasi[] }) {
+export default function BeritaPage({
+    beritas,
+}: {
+    beritas: Berita[]
+}) {
     const [rowSelection, setRowSelection] = useState<Record<string, boolean>>({})
 
     const selectedCount = Object.keys(rowSelection).length
@@ -30,29 +33,31 @@ export default function LokasiPage({ lokasis }: { lokasis: Lokasi[] }) {
         const selectedRows = Object.keys(rowSelection)
         const count = selectedRows.length
         selectedRows.forEach((index) => {
-            const lokasi = lokasis[Number(index)]
+            const berita = beritas[Number(index)]
 
-            if (lokasi) {
-                router.delete(`/admin/lokasi/${lokasi.id}`, { only: [] })
+            if (berita) {
+                router.delete(`/admin/berita/${berita.id}`, {
+                    only: [],
+                })
             }
         })
-        toast(`${count} lokasi berhasil dihapus`)
+        toast(`${count} berita berhasil dihapus`)
         setRowSelection({})
     }
 
     return (
         <>
-            <Head title="Lokasi" />
+            <Head title="Berita" />
 
             <div className="p-6 space-y-6">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <h1 className="text-xl font-semibold tracking-tight">
-                            Daftar Lokasi
+                            Daftar Berita
                         </h1>
                         <div className="flex items-center gap-2 mt-1">
                             <p className="text-sm text-foreground">
-                                {lokasis.length} lokasi
+                                {beritas.length} berita
                             </p>
                         </div>
                     </div>
@@ -69,12 +74,12 @@ export default function LokasiPage({ lokasis }: { lokasis: Lokasi[] }) {
                                 <AlertDialogContent size="sm">
                                     <AlertDialogHeader>
                                         <AlertDialogTitle>
-                                            Hapus Lokasi
+                                            Hapus Berita
                                         </AlertDialogTitle>
                                         <AlertDialogDescription>
                                             Yakin ingin menghapus{" "}
-                                            <b>{selectedCount}</b> lokasi yang
-                                            dipilih?
+                                            <b>{selectedCount}</b> berita
+                                            yang dipilih?
                                         </AlertDialogDescription>
                                     </AlertDialogHeader>
                                     <AlertDialogFooter>
@@ -89,10 +94,10 @@ export default function LokasiPage({ lokasis }: { lokasis: Lokasi[] }) {
                                 </AlertDialogContent>
                             </AlertDialog>
                         )}
-                        <Link href="/admin/lokasi/create">
+                        <Link href="/admin/berita/create">
                             <Button>
                                 <Plus className="h-4 w-4" />
-                                Tambah Lokasi
+                                Tambah Berita
                             </Button>
                         </Link>
                     </div>
@@ -100,7 +105,7 @@ export default function LokasiPage({ lokasis }: { lokasis: Lokasi[] }) {
 
                 <DataTable
                     columns={columns}
-                    data={lokasis}
+                    data={beritas}
                     rowSelection={rowSelection}
                     onRowSelectionChange={setRowSelection}
                 />
@@ -109,11 +114,11 @@ export default function LokasiPage({ lokasis }: { lokasis: Lokasi[] }) {
     )
 }
 
-LokasiPage.layout = {
+BeritaPage.layout = {
     breadcrumbs: [
         {
-            title: "Lokasi",
-            href: "/admin/lokasi",
+            title: "Berita",
+            href: "/admin/berita",
         },
     ],
 }

@@ -135,7 +135,7 @@ export default function CreateRoleModal() {
           {/* Trigger */}
           <DialogTrigger asChild>
             <Button>
-              <Plus className="mr-2 h-4 w-4" />
+              <Plus className="h-4 w-4" />
               Tambah Role
             </Button>
           </DialogTrigger>

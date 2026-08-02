@@ -2,7 +2,6 @@
 
 import { Head, router, Link } from "@inertiajs/react"
 
-
 import Color from "@tiptap/extension-color"
 import Highlight from "@tiptap/extension-highlight"
 import LinkExtension from "@tiptap/extension-link"
@@ -13,12 +12,13 @@ import Underline from "@tiptap/extension-underline"
 import { useEditor, EditorContent } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 
-import { Save } from "lucide-react"
-
-
+import {
+    ImagePlus,
+    Loader2,
+    Save,
+} from "lucide-react"
 
 import { useEffect, useState, useRef } from "react"
-
 
 import { toast } from "sonner"
 import ImageModal from "@/components/editor/image-modal"
@@ -44,13 +44,41 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+
 import { CustomImage } from "@/extensions/custom-image"
 
-const STORAGE_KEY = "create-pengumuman-draft"
+type BeritaFormProps = {
+    berita?: {
+        id: number
+        judul: string
+        slug: string
+        thumbnail: string | null
+        isi: string
+    }
+    mode: "create" | "edit"
+}
 
+export default function BeritaForm({ berita, mode }: BeritaFormProps) {
+    const isEdit = mode === "edit"
+    const STORAGE_KEY = isEdit
+        ? `edit-berita-draft-${berita?.id}`
+        : "create-berita-draft"
+    const listUrl = "/admin/berita"
+    const submitUrl = isEdit ? `/admin/berita/${berita?.id}` : "/admin/berita"
+    const submitLabel = isEdit ? "Simpan Perubahan" : "Simpan Berita"
+    const headerTitle = isEdit ? "Edit Berita" : "Tambah Berita"
+    const headerDesc = isEdit
+        ? "Ubah berita menggunakan editor modern."
+        : "Buat berita menggunakan editor modern."
+    const placeholder = "Tulis isi berita di sini..."
 
-export default function CreatePengumuman() {
-    const [judul, setJudul] = useState("")
+    const [judul, setJudul] = useState(berita?.judul || "")
+    const [slug, setSlug] = useState(berita?.slug || "")
+    const [thumbnail, setThumbnail] = useState(berita?.thumbnail || "")
+
+    const [uploadingThumb, setUploadingThumb] = useState(false)
+    const [thumbDragOver, setThumbDragOver] = useState(false)
+    const thumbFileRef = useRef<HTMLInputElement>(null)
 
     const [showImageModal, setShowImageModal] = useState(false)
 
@@ -135,6 +163,8 @@ return
         try {
             const parsed = JSON.parse(saved)
             setJudul(parsed.judul || "")
+            setSlug(parsed.slug || "")
+            setThumbnail(parsed.thumbnail || "")
         } catch (error) {
             console.error(error)
         }
@@ -154,7 +184,7 @@ return
                 defaultProtocol: "https",
             }),
             Placeholder.configure({
-                placeholder: "Tulis isi pengumuman di sini...",
+                placeholder,
             }),
             TextAlign.configure({
                 types: ["heading", "paragraph"],
@@ -192,13 +222,15 @@ return
             forceUpdate((n) => n + 1)
         },
 
-        content: "",
+        content: berita?.isi || "",
         onUpdate: ({ editor }) => {
             setIsDirty(true)
             localStorage.setItem(
                 STORAGE_KEY,
                 JSON.stringify({
                     judul,
+                    slug,
+                    thumbnail,
                     isi: editor.getHTML(),
                 })
             )
@@ -236,6 +268,8 @@ return
             STORAGE_KEY,
             JSON.stringify({
                 judul,
+                slug,
+                thumbnail,
                 isi: editor.getHTML(),
             })
         )
@@ -254,6 +288,73 @@ return
             minute: "2-digit",
         })
 
+    const generateSlug = (value: string) => {
+        const generated = value
+            .toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, "")
+            .replace(/\s+/g, "-")
+            .replace(/-+/g, "-")
+            .trim()
+        setSlug(generated)
+    }
+
+    const uploadThumbFile = async (file: File) => {
+        const formData = new FormData()
+        formData.append("file", file)
+
+        try {
+            setUploadingThumb(true)
+
+            const response = await fetch("/admin/upload-image", {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            })
+
+            if (!response.ok) {
+                toast("Upload thumbnail gagal")
+
+                return
+            }
+
+            const data = await response.json()
+
+            if (data.url) {
+                uploadedRef.current.push(data.url)
+                setThumbnail(data.url)
+                setIsDirty(true)
+            }
+        } catch (error) {
+            console.error(error)
+            toast("Upload thumbnail gagal")
+        } finally {
+            setUploadingThumb(false)
+        }
+    }
+
+    const handleUploadThumbnail = async (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+
+        if (!file) {
+return
+}
+
+        await uploadThumbFile(file)
+    }
+
+    const handleThumbDrop = (e: React.DragEvent) => {
+        e.preventDefault()
+        setThumbDragOver(false)
+
+        const file = e.dataTransfer.files?.[0]
+
+        if (file) {
+            uploadThumbFile(file)
+        }
+    }
+
     const handleSubmit = () => {
         if (!editor) {
 return
@@ -261,6 +362,12 @@ return
 
         if (!judul.trim()) {
             toast("Judul wajib diisi")
+
+            return
+        }
+
+        if (!slug.trim()) {
+            toast("Slug wajib diisi")
 
             return
         }
@@ -275,35 +382,36 @@ return
 
         savingRef.current = true
 
-        router.post(
-            "/admin/pengumuman",
-            {
-                judul,
-                isi: html,
+        const options = {
+            preserveScroll: true,
+
+            onSuccess: () => {
+                savingRef.current = false
+                localStorage.removeItem(STORAGE_KEY)
+                uploadedRef.current = []
+
+                toast(
+                    `Berita ${judul} berhasil ${isEdit ? "diperbarui" : "dibuat"}`,
+                    { description: getNow() }
+                )
             },
-            {
-                preserveScroll: true,
 
-                onSuccess: () => {
-                    savingRef.current = false
-                    localStorage.removeItem(STORAGE_KEY)
-                    uploadedRef.current = []
+            onError: () => {
+                savingRef.current = false
+                toast(
+                    "Gagal menyimpan berita",
+                    { description: "Periksa kembali data." }
+                )
+            },
+        } as const
 
-                    toast(
-                        `Pengumuman ${judul} berhasil dibuat`,
-                        { description: getNow() }
-                    )
-                },
+        const payload = { judul, slug, thumbnail, isi: html }
 
-                onError: () => {
-                    savingRef.current = false
-                    toast(
-                        "Gagal menyimpan pengumuman",
-                        { description: "Periksa kembali data." }
-                    )
-                },
-            }
-        )
+        if (isEdit) {
+            router.put(submitUrl, payload, options)
+        } else {
+            router.post(submitUrl, payload, options)
+        }
     }
 
     const [showUnsavedDialog, setShowUnsavedDialog] = useState(false)
@@ -323,7 +431,7 @@ return
         setShowUnsavedDialog(false)
         localStorage.removeItem(STORAGE_KEY)
         deleteUploaded()
-        router.visit('/admin/pengumuman')
+        router.visit(listUrl)
     }
 
     const cancelLeave = () => {
@@ -332,22 +440,22 @@ return
 
     return (
         <>
-            <Head title="Tambah Pengumuman" />
+            <Head title={isEdit ? `Edit Berita: ${berita?.judul}` : "Tambah Berita"} />
 
             <div className="p-6 space-y-6">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <h1 className="text-xl font-semibold tracking-tight">
-                            Tambah Pengumuman
+                            {headerTitle}
                         </h1>
                         <div className="flex items-center gap-2 mt-1">
                             <p className="text-sm text-foreground">
-                                Buat pengumuman menggunakan editor modern.
+                                {headerDesc}
                             </p>
                         </div>
                     </div>
 
-                    <Link href="/admin/pengumuman" onClick={handleBack}>
+                    <Link href={listUrl} onClick={handleBack}>
                         <Button variant="outline" className="hover:bg-muted hover:text-foreground">
                             Kembali
                         </Button>
@@ -355,17 +463,165 @@ return
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 items-start">
+                    <div className="space-y-4 lg:sticky lg:top-6">
+                        <div className="rounded-xl border border-border/80 bg-card shadow-sm overflow-hidden">
+                            <div className="border-b border-border/80">
+                                <div className="px-4 pt-4 pb-5 min-h-[44px] flex items-center">
+                                    <h3 className="font-semibold text-base">
+                                        Informasi Berita
+                                    </h3>
+                                </div>
+                            </div>
+
+                            <div className="p-4 space-y-4">
+                                <div>
+                                    <Label className="pb-2">Judul</Label>
+                                    <Input
+                                        value={judul}
+                                        onChange={(e) => {
+                                            setJudul(e.target.value)
+
+                                            if (
+                                                !slug ||
+                                                slug === judul.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "")
+                                            ) {
+                                                generateSlug(e.target.value)
+                                            }
+                                        }}
+                                        placeholder="Contoh: Kunjungan Studi Banding"
+                                    />
+                                </div>
+
+                                <div>
+                                    <Label className="pb-2">Slug</Label>
+                                    <Input
+                                        value={slug}
+                                        onChange={(e) => setSlug(e.target.value)}
+                                        placeholder="Contoh: kunjungan-studi-banding"
+                                    />
+                                </div>
+
+                                <div>
+                                    <Label className="pb-2">Thumbnail</Label>
+
+                                    <input
+                                        ref={thumbFileRef}
+                                        type="file"
+                                        accept="image/*"
+                                        className="hidden"
+                                        onChange={handleUploadThumbnail}
+                                    />
+
+                                    {thumbnail ? (
+                                        <div className="space-y-2">
+                                            <div
+                                                onDragOver={(e) => {
+                                                    e.preventDefault()
+                                                    setThumbDragOver(true)
+                                                }}
+                                                onDragLeave={() =>
+                                                    setThumbDragOver(false)
+                                                }
+                                                onDrop={handleThumbDrop}
+                                                className={`relative overflow-hidden rounded-lg border border-border/80 transition ${
+                                                    thumbDragOver
+                                                        ? "border-primary ring-2 ring-primary/40"
+                                                        : ""
+                                                }`}
+                                            >
+                                                <img
+                                                    src={thumbnail}
+                                                    alt="Thumbnail"
+                                                    className="w-full h-36 object-cover"
+                                                />
+
+                                                {thumbDragOver && (
+                                                    <div className="absolute inset-0 flex items-center justify-center bg-primary/10 text-sm font-medium text-primary">
+                                                        Lepaskan untuk mengganti
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            <div className="flex gap-2">
+                                                <Button
+                                                    type="button"
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="flex-1 hover:bg-muted hover:text-foreground"
+                                                    onClick={() =>
+                                                        thumbFileRef.current?.click()
+                                                    }
+                                                    disabled={uploadingThumb}
+                                                >
+                                                    Ganti
+                                                </Button>
+
+                                                <Button
+                                                    type="button"
+                                                    variant="outline"
+                                                    size="sm"
+                                                    className="flex-1 text-destructive hover:bg-destructive/10 hover:text-destructive"
+                                                    onClick={() => setThumbnail("")}
+                                                >
+                                                    Hapus
+                                                </Button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div
+                                            onClick={() =>
+                                                thumbFileRef.current?.click()
+                                            }
+                                            onDragOver={(e) => {
+                                                e.preventDefault()
+                                                setThumbDragOver(true)
+                                            }}
+                                            onDragLeave={() =>
+                                                setThumbDragOver(false)
+                                            }
+                                            onDrop={handleThumbDrop}
+                                            className={`flex w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-dashed px-4 py-8 text-sm transition ${
+                                                thumbDragOver
+                                                    ? "border-primary bg-primary/10 text-primary"
+                                                    : "border-border/80 bg-muted/20 text-muted-foreground hover:border-primary/50 hover:text-foreground"
+                                            }`}
+                                        >
+                                            {uploadingThumb ? (
+                                                <Loader2 className="h-5 w-5 animate-spin" />
+                                            ) : (
+                                                <ImagePlus className="h-5 w-5" />
+                                            )}
+                                            {uploadingThumb
+                                                ? "Mengunggah..."
+                                                : thumbDragOver
+                                                  ? "Lepaskan di sini..."
+                                                  : "Seret & letakkan thumbnail di sini"}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <Button
+                                    onClick={handleSubmit}
+                                    className="w-full gap-2"
+                                >
+                                    <Save className="h-4 w-4" />
+                                    {submitLabel}
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+
                     <div className="lg:col-span-3 space-y-4">
                         <div className="rounded-xl border border-border/80 bg-card shadow-sm overflow-hidden">
                             <div className="border-b border-border/80">
                                     <div className="p-3">
                                         <div className="rounded-md border border-border/80 bg-muted/40 px-2 py-1">
                                             <RichTextToolbar
-                                            editor={editor}
-                                            onImageClick={() =>
-                                                setShowImageModal(true)
-                                            }
-                                            onLinkClick={() => {
+                                                editor={editor}
+                                                onImageClick={() =>
+                                                    setShowImageModal(true)
+                                                }
+                                                onLinkClick={() => {
                                                 const previousUrl =
                                                     editor
                                                         ?.getAttributes("link")
@@ -387,7 +643,7 @@ return
                                                 setShowLinkModal(true)
                                             }}
                                         />
-                                    </div>
+                                        </div>
                                     </div>
                                 </div>
                             <div
@@ -656,37 +912,6 @@ return
                             </div>
                         </div>
                     </div>
-
-                    <div className="space-y-4 lg:sticky lg:top-6">
-                        <div className="rounded-xl border border-border/80 bg-card shadow-sm overflow-hidden">
-                            <div className="border-b border-border/80">
-                                <div className="px-4 pt-4 pb-5 min-h-[44px] flex items-center">
-                                    <h3 className="font-semibold text-base">
-                                        Informasi Pengumuman
-                                    </h3>
-                                </div>
-                            </div>
-
-                            <div className="p-4 space-y-4">
-                                <div>
-                                    <Label className="pb-2">Judul</Label>
-                                    <Input
-                                        value={judul}
-                                        onChange={(e) => setJudul(e.target.value)}
-                                        placeholder="Contoh: Libur Hari Kemerdekaan"
-                                    />
-                                </div>
-
-                                <Button
-                                    onClick={handleSubmit}
-                                    className="w-full gap-2"
-                                >
-                                    <Save className="h-4 w-4" />
-                                    Simpan Pengumuman
-                                </Button>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
 
@@ -710,11 +935,4 @@ return
             </AlertDialog>
         </>
     )
-}
-
-CreatePengumuman.layout = {
-    breadcrumbs: [
-        { title: "Pengumuman", href: "/admin/pengumuman" },
-        { title: "Tambah", href: "/admin/pengumuman/create" },
-    ],
 }

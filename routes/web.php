@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\BeritaController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HariLiburController;
 use App\Http\Controllers\KegiatanController;
@@ -120,6 +121,27 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/hari-libur/{hari_libur}', [HariLiburController::class, 'destroy'])
             ->middleware('permission:hapus-hari-libur')
             ->name('hari-libur.destroy');
+
+        /**
+         * Berita
+         */
+        Route::get('/berita', [BeritaController::class, 'index'])
+            ->middleware('permission:lihat-berita')
+            ->name('berita.index');
+        Route::get('/berita/create', [BeritaController::class, 'create'])
+            ->middleware('permission:tambah-berita')
+            ->name('berita.create');
+        Route::post('/berita', [BeritaController::class, 'store'])
+            ->middleware('permission:tambah-berita');
+        Route::get('/berita/{berita}/edit', [BeritaController::class, 'edit'])
+            ->middleware('permission:edit-berita')
+            ->name('berita.edit');
+        Route::put('/berita/{berita}', [BeritaController::class, 'update'])
+            ->middleware('permission:edit-berita')
+            ->name('berita.update');
+        Route::delete('/berita/{berita}', [BeritaController::class, 'destroy'])
+            ->middleware('permission:hapus-berita')
+            ->name('berita.destroy');
 
         /**
          * Pengumuman

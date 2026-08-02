@@ -1,6 +1,6 @@
 "use client"
 
-import { Head, router, usePage, Link } from "@inertiajs/react"
+import { Head, router, Link } from "@inertiajs/react"
 
 
 import Color from "@tiptap/extension-color"
@@ -13,26 +13,7 @@ import Underline from "@tiptap/extension-underline"
 import { useEditor, EditorContent } from "@tiptap/react"
 import StarterKit from "@tiptap/starter-kit"
 
-import {
-    AlignCenter,
-    AlignJustify,
-    AlignLeft,
-    AlignRight,
-    Bold,
-    Heading1,
-    Heading2,
-    ImagePlus,
-    Italic,
-    Link2,
-    List,
-    ListOrdered,
-    Pilcrow,
-    Quote,
-    Redo2,
-    Save,
-    UnderlineIcon,
-    Undo2,
-} from "lucide-react"
+import { Save } from "lucide-react"
 
 
 
@@ -42,6 +23,7 @@ import { useEffect, useState, useRef } from "react"
 import { toast } from "sonner"
 import ImageModal from "@/components/editor/image-modal"
 import LinkModal from "@/components/editor/link-modal"
+import { RichTextToolbar } from "@/components/editor/rich-text-toolbar"
 import {
     AlertDialog,
     AlertDialogAction,
@@ -62,183 +44,10 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-
-import { Separator } from "@/components/ui/separator"
 import { CustomImage } from "@/extensions/custom-image"
 
 const STORAGE_KEY = "create-tentang-draft"
 
-function Toolbar({
-    editor,
-    onImageClick,
-    onLinkClick,
-}: {
-    editor: any
-    onImageClick: () => void
-    onLinkClick: () => void
-}) {
-    if (!editor) {
-return null
-}
-
-    const getTextAlign = () =>
-        editor.state.selection.$from.parent.attrs.textAlign || null
-
-    const buttonClass = (active: boolean) =>
-        `
-        flex h-10 min-w-[40px] items-center justify-center
-        rounded-lg border transition
-        ${
-            active
-                ? "bg-primary text-primary-foreground border-primary"
-                : "bg-background hover:bg-muted"
-        }
-    `
-
-    return (
-            <div className="flex flex-wrap gap-2">
-            <button
-                type="button"
-                onClick={() => editor.chain().focus().toggleBold().run()}
-                className={buttonClass(editor.isActive("bold"))}
-            >
-                <Bold className="h-4 w-4" />
-            </button>
-
-            <button
-                type="button"
-                onClick={() => editor.chain().focus().toggleItalic().run()}
-                className={buttonClass(editor.isActive("italic"))}
-            >
-                <Italic className="h-4 w-4" />
-            </button>
-
-            <button
-                type="button"
-                onClick={() => editor.chain().focus().toggleUnderline().run()}
-                className={buttonClass(editor.isActive("underline"))}
-            >
-                <UnderlineIcon className="h-4 w-4" />
-            </button>
-
-            <button
-                type="button"
-                onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
-                className={buttonClass(editor.isActive("heading", { level: 1 }))}
-            >
-                <Heading1 className="h-4 w-4" />
-            </button>
-
-            <button
-                type="button"
-                onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-                className={buttonClass(editor.isActive("heading", { level: 2 }))}
-            >
-                <Heading2 className="h-4 w-4" />
-            </button>
-
-            <button
-                type="button"
-                onClick={() => editor.chain().focus().toggleBulletList().run()}
-                className={buttonClass(editor.isActive("bulletList"))}
-            >
-                <List className="h-4 w-4" />
-            </button>
-
-            <button
-                type="button"
-                onClick={() => editor.chain().focus().toggleOrderedList().run()}
-                className={buttonClass(editor.isActive("orderedList"))}
-            >
-                <ListOrdered className="h-4 w-4" />
-            </button>
-
-            <button
-                type="button"
-                onClick={() => editor.chain().focus().toggleBlockquote().run()}
-                className={buttonClass(editor.isActive("blockquote"))}
-            >
-                <Quote className="h-4 w-4" />
-            </button>
-
-            <Separator orientation="vertical" className="h-10" />
-
-            <button
-                type="button"
-                onClick={() => editor.chain().focus().setTextAlign("left").run()}
-                className={buttonClass(getTextAlign() === "left")}
-            >
-                <AlignLeft className="h-4 w-4" />
-            </button>
-
-            <button
-                type="button"
-                onClick={() => editor.chain().focus().setTextAlign("center").run()}
-                className={buttonClass(getTextAlign() === "center")}
-            >
-                <AlignCenter className="h-4 w-4" />
-            </button>
-
-            <button
-                type="button"
-                onClick={() => editor.chain().focus().setTextAlign("right").run()}
-                className={buttonClass(getTextAlign() === "right")}
-            >
-                <AlignRight className="h-4 w-4" />
-            </button>
-
-            <button
-                type="button"
-                onClick={() => editor.chain().focus().setTextAlign("justify").run()}
-                className={buttonClass(getTextAlign() === "justify")}
-            >
-                <AlignJustify className="h-4 w-4" />
-            </button>
-
-            <Separator orientation="vertical" className="h-10" />
-
-            <button
-                type="button"
-                onClick={onImageClick}
-                className={buttonClass(false)}
-            >
-                <ImagePlus className="h-4 w-4" />
-            </button>
-
-            <button
-                type="button"
-                onClick={() => onLinkClick()}
-                className={buttonClass(false)}
-            >
-                <Link2 className="h-4 w-4" />
-            </button>
-
-            <button
-                type="button"
-                onClick={() => editor.chain().focus().setParagraph().run()}
-                className={buttonClass(editor.isActive("paragraph"))}
-            >
-                <Pilcrow className="h-4 w-4" />
-            </button>
-
-            <button
-                type="button"
-                onClick={() => editor.chain().focus().undo().run()}
-                className={buttonClass(false)}
-            >
-                <Undo2 className="h-4 w-4" />
-            </button>
-
-            <button
-                type="button"
-                onClick={() => editor.chain().focus().redo().run()}
-                className={buttonClass(false)}
-            >
-                <Redo2 className="h-4 w-4" />
-            </button>
-        </div>
-    )
-}
 
 export default function CreateTentang() {
     const [nama, setNama] = useState("")
@@ -570,8 +379,9 @@ return
                     <div className="lg:col-span-3 space-y-4">
                         <div className="rounded-xl border border-border/80 bg-card shadow-sm overflow-hidden">
                             <div className="border-b border-border/80">
-                                    <div className="px-4 pt-4 pb-5">
-                                        <Toolbar
+                                    <div className="p-3">
+                                        <div className="rounded-md border border-border/80 bg-muted/40 px-2 py-1">
+                                            <RichTextToolbar
                                             editor={editor}
                                             onImageClick={() =>
                                                 setShowImageModal(true)
@@ -599,11 +409,12 @@ return
                                             }}
                                         />
                                     </div>
+                                    </div>
                                 </div>
                             <div
                                 className="
                                     h-[500px] overflow-y-auto
-                                    p-6
+                                    p-3
                                 "
                             >
                                 <EditorContent

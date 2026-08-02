@@ -7,6 +7,7 @@ import {
     CalendarOff,
     Megaphone,
     CalendarDays,
+    Newspaper,
 } from 'lucide-react'
 import AppLogo from '@/components/app-logo'
 import AppearanceToggleIcon from '@/components/appearance-tabs'
@@ -70,6 +71,13 @@ export function AppSidebar() {
                         title: 'Pengumuman',
                         icon: Megaphone,
                         href: '/admin/pengumuman',
+                    }]
+                    : []),
+                ...(can('lihat-berita')
+                    ? [{
+                        title: 'Berita',
+                        icon: Newspaper,
+                        href: '/admin/berita',
                     }]
                     : []),
                 ...(can('lihat-kegiatan')
