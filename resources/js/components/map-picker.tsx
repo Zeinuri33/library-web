@@ -4,13 +4,20 @@ import { divIcon } from "leaflet"
 import type { Marker as LeafletMarker } from "leaflet"
 import { Crosshair } from "lucide-react"
 import { useEffect, useRef, useState } from "react"
-import { MapContainer, Marker, TileLayer, useMap, useMapEvents } from "react-leaflet"
+import {
+    LayersControl,
+    MapContainer,
+    Marker,
+    TileLayer,
+    useMap,
+    useMapEvents,
+} from "react-leaflet"
 
 import { Button } from "@/components/ui/button"
 
-const DEFAULT_CENTER: [number, number] = [-7.751138, 114.2737278]
-const DEFAULT_ZOOM = 13
-const PICK_ZOOM = 15
+const DEFAULT_CENTER: [number, number] = [-7.751233324336584, 114.27367858251472]
+const DEFAULT_ZOOM = 18
+const PICK_ZOOM = 18
 
 const markerIcon = divIcon({
     className: "",
@@ -136,20 +143,44 @@ export function MapPicker({
 
     return (
         <div className="space-y-2">
-            <div className="relative z-0 h-64 w-full overflow-hidden rounded-lg border">
+            <div className="relative z-0 min-h-[200px] w-full overflow-hidden rounded-lg border">
                 <MapContainer
                     center={position}
                     zoom={hasCoords ? PICK_ZOOM : DEFAULT_ZOOM}
-                    className="h-full w-full"
+                    className="h-full min-h-[240px] w-full"
                 >
-                    <TileLayer
-                        attribution='&copy; Esri, Maxar, Earthstar Geographics'
-                        url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
-                    />
-                    <TileLayer
-                        attribution='&copy; OpenStreetMap contributors &copy; CARTO'
-                        url="https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png"
-                    />
+                    <LayersControl position="topright">
+                        <LayersControl.BaseLayer
+                            checked
+                            name="🛰️ Hybrid"
+                        >
+                            <TileLayer
+                                attribution="Google Maps"
+                                url="https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}"
+                                maxZoom={22}
+                            />
+                        </LayersControl.BaseLayer>
+
+                        <LayersControl.BaseLayer
+                            name="🗺️ Street"
+                        >
+                            <TileLayer
+                                attribution="Google Maps"
+                                url="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}"
+                                maxZoom={22}
+                            />
+                        </LayersControl.BaseLayer>
+
+                        <LayersControl.BaseLayer
+                            name="📸 Satellite"
+                        >
+                            <TileLayer
+                                attribution="Google Maps"
+                                url="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}"
+                                maxZoom={22}
+                            />
+                        </LayersControl.BaseLayer>
+                    </LayersControl>
                     <Marker
                         position={position}
                         icon={markerIcon}
