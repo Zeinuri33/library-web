@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Traits\RenamesContentImages;
 use App\Models\Berita;
+use App\Models\JenisLayanan;
+use App\Models\Tentang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -46,6 +48,29 @@ class BeritaController extends Controller
 
         return Inertia::render('berita/page', [
             'beritas' => $beritas,
+        ]);
+    }
+
+    public function publicIndex()
+    {
+        return Inertia::render('berita/public', [
+            'beritas' => Berita::orderBy('tanggal', 'desc')->orderBy('created_at', 'desc')->get(),
+            'tentangs' => Tentang::select('nama', 'slug', 'isi')->get(),
+            'jenisLayanans' => JenisLayanan::orderBy('nama')->get(),
+        ]);
+    }
+
+    public function publicShow(Berita $berita)
+    {
+        return Inertia::render('berita/show', [
+            'berita' => $berita,
+            'beritaLainnya' => Berita::where('id', '!=', $berita->id)
+                ->orderBy('tanggal', 'desc')
+                ->orderBy('created_at', 'desc')
+                ->take(3)
+                ->get(),
+            'tentangs' => Tentang::select('nama', 'slug', 'isi')->get(),
+            'jenisLayanans' => JenisLayanan::orderBy('nama')->get(),
         ]);
     }
 

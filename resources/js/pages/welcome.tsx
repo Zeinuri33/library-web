@@ -9,7 +9,10 @@ import { useAppearance } from '@/hooks/use-appearance';
 import { useThemeClasses } from '@/hooks/use-theme-classes';
 import Footer from '@/layouts/footer';
 
-export default function Welcome({ tentangs }: { tentangs?: { nama: string; slug: string; deskripsi?: string }[] }) {
+export default function Welcome({ tentangs, jenisLayanans }: {
+    tentangs?: { nama: string; slug: string; deskripsi?: string }[];
+    jenisLayanans?: { id: number; nama: string; slug: string; deskripsi?: string }[];
+}) {
     const [inputValue, setInputValue] = useState('');
     const { appearance, updateAppearance } = useAppearance();
     const { tc } = useThemeClasses();
@@ -90,7 +93,7 @@ return;
                     className={`pointer-events-none fixed top-1/2 left-1/2 -z-10 h-[600px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full ${tc.orb}`}
                 ></div>
 
-                <PublicHeader tentangs={tentangs} />
+                <PublicHeader tentangs={tentangs} jenisLayanans={jenisLayanans} />
 
                 {/* HERO */}
                 <section

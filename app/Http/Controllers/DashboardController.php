@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ActivityLog;
 use App\Models\Berita;
 use App\Models\HariLibur;
+use App\Models\JenisLayanan;
 use App\Models\Kegiatan;
 use App\Models\Layanan;
 use App\Models\Lokasi;
@@ -39,6 +40,7 @@ class DashboardController extends Controller
 
         return Inertia::render('welcome', [
             'tentangs' => $tentangs,
+            'jenisLayanans' => JenisLayanan::orderBy('nama')->get(),
         ]);
     }
 }

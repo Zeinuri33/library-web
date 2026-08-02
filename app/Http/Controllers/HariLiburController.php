@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\HariLibur;
+use App\Models\JenisLayanan;
 use App\Models\Lokasi;
+use App\Models\Tentang;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -17,6 +19,15 @@ class HariLiburController extends Controller
         return Inertia::render('hari-libur/page', [
             'hariLiburs' => $hariLiburs,
             'lokasis' => $lokasis,
+        ]);
+    }
+
+    public function publicIndex()
+    {
+        return Inertia::render('hari-libur/public', [
+            'hariLiburs' => HariLibur::orderBy('tanggal', 'desc')->get(),
+            'tentangs' => Tentang::select('nama', 'slug', 'isi')->get(),
+            'jenisLayanans' => JenisLayanan::orderBy('nama')->get(),
         ]);
     }
 

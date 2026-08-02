@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Traits\RenamesContentImages;
+use App\Models\JenisLayanan;
 use App\Models\Tentang;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -83,6 +84,7 @@ class TentangController extends Controller
         return Inertia::render('tentang/show', [
             'tentang' => $tentang,
             'tentangs' => $tentangs,
+            'jenisLayanans' => JenisLayanan::orderBy('nama')->get(),
         ]);
     }
 

@@ -18,6 +18,16 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [DashboardController::class, 'welcome'])->name('home');
 Route::get('/tentang/{tentang:slug}', [TentangController::class, 'show'])->name('tentang.show');
+Route::get('/layanan', [LayananController::class, 'publicIndex'])->name('layanan.public');
+Route::get('/layanan/{jenisLayanan:slug}', [LayananController::class, 'publicByJenis'])->name('layanan.public.jenis');
+Route::get('/berita', [BeritaController::class, 'publicIndex'])->name('berita.public');
+Route::get('/berita/{berita:slug}', [BeritaController::class, 'publicShow'])->name('berita.public.show');
+Route::get('/buletin', [BuletinController::class, 'publicIndex'])->name('buletin.public');
+Route::get('/buletin/{buletin:slug}', [BuletinController::class, 'publicShow'])->name('buletin.public.show');
+Route::get('/informasi/pengumuman', [PengumumanController::class, 'publicIndex'])->name('pengumuman.public');
+Route::get('/informasi/pengumuman/{pengumuman:slug}', [PengumumanController::class, 'publicShow'])->name('pengumuman.public.show');
+Route::get('/informasi/kegiatan', [KegiatanController::class, 'publicIndex'])->name('kegiatan.public');
+Route::get('/informasi/hari-libur', [HariLiburController::class, 'publicIndex'])->name('hari-libur.public');
 
 Route::middleware(['auth', 'verified'])->group(function () {
 

@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JenisLayanan;
 use App\Models\Kegiatan;
 use App\Models\Lokasi;
+use App\Models\Tentang;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -17,6 +19,15 @@ class KegiatanController extends Controller
         return Inertia::render('kegiatan/page', [
             'kegiatans' => $kegiatans,
             'lokasis' => $lokasis,
+        ]);
+    }
+
+    public function publicIndex()
+    {
+        return Inertia::render('kegiatan/public', [
+            'kegiatans' => Kegiatan::orderBy('tanggal', 'desc')->get(),
+            'tentangs' => Tentang::select('nama', 'slug', 'isi')->get(),
+            'jenisLayanans' => JenisLayanan::orderBy('nama')->get(),
         ]);
     }
 

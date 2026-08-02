@@ -1,7 +1,6 @@
 import { createInertiaApp } from '@inertiajs/react';
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from '@/components/ui/tooltip';
-import { ThemeProvider } from '@/context/ThemeContext';
 import { initializeTheme } from '@/hooks/use-appearance';
 import AppLayout from '@/layouts/app-layout';
 import AuthLayout from '@/layouts/auth-layout';
@@ -35,6 +34,33 @@ createInertiaApp({
     case name === 'tentang/show':
       return null;
 
+    case name === 'layanan/public':
+      return null;
+
+    case name === 'berita/public':
+      return null;
+
+    case name === 'berita/show':
+      return null;
+
+    case name === 'buletin/public':
+      return null;
+
+    case name === 'buletin/show':
+      return null;
+
+    case name === 'pengumuman/public':
+      return null;
+
+    case name === 'pengumuman/show':
+      return null;
+
+    case name === 'kegiatan/public':
+      return null;
+
+    case name === 'hari-libur/public':
+      return null;
+
     case name.startsWith('auth/'):
       return AuthLayout;
 
@@ -48,14 +74,12 @@ createInertiaApp({
   strictMode: true,
   withApp(app) {
     return (
-    <ThemeProvider>
-      <TooltipProvider delayDuration={0}>
-        {app}
+    <TooltipProvider delayDuration={0}>
+      {app}
 
-        {/* ✅ Tambahkan ini */}
-        <Toaster richColors position="top-center" />
-      </TooltipProvider>
-    </ThemeProvider>
+      {/* ✅ Tambahkan ini */}
+      <Toaster richColors position="top-center" />
+    </TooltipProvider>
     )
   },
   progress: {

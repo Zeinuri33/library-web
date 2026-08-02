@@ -10,11 +10,12 @@ class Buletin extends Model
 
     protected $fillable = [
         'edisi',
+        'slug',
         'tanggal_terbit',
         'file_pdf',
     ];
 
-    protected $appends = ['pdf_url'];
+    protected $appends = ['pdf_url', 'label_edisi'];
 
     protected function casts(): array
     {
@@ -30,5 +31,16 @@ class Buletin extends Model
         return $this->attributes['file_pdf']
             ? asset('storage/'.$this->attributes['file_pdf'])
             : null;
+    }
+
+    public function getLabelEdisiAttribute(): string
+    {
+        $edisi = (string) $this->edisi;
+
+        if (trim($edisi) === '') {
+            return '';
+        }
+
+        return preg_match('/^edisi\s/i', $edisi) ? $edisi : 'Edisi '.$edisi;
     }
 }

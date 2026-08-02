@@ -7,7 +7,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Spinner } from '@/components/ui/spinner'
-import { useTheme } from '@/context/ThemeContext'
+import { useThemeClasses } from '@/hooks/use-theme-classes'
 import { store } from '@/routes/login'
 import { request } from '@/routes/password'
 
@@ -20,7 +20,7 @@ export default function Login({
     status,
     canResetPassword,
 }: Props) {
-    const { themeAccent } = useTheme()
+    const { themeAccent } = useThemeClasses()
 
     const themeStyles = {
         emerald: {
@@ -34,7 +34,7 @@ export default function Login({
             glowBottom: 'bg-emerald-400/10 dark:bg-emerald-400/10',
 
             button:
-                'bg-emerald-500 hover:bg-emerald-400 shadow-emerald-500/20 hover:shadow-emerald-500/30',
+                'bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-400 hover:to-green-500 shadow-emerald-500/20 hover:shadow-emerald-500/30',
 
             text: 'text-emerald-500 hover:text-emerald-400',
 

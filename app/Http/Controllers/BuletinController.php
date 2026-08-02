@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Buletin;
+use App\Models\JenisLayanan;
+use App\Models\Tentang;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
 
 class BuletinController extends Controller
@@ -15,6 +18,28 @@ class BuletinController extends Controller
 
         return Inertia::render('buletin/page', [
             'buletins' => $buletins,
+        ]);
+    }
+
+    public function publicIndex()
+    {
+        return Inertia::render('buletin/public', [
+            'buletins' => Buletin::orderBy('tanggal_terbit', 'desc')->get(),
+            'tentangs' => Tentang::select('nama', 'slug', 'isi')->get(),
+            'jenisLayanans' => JenisLayanan::orderBy('nama')->get(),
+        ]);
+    }
+
+    public function publicShow(Buletin $buletin)
+    {
+        return Inertia::render('buletin/show', [
+            'buletin' => $buletin,
+            'buletinLainnya' => Buletin::where('id', '!=', $buletin->id)
+                ->orderBy('tanggal_terbit', 'desc')
+                ->take(3)
+                ->get(),
+            'tentangs' => Tentang::select('nama', 'slug', 'isi')->get(),
+            'jenisLayanans' => JenisLayanan::orderBy('nama')->get(),
         ]);
     }
 
@@ -30,6 +55,7 @@ class BuletinController extends Controller
 
         Buletin::create([
             'edisi' => $validated['edisi'],
+            'slug' => $this->uniqueSlug($validated['edisi']),
             'tanggal_terbit' => $validated['tanggal_terbit'],
             'file_pdf' => $path,
         ]);
@@ -56,6 +82,10 @@ class BuletinController extends Controller
             $path = $buletin->file_pdf;
         }
 
+        if (empty($buletin->slug)) {
+            $buletin->slug = $this->uniqueSlug($validated['edisi']);
+        }
+
         $buletin->update([
             'edisi' => $validated['edisi'],
             'tanggal_terbit' => $validated['tanggal_terbit'],
@@ -76,6 +106,19 @@ class BuletinController extends Controller
 
         return redirect()->route('buletin.index')
             ->with('success', 'Buletin berhasil dihapus');
+    }
+
+    private function uniqueSlug(string $edisi): string
+    {
+        $base = Str::slug($edisi) ?: 'buletin';
+        $slug = $base;
+        $i = 2;
+
+        while (Buletin::where('slug', $slug)->exists()) {
+            $slug = $base.'-'.$i++;
+        }
+
+        return $slug;
     }
 
     private function buildFileName(Request $request): string

@@ -16,9 +16,10 @@ import { dashboard } from '@/routes';
 
 interface PublicHeaderProps {
     tentangs?: { nama: string; slug: string; deskripsi?: string }[];
+    jenisLayanans?: { id: number; nama: string; slug: string; deskripsi?: string }[];
 }
 
-export default function PublicHeader({ tentangs }: PublicHeaderProps) {
+export default function PublicHeader({ tentangs, jenisLayanans }: PublicHeaderProps) {
     const { tc } = useThemeClasses();
     const { auth } = usePage().props;
     const [open, setOpen] = useState(false);
@@ -95,7 +96,7 @@ export default function PublicHeader({ tentangs }: PublicHeaderProps) {
                         }`}
                     >
                         <a
-                            href="#home"
+                            href="/"
                             className="relative inline-block after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-out hover:after:scale-x-100"
                         >
                             Home
@@ -136,13 +137,138 @@ export default function PublicHeader({ tentangs }: PublicHeaderProps) {
                                 </DropdownMenuContent>
                             </DropdownMenu>
                         )}
+                    <Link
+                        href="/berita"
+                        className="relative inline-block after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-out hover:after:scale-x-100"
+                    >
+                        Berita
+                    </Link>
+
+
+
+                    {/* INFORMASI DROPDOWN */}
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <button
+                                type="button"
+                                className="relative inline-flex items-center gap-1 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-out hover:after:scale-x-100"
+                            >
+                                Informasi
+                                <ChevronDown className="h-3 w-3" />
+                            </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent
+                            align="start"
+                            className="z-[100] w-64 space-y-1 border border-white/40 bg-white/60 p-1.5 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/60"
+                        >
+                            <DropdownMenuItem asChild>
+                                <Link
+                                    href="/informasi/pengumuman"
+                                    className="relative flex flex-col items-start gap-0 py-1.5 pr-6 focus:bg-gray-200! focus:text-black! dark:focus:bg-black! dark:focus:text-white!"
+                                >
+                                    <span className="font-medium leading-none">Pengumuman</span>
+                                    <span className="line-clamp-1 -mt-0.5 w-full text-xs leading-none text-muted-foreground">
+                                        Informasi resmi terbaru
+                                    </span>
+                                    <ChevronRight className="absolute top-1/2 right-2 h-3.5 w-3.5 -translate-y-1/2" />
+                                </Link>
+                            </DropdownMenuItem>
+
+                            <DropdownMenuItem asChild>
+                                <Link
+                                    href="/informasi/kegiatan"
+                                    className="relative flex flex-col items-start gap-0 py-1.5 pr-6 focus:bg-gray-200! focus:text-black! dark:focus:bg-black! dark:focus:text-white!"
+                                >
+                                    <span className="font-medium leading-none">Kegiatan</span>
+                                    <span className="line-clamp-1 -mt-0.5 w-full text-xs leading-none text-muted-foreground">
+                                        Agenda kegiatan perpustakaan
+                                    </span>
+                                    <ChevronRight className="absolute top-1/2 right-2 h-3.5 w-3.5 -translate-y-1/2" />
+                                </Link>
+                            </DropdownMenuItem>
+
+                            <DropdownMenuItem asChild>
+                                <Link
+                                    href="/informasi/hari-libur"
+                                    className="relative flex flex-col items-start gap-0 py-1.5 pr-6 focus:bg-gray-200! focus:text-black! dark:focus:bg-black! dark:focus:text-white!"
+                                >
+                                    <span className="font-medium leading-none">Hari Libur</span>
+                                    <span className="line-clamp-1 -mt-0.5 w-full text-xs leading-none text-muted-foreground">
+                                        Jadwal libur dan tutup layanan
+                                    </span>
+                                    <ChevronRight className="absolute top-1/2 right-2 h-3.5 w-3.5 -translate-y-1/2" />
+                                </Link>
+                            </DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+
+                    {/* LAYANAN DROPDOWN */}
+                    {jenisLayanans && jenisLayanans.length > 0 && (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <button
+                                    type="button"
+                                    className="relative inline-flex items-center gap-1 after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-out hover:after:scale-x-100"
+                                >
+                                    Layanan
+                                    <ChevronDown className="h-3 w-3" />
+                                </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent
+                                align="start"
+                                className="z-[100] w-72 space-y-1 border border-white/40 bg-white/60 p-1.5 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-950/60"
+                            >
+                                <DropdownMenuItem asChild>
+                                    <Link
+                                        href="/layanan"
+                                        className="relative flex flex-col items-start gap-0 py-1.5 pr-6 focus:bg-gray-200! focus:text-black! dark:focus:bg-black! dark:focus:text-white!"
+                                    >
+                                        <span className="font-medium leading-none">
+                                            Semua Layanan
+                                        </span>
+                                        <span className="line-clamp-1 -mt-0.5 w-full text-xs leading-none text-muted-foreground">
+                                            Seluruh daftar layanan
+                                        </span>
+                                        <ChevronRight className="absolute top-1/2 right-2 h-3.5 w-3.5 -translate-y-1/2" />
+                                    </Link>
+                                </DropdownMenuItem>
+
+                                <div className="my-1 h-px bg-gray-200/70 dark:bg-gray-800/70" />
+
+                                {jenisLayanans.map((j) => (
+                                    <DropdownMenuItem key={j.id} asChild>
+                                        <Link
+                                            href={`/layanan/${j.slug}`}
+                                            className="relative flex flex-col items-start gap-0 py-1.5 pr-6 focus:bg-gray-200! focus:text-black! dark:focus:bg-black! dark:focus:text-white!"
+                                        >
+                                            <span className="font-medium leading-none">
+                                                {j.nama}
+                                            </span>
+                                            {j.deskripsi && (
+                                                <span className="line-clamp-1 -mt-0.5 w-full text-xs leading-none text-muted-foreground">
+                                                    {j.deskripsi}
+                                                </span>
+                                            )}
+                                            <ChevronRight className="absolute top-1/2 right-2 h-3.5 w-3.5 -translate-y-1/2" />
+                                        </Link>
+                                    </DropdownMenuItem>
+                                ))}
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    )}
+                    <Link
+                        href="/buletin"
+                        className="relative inline-block after:absolute after:-bottom-1 after:left-0 after:h-[2px] after:w-full after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-out hover:after:scale-x-100"
+                    >
+                        Buletin
+                    </Link>
                     </nav>
 
                     {/* RIGHT SIDE */}
                     <div className="col-start-3 flex items-center justify-self-end gap-6">
                         <Link
                             href='https://digilib.ibrahimy.ac.id/docs'
-                            className={`hidden items-center justify-center gap-2 rounded-md px-7 py-2.5 text-sm font-semibold shadow-lg transition-all duration-300 hover:scale-105 hover:shadow-green-500/30 focus:ring-2 focus:ring-offset-2 focus:outline-none active:scale-95 disabled:pointer-events-none disabled:opacity-50 md:inline-flex dark:hover:shadow-green-500/30 ${tc.bgGradient} ${tc.textWhite} ${tc.ring}`}
+                            className={`hidden items-center justify-center gap-2 rounded-md px-7 py-2.5 text-sm font-semibold shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:scale-105 hover:from-emerald-400 hover:to-green-500 hover:shadow-emerald-500/30 focus:ring-2 focus:ring-offset-2 focus:outline-none active:scale-95 disabled:pointer-events-none disabled:opacity-50 md:inline-flex dark:hover:shadow-emerald-500/30 bg-gradient-to-r from-emerald-500 to-green-600 text-white ${tc.ring}`}
                         >
                             Panduan
                         </Link>
@@ -242,6 +368,7 @@ export default function PublicHeader({ tentangs }: PublicHeaderProps) {
                                 >
                                     Home
                                 </a>
+
                                 {tentangs && tentangs.length > 0 && (
                                     <div className="flex flex-col gap-3">
                                         <span className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
@@ -262,6 +389,77 @@ export default function PublicHeader({ tentangs }: PublicHeaderProps) {
                                         </div>
                                     </div>
                                 )}
+
+                                <Link
+                                    href="/berita"
+                                    onClick={() => setOpen(false)}
+                                    className="text-base font-medium"
+                                >
+                                    Berita
+                                </Link>
+
+                                <Link
+                                    href="/buletin"
+                                    onClick={() => setOpen(false)}
+                                    className="text-base font-medium"
+                                >
+                                    Buletin
+                                </Link>
+
+                                <div className="flex flex-col gap-3">
+                                    <span className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
+                                        Informasi
+                                        <ChevronDown className="h-3 w-3" />
+                                    </span>
+                                    <div className="flex flex-col gap-3 border-l border-border pl-4">
+                                        <Link
+                                            href="/informasi/pengumuman"
+                                            onClick={() => setOpen(false)}
+                                            className="text-sm"
+                                        >
+                                            Pengumuman
+                                        </Link>
+                                        <Link
+                                            href="/informasi/kegiatan"
+                                            onClick={() => setOpen(false)}
+                                            className="text-sm"
+                                        >
+                                            Kegiatan
+                                        </Link>
+                                        <Link
+                                            href="/informasi/hari-libur"
+                                            onClick={() => setOpen(false)}
+                                            className="text-sm"
+                                        >
+                                            Hari Libur
+                                        </Link>
+                                    </div>
+                                </div>
+
+                                {jenisLayanans && jenisLayanans.length > 0 && (
+                                    <div className="flex flex-col gap-3">
+                                        <Link
+                                            href="/layanan"
+                                            onClick={() => setOpen(false)}
+                                            className="flex items-center gap-1 text-base font-medium"
+                                        >
+                                            Layanan
+                                            <ChevronDown className="h-3 w-3 text-gray-500 dark:text-gray-400" />
+                                        </Link>
+                                        <div className="flex flex-col gap-3 border-l border-border pl-4">
+                                            {jenisLayanans.map((j) => (
+                                                <Link
+                                                    key={j.id}
+                                                    href={`/layanan/${j.slug}`}
+                                                    onClick={() => setOpen(false)}
+                                                    className="text-sm"
+                                                >
+                                                    {j.nama}
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </nav>
 
                             {/* BUTTON */}
@@ -275,7 +473,7 @@ export default function PublicHeader({ tentangs }: PublicHeaderProps) {
                                 ) : (
                                     <Link href='https://digilib.ibrahimy.ac.id/docs'>
                                         <Button
-                                            className={`w-full rounded-md px-4 py-6 text-base font-semibold shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-green-500/30 focus:ring-2 focus:ring-offset-2 focus:outline-none active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 dark:hover:shadow-green-500/30 ${tc.bgGradient} ${tc.textWhite} ${tc.ring}`}
+                                            className={`w-full rounded-md px-4 py-6 text-base font-semibold shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:scale-[1.02] hover:from-emerald-400 hover:to-green-500 hover:shadow-emerald-500/30 focus:ring-2 focus:ring-offset-2 focus:outline-none active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 dark:hover:shadow-emerald-500/30 bg-gradient-to-r from-emerald-500 to-green-600 text-white ${tc.ring}`}
                                         >
                                             Panduan
                                         </Button>

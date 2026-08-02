@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Traits\RenamesContentImages;
+use App\Models\JenisLayanan;
 use App\Models\Pengumuman;
+use App\Models\Tentang;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -17,6 +19,28 @@ class PengumumanController extends Controller
 
         return Inertia::render('pengumuman/page', [
             'pengumumans' => $pengumumans,
+        ]);
+    }
+
+    public function publicIndex()
+    {
+        return Inertia::render('pengumuman/public', [
+            'pengumumans' => Pengumuman::orderBy('created_at', 'desc')->get(),
+            'tentangs' => Tentang::select('nama', 'slug', 'isi')->get(),
+            'jenisLayanans' => JenisLayanan::orderBy('nama')->get(),
+        ]);
+    }
+
+    public function publicShow(Pengumuman $pengumuman)
+    {
+        return Inertia::render('pengumuman/show', [
+            'pengumuman' => $pengumuman,
+            'pengumumanLainnya' => Pengumuman::where('id', '!=', $pengumuman->id)
+                ->orderBy('created_at', 'desc')
+                ->take(3)
+                ->get(),
+            'tentangs' => Tentang::select('nama', 'slug', 'isi')->get(),
+            'jenisLayanans' => JenisLayanan::orderBy('nama')->get(),
         ]);
     }
 
