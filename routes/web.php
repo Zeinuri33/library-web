@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BeritaController;
+use App\Http\Controllers\BuletinController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HariLiburController;
 use App\Http\Controllers\JenisLayananController;
@@ -198,6 +199,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/kegiatan/{kegiatan}', [KegiatanController::class, 'destroy'])
             ->middleware('permission:hapus-kegiatan')
             ->name('kegiatan.destroy');
+
+        /**
+         * Buletin
+         */
+        Route::get('/buletin', [BuletinController::class, 'index'])
+            ->middleware('permission:lihat-buletin')
+            ->name('buletin.index');
+        Route::post('/buletin', [BuletinController::class, 'store'])
+            ->middleware('permission:tambah-buletin');
+        Route::put('/buletin/{buletin}', [BuletinController::class, 'update'])
+            ->middleware('permission:edit-buletin')
+            ->name('buletin.update');
+        Route::delete('/buletin/{buletin}', [BuletinController::class, 'destroy'])
+            ->middleware('permission:hapus-buletin')
+            ->name('buletin.destroy');
     });
 });
 

@@ -1,5 +1,6 @@
 import { Head } from '@inertiajs/react';
 import { Users, Shield, ArrowUpRight, TrendingUp, ArrowUp, Newspaper, Megaphone, CalendarDays, CalendarOff, MapPin, Info, HandPlatter } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
 import { dashboard } from '@/routes';
 
 interface ActivityLogItem {
@@ -129,6 +130,25 @@ export default function Dashboard({
             minute: '2-digit',
         });
 
+    const quickGridRef = useRef<HTMLDivElement>(null);
+    const [quickHeight, setQuickHeight] = useState(0);
+
+    useEffect(() => {
+        const el = quickGridRef.current;
+
+        if (!el) {
+            return;
+        }
+
+        const update = () => setQuickHeight(el.offsetHeight);
+        update();
+
+        const observer = new ResizeObserver(update);
+        observer.observe(el);
+
+        return () => observer.disconnect();
+    }, []);
+
     return (
         <>
             <Head title="Dashboard" />
@@ -191,7 +211,7 @@ export default function Dashboard({
                         <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
                             AKSI CEPAT
                         </h2>
-                        <div className="grid gap-3 grid-cols-1 sm:grid-cols-3">
+                        <div className="grid gap-3 grid-cols-1 sm:grid-cols-3" ref={quickGridRef}>
                             {quickLinks.map((item) => {
                                 const Icon = item.icon;
 
@@ -220,7 +240,10 @@ export default function Dashboard({
                         <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
                             RIWAYAT LOG SISTEM
                         </h2>
-                        <div className="flex min-h-0 flex-1 flex-col rounded-xl border bg-card p-4 shadow-soft">
+                        <div
+                            className="flex flex-col rounded-xl border bg-card p-4 shadow-soft"
+                            style={{ height: quickHeight || undefined }}
+                        >
                             {activityLogs.length === 0 ? (
                                 <p className="text-sm text-muted-foreground">Belum ada aktivitas.</p>
                             ) : (

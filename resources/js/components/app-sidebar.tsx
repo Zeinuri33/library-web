@@ -7,6 +7,7 @@ import {
     LayoutList,
     Newspaper,
     HandPlatter,
+    BookOpen,
 } from 'lucide-react'
 import AppLogo from '@/components/app-logo'
 import AppearanceToggleIcon from '@/components/appearance-tabs'
@@ -78,11 +79,19 @@ export function AppSidebar() {
                         href: '/admin/layanan',
                     }]
                     : []),
+                
                 ...(can('lihat-lokasi')
                     ? [{
                         title: 'Lokasi',
                         icon: MapPin,
                         href: '/admin/lokasi',
+                    }]
+                    : []),
+                ...(can('lihat-buletin')
+                    ? [{
+                        title: 'Buletin',
+                        icon: BookOpen,
+                        href: '/admin/buletin',
                     }]
                     : []),
                 ...(informasiChildren.length > 0
@@ -92,7 +101,7 @@ export function AppSidebar() {
                         children: informasiChildren,
                     }]
                     : []),
-
+                
             ]
         },
 
