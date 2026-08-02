@@ -54,6 +54,7 @@ type BeritaFormProps = {
         slug: string
         thumbnail: string | null
         isi: string
+        tanggal?: string
     }
     mode: "create" | "edit"
 }
@@ -72,9 +73,25 @@ export default function BeritaForm({ berita, mode }: BeritaFormProps) {
         : "Buat berita menggunakan editor modern."
     const placeholder = "Tulis isi berita di sini..."
 
+    const todayStr = () => {
+        const now = new Date()
+        const y = now.getFullYear()
+        const m = String(now.getMonth() + 1).padStart(2, "0")
+        const d = String(now.getDate()).padStart(2, "0")
+
+        return `${y}-${m}-${d}`
+    }
+
+    const toDateInput = (value?: string | null) => {
+        const match = value?.match(/^(\d{4})-(\d{2})-(\d{2})/)
+
+        return match ? match[0] : ""
+    }
+
     const [judul, setJudul] = useState(berita?.judul || "")
     const [slug, setSlug] = useState(berita?.slug || "")
     const [thumbnail, setThumbnail] = useState(berita?.thumbnail || "")
+    const [tanggal, setTanggal] = useState(toDateInput(berita?.tanggal) || todayStr())
 
     const [uploadingThumb, setUploadingThumb] = useState(false)
     const [thumbDragOver, setThumbDragOver] = useState(false)
@@ -100,6 +117,7 @@ export default function BeritaForm({ berita, mode }: BeritaFormProps) {
     })
 
     const [isDirty, setIsDirty] = useState(false)
+    const isDirtyRef = useRef(isDirty)
     const uploadedRef = useRef<string[]>([])
     const savingRef = useRef(false)
     const [, forceUpdate] = useState(0)
@@ -126,12 +144,16 @@ export default function BeritaForm({ berita, mode }: BeritaFormProps) {
     }
 
     useEffect(() => {
+        isDirtyRef.current = isDirty
+    }, [isDirty])
+
+    useEffect(() => {
         return () => {
-            if (!savingRef.current && (isDirty || uploadedRef.current.length > 0)) {
+            if (!savingRef.current && (isDirtyRef.current || uploadedRef.current.length > 0)) {
                 deleteUploaded()
             }
         }
-    }, [isDirty])
+    }, [])
 
     useEffect(() => {
         const handler = (e: BeforeUnloadEvent) => {
@@ -165,6 +187,7 @@ return
             setJudul(parsed.judul || "")
             setSlug(parsed.slug || "")
             setThumbnail(parsed.thumbnail || "")
+            setTanggal(toDateInput(parsed.tanggal) || todayStr())
         } catch (error) {
             console.error(error)
         }
@@ -231,6 +254,7 @@ return
                     judul,
                     slug,
                     thumbnail,
+                    tanggal,
                     isi: editor.getHTML(),
                 })
             )
@@ -270,6 +294,7 @@ return
                 judul,
                 slug,
                 thumbnail,
+                tanggal,
                 isi: editor.getHTML(),
             })
         )
@@ -301,6 +326,7 @@ return
     const uploadThumbFile = async (file: File) => {
         const formData = new FormData()
         formData.append("file", file)
+        formData.append("folder", "berita")
 
         try {
             setUploadingThumb(true)
@@ -405,7 +431,7 @@ return
             },
         } as const
 
-        const payload = { judul, slug, thumbnail, isi: html }
+        const payload = { judul, slug, thumbnail, isi: html, tanggal }
 
         if (isEdit) {
             router.put(submitUrl, payload, options)
@@ -498,6 +524,15 @@ return
                                         value={slug}
                                         onChange={(e) => setSlug(e.target.value)}
                                         placeholder="Contoh: kunjungan-studi-banding"
+                                    />
+                                </div>
+
+                                <div>
+                                    <Label className="pb-2">Tanggal</Label>
+                                    <Input
+                                        type="date"
+                                        value={tanggal}
+                                        onChange={(e) => setTanggal(e.target.value)}
                                     />
                                 </div>
 
@@ -712,6 +747,7 @@ return
                                 />
 
                                 <ImageModal
+                                    folder="berita"
                                     open={showImageModal}
                                     onClose={() =>
                                         setShowImageModal(false)

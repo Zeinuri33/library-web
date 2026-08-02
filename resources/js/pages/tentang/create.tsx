@@ -73,6 +73,7 @@ export default function CreateTentang() {
     })
 
     const [isDirty, setIsDirty] = useState(false)
+    const isDirtyRef = useRef(isDirty)
     const uploadedRef = useRef<string[]>([])
     const savingRef = useRef(false)
     const [, forceUpdate] = useState(0)
@@ -99,12 +100,16 @@ export default function CreateTentang() {
     }
 
     useEffect(() => {
+        isDirtyRef.current = isDirty
+    }, [isDirty])
+
+    useEffect(() => {
         return () => {
-            if (!savingRef.current && (isDirty || uploadedRef.current.length > 0)) {
+            if (!savingRef.current && (isDirtyRef.current || uploadedRef.current.length > 0)) {
                 deleteUploaded()
             }
         }
-    }, [isDirty])
+    }, [])
 
     useEffect(() => {
         const handler = (e: BeforeUnloadEvent) => {
@@ -477,6 +482,8 @@ return
                                 />
 
                                 <ImageModal
+                                    folder="tentang"
+                                    name={slug}
                                     open={showImageModal}
                                     onClose={() =>
                                         setShowImageModal(false)

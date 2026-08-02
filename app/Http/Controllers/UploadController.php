@@ -19,15 +19,49 @@ class UploadController extends Controller
 
         $request->validate([
             'file' => 'required|image|max:5120',
+            'folder' => 'sometimes|string|in:berita,tentang,buletin,pengumuman',
+            'name' => 'sometimes|nullable|string|max:255',
         ]);
 
-        $path = $request->file('file')->store('tentang', 'public');
+        $folder = $request->input('folder', 'tentang');
+
+        $path = $this->storeFile($request, $folder);
 
         \Log::info('File stored', ['path' => $path, 'full_path' => storage_path('app/public/' . $path)]);
 
         return response()->json([
             'url' => asset('storage/' . $path),
         ]);
+    }
+
+    private function storeFile(Request $request, string $folder): string
+    {
+        $file = $request->file('file');
+        $name = $request->input('name');
+
+        if ($name === null || trim($name) === '') {
+            return $file->store($folder, 'public');
+        }
+
+        $base = preg_replace('/[^a-z0-9-]+/i', '-', $name);
+        $base = trim($base, '-');
+
+        if ($base === '') {
+            return $file->store($folder, 'public');
+        }
+
+        $extension = $file->getClientOriginalExtension() ?: 'png';
+        $disk = Storage::disk('public');
+
+        $filename = $base . '.' . $extension;
+        $counter = 1;
+
+        while ($disk->exists($folder . '/' . $filename)) {
+            $filename = $base . '(' . $counter . ').' . $extension;
+            $counter++;
+        }
+
+        return $file->storeAs($folder, $filename, 'public');
     }
 
     public function destroy(Request $request)

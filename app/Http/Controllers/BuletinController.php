@@ -26,7 +26,7 @@ class BuletinController extends Controller
             'file_pdf' => 'required|file|mimes:pdf|max:10240',
         ]);
 
-        $path = $request->file('file_pdf')->store('buletin', 'public');
+            $path = $request->file('file_pdf')->storeAs('buletin', $this->buildFileName($request), 'public');
 
         Buletin::create([
             'edisi' => $validated['edisi'],
@@ -51,7 +51,7 @@ class BuletinController extends Controller
                 Storage::disk('public')->delete($buletin->file_pdf);
             }
 
-            $path = $request->file('file_pdf')->store('buletin', 'public');
+        $path = $request->file('file_pdf')->storeAs('buletin', $this->buildFileName($request), 'public');
         } else {
             $path = $buletin->file_pdf;
         }
@@ -76,5 +76,14 @@ class BuletinController extends Controller
 
         return redirect()->route('buletin.index')
             ->with('success', 'Buletin berhasil dihapus');
+    }
+
+    private function buildFileName(Request $request): string
+    {
+        $edisi = preg_replace('/\D/', '', (string) $request->input('edisi')) ?: '0';
+        $tanggal = \Carbon\Carbon::parse($request->input('tanggal_terbit'))->format('Y-m-d');
+        $extension = $request->file('file_pdf')->getClientOriginalExtension() ?: 'pdf';
+
+        return "edisi-{$edisi}-{$tanggal}.{$extension}";
     }
 }

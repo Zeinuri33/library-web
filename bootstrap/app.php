@@ -39,6 +39,7 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->validateCsrfTokens(except: [
             '/admin/upload-image',
+            '/admin/upload-image/delete',
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

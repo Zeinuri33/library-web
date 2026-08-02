@@ -70,6 +70,7 @@ class LayananController extends Controller
             'deskripsi' => 'nullable|string',
             'jenis_layanan_id' => 'required_without:jenis_baru|nullable|exists:jenis_layanan,id',
             'jenis_baru' => 'required_without:jenis_layanan_id|nullable|string|max:255',
+            'jenis_baru_deskripsi' => 'nullable|string|max:5000',
         ];
     }
 
@@ -78,7 +79,10 @@ class LayananController extends Controller
         $jenisLayanan = null;
 
         if (! empty($validated['jenis_baru'])) {
-            $jenisLayanan = JenisLayanan::firstOrCreate(['nama' => trim($validated['jenis_baru'])]);
+            $jenisLayanan = JenisLayanan::firstOrCreate(
+                ['nama' => trim($validated['jenis_baru'])],
+                ['deskripsi' => trim($validated['jenis_baru_deskripsi'] ?? '') ?: null],
+            );
         } elseif (! empty($validated['jenis_layanan_id'])) {
             $jenisLayanan = JenisLayanan::find($validated['jenis_layanan_id']);
         }

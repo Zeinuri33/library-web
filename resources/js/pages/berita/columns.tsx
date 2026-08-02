@@ -98,7 +98,7 @@ export const columns: ColumnDef<Berita>[] = [
             <DataTableSortHeader column={column}>Judul</DataTableSortHeader>
         ),
         cell: ({ row }) => (
-            <div className="flex items-center gap-3 ml-3">
+            <div className="flex items-center gap-3 ml-3 min-w-[150px]">
                 {row.original.thumbnail ? (
                     <img
                         src={row.original.thumbnail}
@@ -108,31 +108,14 @@ export const columns: ColumnDef<Berita>[] = [
                 ) : (
                     <div className="h-10 w-14 rounded-md border border-border/80 bg-muted/40 shrink-0" />
                 )}
-                <div className="font-medium text-sm text-foreground">
-                    {row.getValue("judul")}
+                <div className="min-w-0 flex-1">
+                    <p className="font-medium text-sm text-foreground leading-snug whitespace-normal">
+                        {row.getValue("judul")}
+                    </p>
+                    <p className="text-xs text-muted-foreground truncate">
+                        {row.original.slug}
+                    </p>
                 </div>
-            </div>
-        ),
-    },
-
-    {
-        accessorKey: "slug",
-        header: ({ column }) => (
-            <DataTableSortHeader column={column}>Slug</DataTableSortHeader>
-        ),
-        cell: ({ row }) => (
-            <div className="ml-3 text-sm text-muted-foreground">
-                {row.getValue("slug")}
-            </div>
-        ),
-    },
-
-    {
-        accessorKey: "deskripsi",
-        header: "Ringkasan",
-        cell: ({ row }) => (
-            <div className="ml-3 text-sm text-muted-foreground max-w-[320px] truncate">
-                {row.getValue("deskripsi")}
             </div>
         ),
     },

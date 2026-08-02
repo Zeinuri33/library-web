@@ -39,12 +39,16 @@ interface Props {
     open: boolean
     onClose: () => void
     onInsert: (url: string) => void
+    folder?: string
+    name?: string
 }
 
 export default function ImageModal({
     open,
     onClose,
     onInsert,
+    folder = "tentang",
+    name,
 }: Props) {
     const [tab, setTab] =
         useState<"url" | "upload">("upload")
@@ -93,6 +97,12 @@ export default function ImageModal({
         const formData = new FormData()
 
         formData.append("file", file)
+
+        formData.append("folder", folder)
+
+        if (name) {
+            formData.append("name", name)
+        }
 
         try {
             setUploading(true)

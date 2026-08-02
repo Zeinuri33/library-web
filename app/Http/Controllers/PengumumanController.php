@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Traits\RenamesContentImages;
 use App\Models\Pengumuman;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class PengumumanController extends Controller
 {
+    use RenamesContentImages;
+
     public function index()
     {
         $pengumumans = Pengumuman::orderBy('created_at', 'desc')->get();
@@ -26,12 +29,16 @@ class PengumumanController extends Controller
     {
         $request->validate([
             'judul' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:pengumuman,slug',
             'isi' => 'required|string',
         ]);
 
+        $isi = $this->renameContentImages($request->isi, $request->slug, 'pengumuman');
+
         Pengumuman::create([
             'judul' => $request->judul,
-            'isi' => $request->isi,
+            'slug' => $request->slug,
+            'isi' => $isi,
         ]);
 
         return redirect()->route('pengumuman.index')
@@ -49,13 +56,22 @@ class PengumumanController extends Controller
     {
         $request->validate([
             'judul' => 'required|string|max:255',
+            'slug' => 'required|string|max:255|unique:pengumuman,slug,'.$pengumuman->id,
             'isi' => 'required|string',
         ]);
 
+        $oldSlug = $pengumuman->slug;
+        $newSlug = $request->slug;
+
+        $isi = $this->renameContentImages($request->isi, $newSlug, 'pengumuman');
+
         $pengumuman->update([
             'judul' => $request->judul,
-            'isi' => $request->isi,
+            'slug' => $newSlug,
+            'isi' => $isi,
         ]);
+
+        $this->cleanupOldSlugFiles($oldSlug, $newSlug, 'pengumuman');
 
         return redirect()->route('pengumuman.index')
             ->with('success', 'Pengumuman berhasil diperbarui');
@@ -64,6 +80,8 @@ class PengumumanController extends Controller
     public function destroy(Pengumuman $pengumuman)
     {
         $pengumuman->delete();
+
+        $this->deleteSluggedFiles($pengumuman->slug, 'pengumuman');
 
         return redirect()->route('pengumuman.index')
             ->with('success', 'Pengumuman berhasil dihapus');

@@ -31,6 +31,7 @@ export default function CreateLayananModal({
         deskripsi: "",
         jenis_layanan_id: "",
         jenis_baru: "",
+        jenis_baru_deskripsi: "",
     })
 
     const getNow = () =>

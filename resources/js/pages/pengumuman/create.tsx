@@ -51,6 +51,19 @@ const STORAGE_KEY = "create-pengumuman-draft"
 
 export default function CreatePengumuman() {
     const [judul, setJudul] = useState("")
+    const [slug, setSlug] = useState("")
+
+    const generateSlug = (value: string) => {
+        const generated = value
+            .toLowerCase()
+            .replace(/[^a-z0-9\s-]/g, "")
+            .replace(/\s+/g, "-")
+            .replace(/-+/g, "-")
+            .trim()
+        setSlug(generated)
+
+        return generated
+    }
 
     const [showImageModal, setShowImageModal] = useState(false)
 
@@ -72,6 +85,7 @@ export default function CreatePengumuman() {
     })
 
     const [isDirty, setIsDirty] = useState(false)
+    const isDirtyRef = useRef(isDirty)
     const uploadedRef = useRef<string[]>([])
     const savingRef = useRef(false)
     const [, forceUpdate] = useState(0)
@@ -98,12 +112,16 @@ export default function CreatePengumuman() {
     }
 
     useEffect(() => {
+        isDirtyRef.current = isDirty
+    }, [isDirty])
+
+    useEffect(() => {
         return () => {
-            if (!savingRef.current && (isDirty || uploadedRef.current.length > 0)) {
+            if (!savingRef.current && (isDirtyRef.current || uploadedRef.current.length > 0)) {
                 deleteUploaded()
             }
         }
-    }, [isDirty])
+    }, [])
 
     useEffect(() => {
         const handler = (e: BeforeUnloadEvent) => {
@@ -135,6 +153,7 @@ return
         try {
             const parsed = JSON.parse(saved)
             setJudul(parsed.judul || "")
+            setSlug(parsed.slug || "")
         } catch (error) {
             console.error(error)
         }
@@ -199,6 +218,7 @@ return
                 STORAGE_KEY,
                 JSON.stringify({
                     judul,
+                    slug,
                     isi: editor.getHTML(),
                 })
             )
@@ -236,6 +256,7 @@ return
             STORAGE_KEY,
             JSON.stringify({
                 judul,
+                slug,
                 isi: editor.getHTML(),
             })
         )
@@ -265,6 +286,12 @@ return
             return
         }
 
+        if (!slug.trim()) {
+            toast("Slug wajib diisi")
+
+            return
+        }
+
         const html = editor.getHTML()
 
         if (html === "<p></p>") {
@@ -279,6 +306,7 @@ return
             "/admin/pengumuman",
             {
                 judul,
+                slug,
                 isi: html,
             },
             {
@@ -456,6 +484,7 @@ return
                                 />
 
                                 <ImageModal
+                                    folder="pengumuman"
                                     open={showImageModal}
                                     onClose={() =>
                                         setShowImageModal(false)
@@ -672,8 +701,24 @@ return
                                     <Label className="pb-2">Judul</Label>
                                     <Input
                                         value={judul}
-                                        onChange={(e) => setJudul(e.target.value)}
+                                        onChange={(e) => {
+                                            const value = e.target.value
+                                            setJudul(value)
+
+                                            if (!slug || slug === generateSlug(judul)) {
+                                                generateSlug(value)
+                                            }
+                                        }}
                                         placeholder="Contoh: Libur Hari Kemerdekaan"
+                                    />
+                                </div>
+
+                                <div>
+                                    <Label className="pb-2">Slug</Label>
+                                    <Input
+                                        value={slug}
+                                        onChange={(e) => setSlug(e.target.value)}
+                                        placeholder="Contoh: libur-hari-kemerdekaan"
                                     />
                                 </div>
 

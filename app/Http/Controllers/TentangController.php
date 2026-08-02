@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Traits\RenamesContentImages;
 use App\Models\Tentang;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
 class TentangController extends Controller
 {
+    use RenamesContentImages;
     public function index()
     {
         $tentangs = Tentang::orderBy('created_at', 'desc')->get();
@@ -30,10 +32,12 @@ class TentangController extends Controller
             'isi' => 'required|string',
         ]);
 
+        $isi = $this->renameContentImages($request->isi, $request->slug, 'tentang');
+
         Tentang::create([
             'nama' => $request->nama,
             'slug' => $request->slug,
-            'isi' => $request->isi,
+            'isi' => $isi,
         ]);
 
         return redirect()->route('tentang.index')
@@ -55,11 +59,18 @@ class TentangController extends Controller
             'isi' => 'required|string',
         ]);
 
+        $oldSlug = $tentang->slug;
+        $newSlug = $request->slug;
+
+        $isi = $this->renameContentImages($request->isi, $newSlug, 'tentang');
+
         $tentang->update([
             'nama' => $request->nama,
-            'slug' => $request->slug,
-            'isi' => $request->isi,
+            'slug' => $newSlug,
+            'isi' => $isi,
         ]);
+
+        $this->cleanupOldSlugFiles($oldSlug, $newSlug, 'tentang');
 
         return redirect()->route('tentang.index')
             ->with('success', 'Tentang berhasil diperbarui');
@@ -77,7 +88,11 @@ class TentangController extends Controller
 
     public function destroy(Tentang $tentang)
     {
+        $slug = $tentang->slug;
+
         $tentang->delete();
+
+        $this->deleteSluggedFiles($slug, 'tentang');
 
         return redirect()->route('tentang.index')
             ->with('success', 'Tentang berhasil dihapus');

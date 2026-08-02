@@ -45,6 +45,7 @@ export default function EditLayananModal({
         deskripsi: "",
         jenis_layanan_id: "",
         jenis_baru: "",
+        jenis_baru_deskripsi: "",
     })
 
     useEffect(() => {
@@ -58,6 +59,7 @@ export default function EditLayananModal({
                     ? String(layanan.jenis_layanan.id)
                     : "",
                 jenis_baru: "",
+                jenis_baru_deskripsi: "",
             })
         }
     }, [layanan, open])

@@ -29,6 +29,7 @@ import {
 export type Pengumuman = {
     id: number
     judul: string
+    slug: string
     isi: string
     deskripsi: string
     created_at: string
@@ -96,8 +97,13 @@ export const columns: ColumnDef<Pengumuman>[] = [
             <DataTableSortHeader column={column}>Judul</DataTableSortHeader>
         ),
         cell: ({ row }) => (
-            <div className="ml-3 font-medium text-sm text-foreground">
-                {row.getValue("judul")}
+            <div className="ml-3 min-w-[150px]">
+                <div className="font-medium text-sm text-foreground whitespace-normal leading-snug">
+                    {row.getValue("judul")}
+                </div>
+                <p className="text-xs text-muted-foreground truncate">
+                    {row.original.slug}
+                </p>
             </div>
         ),
     },

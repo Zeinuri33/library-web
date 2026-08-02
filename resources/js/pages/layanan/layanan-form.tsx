@@ -32,6 +32,7 @@ type LayananData = {
     deskripsi: string
     jenis_layanan_id: string
     jenis_baru: string
+    jenis_baru_deskripsi: string
 }
 
 type LayananFormFieldsProps = {
@@ -222,6 +223,23 @@ export function LayananFormFields({
                     {errors.jenis_baru && (
                         <p className="text-sm text-destructive">
                             {errors.jenis_baru}
+                        </p>
+                    )}
+                </div>
+
+                <div className="space-y-2">
+                    <Label>Deskripsi Jenis Baru (opsional)</Label>
+                    <Textarea
+                        rows={3}
+                        value={data.jenis_baru_deskripsi}
+                        onChange={(e) =>
+                            setData("jenis_baru_deskripsi", e.target.value)
+                        }
+                        placeholder="Deskripsi singkat jenis layanan baru…"
+                    />
+                    {errors.jenis_baru_deskripsi && (
+                        <p className="text-sm text-destructive">
+                            {errors.jenis_baru_deskripsi}
                         </p>
                     )}
                 </div>

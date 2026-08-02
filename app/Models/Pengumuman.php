@@ -9,7 +9,7 @@ class Pengumuman extends Model
 {
     protected $table = 'pengumuman';
 
-    protected $fillable = ['judul', 'isi'];
+    protected $fillable = ['judul', 'slug', 'isi'];
 
     protected $appends = ['deskripsi'];
 

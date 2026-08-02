@@ -10,6 +10,7 @@ class JenisLayanan extends Model
 
     protected $fillable = [
         'nama',
+        'deskripsi',
     ];
 
     protected function casts(): array
