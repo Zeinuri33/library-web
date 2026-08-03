@@ -1,9 +1,10 @@
 'use client';
 
-import { Link, usePage } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronDown, ChevronRight } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { ChevronDown, ChevronRight, Search } from 'lucide-react';
+import { useCallback, useEffect, useState } from 'react';
+import SiteSearchModal from '@/components/site-search-modal';
 import { Button } from '@/components/ui/button';
 import {
     DropdownMenu,
@@ -12,7 +13,6 @@ import {
     DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { useThemeClasses } from '@/hooks/use-theme-classes';
-import { dashboard } from '@/routes';
 
 interface PublicHeaderProps {
     tentangs?: { nama: string; slug: string; deskripsi?: string }[];
@@ -21,9 +21,15 @@ interface PublicHeaderProps {
 
 export default function PublicHeader({ tentangs, jenisLayanans }: PublicHeaderProps) {
     const { tc } = useThemeClasses();
-    const { auth } = usePage().props;
     const [open, setOpen] = useState(false);
     const [scrolled, setScrolled] = useState(false);
+    const [searchOpen, setSearchOpen] = useState(false);
+    const [openMenus, setOpenMenus] = useState<Record<string, boolean>>({});
+    const closeSearch = useCallback(() => setSearchOpen(false), []);
+
+    const toggleMenu = (key: string) => {
+        setOpenMenus((prev) => ({ ...prev, [key]: !prev[key] }));
+    };
 
     useEffect(() => {
         const handleScroll = () => {
@@ -47,16 +53,16 @@ export default function PublicHeader({ tentangs, jenisLayanans }: PublicHeaderPr
             >
                 <div className="mx-auto grid max-w-7xl grid-cols-3 items-center px-4 py-4">
                     {/* LOGO */}
-                    <Link href="/" className="flex items-center gap-3 justify-self-start">
+                    <Link href="/" className="col-span-2 flex min-w-0 items-center gap-3 justify-self-start md:col-span-1">
                         <img
-                            src="/kubah.png"
-                            className={`h-10 ${scrolled ? 'dark:hidden' : 'hidden'}`}
+                            src="/logo.png"
+                            className={`h-8 ${scrolled ? 'dark:hidden' : 'hidden'}`}
                             alt="Logo"
                         />
 
                         <img
-                            src="/kubah-putih.png"
-                            className={`h-10 ${scrolled ? 'hidden dark:block' : ''}`}
+                            src="/logo-white.png"
+                            className={`h-8 ${scrolled ? 'hidden dark:block' : ''}`}
                             alt="Logo Dark"
                         />
 
@@ -70,9 +76,10 @@ export default function PublicHeader({ tentangs, jenisLayanans }: PublicHeaderPr
                                 stiffness: 200,
                                 damping: 20,
                             }}
+                            className="min-w-0"
                         >
                             <h1
-                                className={`text-sm font-bold bg-clip-text text-transparent ${
+                                className={`truncate text-sm font-bold bg-clip-text text-transparent ${
                                     scrolled ? 'bg-gray-900 dark:bg-white' : 'bg-white dark:bg-white'
                                 }`}
                             >
@@ -80,7 +87,7 @@ export default function PublicHeader({ tentangs, jenisLayanans }: PublicHeaderPr
                             </h1>
 
                             <p
-                                className={`text-xs ${
+                                className={`truncate text-xs ${
                                     scrolled ? 'text-gray-600 dark:text-gray-400' : 'text-white dark:text-white'
                                 }`}
                             >
@@ -266,12 +273,33 @@ export default function PublicHeader({ tentangs, jenisLayanans }: PublicHeaderPr
 
                     {/* RIGHT SIDE */}
                     <div className="col-start-3 flex items-center justify-self-end gap-6">
-                        <Link
-                            href='https://digilib.ibrahimy.ac.id/docs'
-                            className={`hidden items-center justify-center gap-2 rounded-md px-7 py-2.5 text-sm font-semibold shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:scale-105 hover:from-emerald-400 hover:to-green-500 hover:shadow-emerald-500/30 focus:ring-2 focus:ring-offset-2 focus:outline-none active:scale-95 disabled:pointer-events-none disabled:opacity-50 md:inline-flex dark:hover:shadow-emerald-500/30 bg-gradient-to-r from-emerald-500 to-green-600 text-white ${tc.ring}`}
+                        {/* SEARCH */}
+                        <button
+                            type="button"
+                            onClick={() => setSearchOpen(true)}
+                            aria-label="Cari di seluruh halaman"
+                            title="Cari di seluruh halaman"
+                            className={`hidden items-center justify-center rounded-md border px-3 py-2.5 transition-all duration-300 hover:scale-105 active:scale-95 md:inline-flex ${
+                                scrolled
+                                    ? 'border-gray-300/70 text-gray-600 hover:border-emerald-500/60 hover:text-emerald-600 dark:border-gray-700 dark:text-gray-300 dark:hover:border-emerald-500/50 dark:hover:text-emerald-400'
+                                    : 'border-white/40 text-white hover:border-white/80 hover:bg-white/10 dark:border-white/30'
+                            }`}
                         >
-                            Panduan
-                        </Link>
+                            <Search className="h-4 w-4" />
+                        </button>
+
+                        <a
+                            href="https://digilib.ibrahimy.ac.id/#kontak"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`hidden items-center justify-center gap-2 rounded-md px-7 py-2.5 text-sm font-semibold transition-all duration-300 hover:scale-105 focus:ring-2 focus:ring-offset-2 focus:outline-none active:scale-95 disabled:pointer-events-none disabled:opacity-50 md:inline-flex ${
+                                scrolled
+                                    ? 'bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg shadow-emerald-500/20 hover:from-emerald-400 hover:to-green-500 hover:shadow-emerald-500/30 dark:hover:shadow-emerald-500/30'
+                                    : 'bg-white text-emerald-600 shadow-lg shadow-emerald-500/20 hover:bg-emerald-600 hover:text-white hover:shadow-emerald-500/30'
+                            } ${tc.ring}`}
+                        >
+                            Tanya Pustakawan
+                        </a>
 
                         {/* MOBILE BUTTON */}
                         <div className="md:hidden">
@@ -337,11 +365,21 @@ export default function PublicHeader({ tentangs, jenisLayanans }: PublicHeaderPr
                             <div className="mb-8 flex items-center justify-between">
                                 {/* LEFT */}
                                 <h1 className="text-lg font-semibold">
-                                    Digital Library
+                                    Perpustakaan Ibrahimy
                                 </h1>
 
                                 {/* RIGHT (GROUP) */}
                                 <div className="flex items-center gap-3">
+                                    <button
+                                        onClick={() => {
+                                            setOpen(false);
+                                            setSearchOpen(true);
+                                        }}
+                                        aria-label="Cari di seluruh halaman"
+                                        className="text-foreground transition-colors hover:text-emerald-600 dark:hover:text-emerald-400"
+                                    >
+                                        <Search className="h-5 w-5" />
+                                    </button>
                                     <button
                                         onClick={() => setOpen(false)}
                                         className="relative h-6 w-6"
@@ -371,22 +409,32 @@ export default function PublicHeader({ tentangs, jenisLayanans }: PublicHeaderPr
 
                                 {tentangs && tentangs.length > 0 && (
                                     <div className="flex flex-col gap-3">
-                                        <span className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
+                                        <button
+                                            type="button"
+                                            onClick={() => toggleMenu('tentang')}
+                                            className="flex items-center justify-between gap-1 text-base font-medium"
+                                        >
                                             Tentang
-                                            <ChevronDown className="h-3 w-3" />
-                                        </span>
-                                        <div className="flex flex-col gap-3 border-l border-border pl-4">
-                                            {tentangs.map((t) => (
-                                                <Link
-                                                    key={t.slug}
-                                                    href={`/tentang/${t.slug}`}
-                                                    onClick={() => setOpen(false)}
-                                                    className="text-sm"
-                                                >
-                                                    {t.nama}
-                                                </Link>
-                                            ))}
-                                        </div>
+                                            <ChevronDown
+                                                className={`h-3 w-3 transition-transform duration-300 ${
+                                                    openMenus['tentang'] ? 'rotate-180' : ''
+                                                }`}
+                                            />
+                                        </button>
+                                        {openMenus['tentang'] && (
+                                            <div className="flex flex-col gap-3 border-l border-border pl-4">
+                                                {tentangs.map((t) => (
+                                                    <Link
+                                                        key={t.slug}
+                                                        href={`/tentang/${t.slug}`}
+                                                        onClick={() => setOpen(false)}
+                                                        className="text-sm"
+                                                    >
+                                                        {t.nama}
+                                                    </Link>
+                                                ))}
+                                            </div>
+                                        )}
                                     </div>
                                 )}
 
@@ -407,83 +455,98 @@ export default function PublicHeader({ tentangs, jenisLayanans }: PublicHeaderPr
                                 </Link>
 
                                 <div className="flex flex-col gap-3">
-                                    <span className="flex items-center gap-1 text-sm text-gray-500 dark:text-gray-400">
+                                    <button
+                                        type="button"
+                                        onClick={() => toggleMenu('informasi')}
+                                        className="flex items-center justify-between gap-1 text-base font-medium"
+                                    >
                                         Informasi
-                                        <ChevronDown className="h-3 w-3" />
-                                    </span>
-                                    <div className="flex flex-col gap-3 border-l border-border pl-4">
-                                        <Link
-                                            href="/informasi/pengumuman"
-                                            onClick={() => setOpen(false)}
-                                            className="text-sm"
-                                        >
-                                            Pengumuman
-                                        </Link>
-                                        <Link
-                                            href="/informasi/kegiatan"
-                                            onClick={() => setOpen(false)}
-                                            className="text-sm"
-                                        >
-                                            Kegiatan
-                                        </Link>
-                                        <Link
-                                            href="/informasi/hari-libur"
-                                            onClick={() => setOpen(false)}
-                                            className="text-sm"
-                                        >
-                                            Hari Libur
-                                        </Link>
-                                    </div>
+                                        <ChevronDown
+                                            className={`h-3 w-3 transition-transform duration-300 ${
+                                                openMenus['informasi'] ? 'rotate-180' : ''
+                                            }`}
+                                        />
+                                    </button>
+                                    {openMenus['informasi'] && (
+                                        <div className="flex flex-col gap-3 border-l border-border pl-4">
+                                            <Link
+                                                href="/informasi/pengumuman"
+                                                onClick={() => setOpen(false)}
+                                                className="text-sm"
+                                            >
+                                                Pengumuman
+                                            </Link>
+                                            <Link
+                                                href="/informasi/kegiatan"
+                                                onClick={() => setOpen(false)}
+                                                className="text-sm"
+                                            >
+                                                Kegiatan
+                                            </Link>
+                                            <Link
+                                                href="/informasi/hari-libur"
+                                                onClick={() => setOpen(false)}
+                                                className="text-sm"
+                                            >
+                                                Hari Libur
+                                            </Link>
+                                        </div>
+                                    )}
                                 </div>
 
                                 {jenisLayanans && jenisLayanans.length > 0 && (
                                     <div className="flex flex-col gap-3">
-                                        <Link
-                                            href="/layanan"
-                                            onClick={() => setOpen(false)}
-                                            className="flex items-center gap-1 text-base font-medium"
+                                        <button
+                                            type="button"
+                                            onClick={() => toggleMenu('layanan')}
+                                            className="flex items-center justify-between gap-1 text-base font-medium"
                                         >
                                             Layanan
-                                            <ChevronDown className="h-3 w-3 text-gray-500 dark:text-gray-400" />
-                                        </Link>
-                                        <div className="flex flex-col gap-3 border-l border-border pl-4">
-                                            {jenisLayanans.map((j) => (
-                                                <Link
-                                                    key={j.id}
-                                                    href={`/layanan/${j.slug}`}
-                                                    onClick={() => setOpen(false)}
-                                                    className="text-sm"
-                                                >
-                                                    {j.nama}
-                                                </Link>
-                                            ))}
-                                        </div>
+                                            <ChevronDown
+                                                className={`h-3 w-3 transition-transform duration-300 ${
+                                                    openMenus['layanan'] ? 'rotate-180' : ''
+                                                }`}
+                                            />
+                                        </button>
+                                        {openMenus['layanan'] && (
+                                            <div className="flex flex-col gap-3 border-l border-border pl-4">
+                                                {jenisLayanans.map((j) => (
+                                                    <Link
+                                                        key={j.id}
+                                                        href={`/layanan/${j.slug}`}
+                                                        onClick={() => setOpen(false)}
+                                                        className="text-sm"
+                                                    >
+                                                        {j.nama}
+                                                    </Link>
+                                                ))}
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                             </nav>
 
                             {/* BUTTON */}
                             <div className="mt-auto pt-6">
-                                {auth.user ? (
-                                    <Link href={dashboard()}>
-                                        <Button className="w-full rounded-full">
-                                            Dashboard
-                                        </Button>
-                                    </Link>
-                                ) : (
-                                    <Link href='https://digilib.ibrahimy.ac.id/docs'>
-                                        <Button
-                                            className={`w-full rounded-md px-4 py-6 text-base font-semibold shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:scale-[1.02] hover:from-emerald-400 hover:to-green-500 hover:shadow-emerald-500/30 focus:ring-2 focus:ring-offset-2 focus:outline-none active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 dark:hover:shadow-emerald-500/30 bg-gradient-to-r from-emerald-500 to-green-600 text-white ${tc.ring}`}
-                                        >
-                                            Panduan
-                                        </Button>
-                                    </Link>
-                                )}
+                                <a
+                                    href="https://digilib.ibrahimy.ac.id/#kontak"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    onClick={() => setOpen(false)}
+                                >
+                                    <Button
+                                        className={`w-full rounded-md px-4 py-6 text-base font-semibold shadow-lg shadow-emerald-500/20 transition-all duration-300 hover:scale-[1.02] hover:from-emerald-400 hover:to-green-500 hover:shadow-emerald-500/30 focus:ring-2 focus:ring-offset-2 focus:outline-none active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 dark:hover:shadow-emerald-500/30 bg-gradient-to-r from-emerald-500 to-green-600 text-white ${tc.ring}`}
+                                    >
+                                        Tanya Pustakawan
+                                    </Button>
+                                </a>
                             </div>
                         </motion.div>
                     </>
                 )}
             </AnimatePresence>
+
+            <SiteSearchModal open={searchOpen} onClose={closeSearch} />
         </>
     );
 }

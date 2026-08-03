@@ -48,13 +48,11 @@ export default function Footer({ tc, tentangs, jenisLayanans }: FooterProps) {
                     {/* LEFT */}
                     <div>
                         <h2 className="bg-gradient-to-r from-white to-emerald-100 bg-clip-text text-xl font-bold text-transparent">
-                            Ibrahimy Digital Library
+                            Perpustakaan Ibrahimy
                         </h2>
 
                         <p className="mt-4 max-w-md text-emerald-50/85">
-                            Digilib Perpustakaan Ibrahimy menyediakan akses
-                            mudah dan cepat ke berbagai koleksi digital untuk
-                            mendukung kegiatan belajar dan penelitian.
+                            Perpustakaan Ibrahimy adalah pusat informasi dan literasi Pondok Pesantren Salafiyah Syafi’iyah Sukorejo Situbondo yang melayani santri, mahasiswa, dosen, dan masyarakat.
                         </p>
 
                         {/* SOCIAL */}
@@ -244,7 +242,7 @@ export default function Footer({ tc, tentangs, jenisLayanans }: FooterProps) {
                 {/* BOTTOM */}
                 <div className="mt-12 flex flex-col items-center justify-between border-t border-white/10 pt-6 text-sm text-emerald-50/80 sm:flex-row">
                     <p>
-                        © {new Date().getFullYear()} Digilib Ibrahimy.
+                        © {new Date().getFullYear()} Ibrahimy Library.
                         All rights reserved.
                     </p>
 

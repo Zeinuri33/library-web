@@ -48,6 +48,7 @@ class DashboardController extends Controller
             'pengumumans' => Pengumuman::orderBy('created_at', 'desc')->take(3)->get(),
             'kegiatans' => Kegiatan::orderBy('tanggal', 'desc')->take(3)->get(),
             'beritas' => Berita::orderBy('tanggal', 'desc')->orderBy('created_at', 'desc')->take(3)->get(),
+            'hariLiburs' => HariLibur::orderBy('tanggal', 'desc')->take(3)->get(),
         ]);
     }
 }

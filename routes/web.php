@@ -11,6 +11,7 @@ use App\Http\Controllers\LokasiController;
 use App\Http\Controllers\PengumumanController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TentangController;
 use App\Http\Controllers\UploadController;
 use App\Http\Controllers\UserController;
@@ -29,6 +30,7 @@ Route::get('/informasi/pengumuman/{pengumuman:slug}', [PengumumanController::cla
 Route::get('/informasi/kegiatan', [KegiatanController::class, 'publicIndex'])->name('kegiatan.public');
 Route::get('/informasi/hari-libur', [HariLiburController::class, 'publicIndex'])->name('hari-libur.public');
 Route::get('/lokasi/{lokasi:slug}', [LokasiController::class, 'publicShow'])->name('lokasi.public.show');
+Route::get('/search', [SearchController::class, 'index'])->name('search.index');
 
 Route::middleware(['auth', 'verified'])->group(function () {
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { Head, Link, router } from '@inertiajs/react';
+import { Link } from '@inertiajs/react';
 import { motion } from 'framer-motion';
 import {
     ArrowRight,
@@ -13,7 +13,8 @@ import {
     Newspaper,
     Sun,
 } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import InfoTicker from '@/components/info-ticker';
+import type { InfoTickerItem } from '@/components/info-ticker';
 import { JadwalTable, StatusPill } from '@/components/jadwal-table';
 import PublicHeader from '@/components/public-header';
 import { useAppearance } from '@/hooks/use-appearance';
@@ -64,6 +65,12 @@ type BeritaItem = {
     thumbnail: string | null;
     tanggal: string | null;
     deskripsi?: string;
+};
+
+type HariLiburItem = {
+    id: number;
+    nama: string;
+    tanggal: string | null;
 };
 
 function SectionHeading({
@@ -119,6 +126,7 @@ export default function Welcome({
     pengumumans,
     kegiatans,
     beritas,
+    hariLiburs,
 }: {
     tentangs?: { nama: string; slug: string; deskripsi?: string }[];
     jenisLayanans?: JenisLayananItem[];
@@ -126,10 +134,45 @@ export default function Welcome({
     pengumumans?: PengumumanItem[];
     kegiatans?: KegiatanItem[];
     beritas?: BeritaItem[];
+    hariLiburs?: HariLiburItem[];
 }) {
-    const [inputValue, setInputValue] = useState('');
     const { appearance, updateAppearance } = useAppearance();
     const { tc } = useThemeClasses();
+
+    const tickerItems: InfoTickerItem[] = [
+        ...(beritas ?? []).map((b) => ({
+            id: `berita-${b.id}`,
+            type: 'berita' as const,
+            label: 'Berita',
+            title: b.judul,
+            date: b.tanggal,
+            href: `/berita/${b.slug}`,
+        })),
+        ...(pengumumans ?? []).map((p) => ({
+            id: `pengumuman-${p.id}`,
+            type: 'pengumuman' as const,
+            label: 'Pengumuman',
+            title: p.judul,
+            date: p.created_at,
+            href: `/informasi/pengumuman/${p.slug}`,
+        })),
+        ...(kegiatans ?? []).map((k) => ({
+            id: `kegiatan-${k.id}`,
+            type: 'kegiatan' as const,
+            label: 'Kegiatan',
+            title: k.nama,
+            date: k.tanggal,
+            href: '/informasi/kegiatan',
+        })),
+        ...(hariLiburs ?? []).map((h) => ({
+            id: `hari-libur-${h.id}`,
+            type: 'hari-libur' as const,
+            label: 'Hari Libur',
+            title: h.nama,
+            date: h.tanggal,
+            href: '/informasi/hari-libur',
+        })),
+    ];
 
     const cycleAppearance = () => {
         const modes: Array<'light' | 'dark'> = ['light', 'dark'];
@@ -139,65 +182,8 @@ export default function Welcome({
 
     const AppearanceIcon = appearance === 'dark' ? Moon : Sun;
 
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault();
-
-        if (!inputValue.trim()) {
-return;
-}
-
-        router.get('/result', {
-            q: inputValue,
-        });
-    };
-
-    //animasi search bar
-    const texts = [
-        'Cari koleksi...',
-        'Cari Buku...',
-        'Cari Jurnal...',
-        'Cari Skripsi...',
-        'Cari Artikel...',
-    ];
-
-    const [textIndex, setTextIndex] = useState(0);
-    const [displayText, setDisplayText] = useState('');
-    const [charIndex, setCharIndex] = useState(0);
-
-    useEffect(() => {
-        if (inputValue.length > 0) {
-return;
-}
-
-        const currentText = texts[textIndex];
-
-        const interval = setInterval(() => {
-            setDisplayText(currentText.slice(0, charIndex));
-
-            setCharIndex((prev) => {
-                const next = prev + 1;
-
-                if (next > currentText.length) {
-                    clearInterval(interval);
-
-                    setTimeout(() => {
-                        setTextIndex((t) => (t + 1) % texts.length);
-                        setCharIndex(0);
-                    }, 200);
-
-                    return prev;
-                }
-
-                return next;
-            });
-        }, 120);
-
-        return () => clearInterval(interval);
-    }, [charIndex, textIndex, inputValue]);
-
     return (
         <>
-            <Head title="Home" />
 
             <div
                 className={`relative min-h-screen overflow-hidden bg-slate-50 font-sans text-foreground transition-all duration-500 dark:bg-slate-950 ${tc.selection}`}
@@ -305,41 +291,17 @@ return;
                                 Membangun intelektual paripurna menuju pemberdayaan ummat.
                             </motion.p>
 
-                            {/* SEARCH FORM */}
-                            <motion.div
-                                className="mt-6 flex"
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.35, duration: 0.6 }}
-                            >
-                                <form
-                                    onSubmit={handleSearch}
-                                    className="relative w-full max-w-lg"
+                            {/* INFO TICKER */}
+                            {tickerItems.length > 0 && (
+                                <motion.div
+                                    className="mt-6"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.35, duration: 0.6 }}
                                 >
-                                    <input
-                                        type="text"
-                                        value={inputValue}
-                                        onChange={(e) => setInputValue(e.target.value)}
-                                        className="w-full rounded-xl bg-white/20 px-5 py-4 pr-28 text-white placeholder-white/50 shadow-lg focus:outline-none backdrop-blur-md"
-                                    />
-
-                                    {inputValue.length === 0 && (
-                                        <div className="absolute left-5 top-1/2 -translate-y-1/2 text-white/50 pointer-events-none">
-                                            {displayText}
-                                            <span className="animate-pulse">|</span>
-                                        </div>
-                                    )}
-
-                                    <button
-                                        type="submit"
-                                        className={`absolute right-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-md px-6 py-2.5 text-sm font-semibold text-emerald-700 bg-white shadow-lg transition-all duration-300 hover:bg-green-500 hover:text-white ${tc.ring}`}
-                                    >
-                                        Cari
-                                    </button>
-                                </form>
-                            </motion.div>
-
-                            
+                                    <InfoTicker items={tickerItems} />
+                                </motion.div>
+                            )}
                         </div>
 
                     </motion.div>
@@ -432,9 +394,9 @@ return;
                 >
                     <div className="mx-auto max-w-7xl px-6 md:px-12">
                         <SectionHeading
-                            eyebrow="Jam Buka"
-                            title="Jam Buka Setiap Lokasi"
-                            description="Jadwal operasional layanan di setiap lokasi, dengan sorotan jadwal hari ini."
+                            eyebrow="Lokasi"
+                            title="Lokasi dan Jadwal Operasional"
+                            description="Jadwal operasional layanan di setiap lokasi Perpustakaan Ibrahimy."
                         />
 
                         {!lokasis || lokasis.length === 0 ? (

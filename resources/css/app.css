@@ -374,4 +374,14 @@
     }
 }
 
+/* Info ticker — progres bar terisi penuh selama satu item tampil */
+@keyframes ticker-progress {
+    from {
+        width: 0%;
+    }
+    to {
+        width: 100%;
+    }
+}
+
 

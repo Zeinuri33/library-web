@@ -54,7 +54,7 @@ class BeritaController extends Controller
     public function publicIndex()
     {
         return Inertia::render('berita/public', [
-            'beritas' => Berita::orderBy('tanggal', 'desc')->orderBy('created_at', 'desc')->get(),
+            'beritas' => Berita::orderBy('tanggal', 'desc')->orderBy('created_at', 'desc')->paginate(9),
             'tentangs' => Tentang::select('nama', 'slug', 'isi')->get(),
             'jenisLayanans' => JenisLayanan::orderBy('nama')->get(),
         ]);
