@@ -37,6 +37,7 @@ export type Lokasi = {
     deskripsi: string | null
     latitude: number | null
     longitude: number | null
+    is_utama: boolean
     ringkasan_jam_buka: string[]
     created_at: string
     updated_at: string
@@ -103,8 +104,13 @@ export const columns: ColumnDef<Lokasi>[] = [
             <DataTableSortHeader column={column}>Nama</DataTableSortHeader>
         ),
         cell: ({ row }) => (
-            <div className="ml-3 font-medium text-sm text-foreground">
+            <div className="ml-3 flex items-center gap-2 font-medium text-sm text-foreground">
                 {row.getValue("nama")}
+                {row.original.is_utama && (
+                    <Badge className="border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400">
+                        Utama
+                    </Badge>
+                )}
             </div>
         ),
     },

@@ -15,6 +15,7 @@ type Lokasi = {
     deskripsi: string | null
     latitude: number | null
     longitude: number | null
+    is_utama: boolean
 }
 
 export default function EditLokasi({
@@ -38,6 +39,7 @@ export default function EditLokasi({
                     deskripsi: lokasi.deskripsi ?? "",
                     latitude: lokasi.latitude?.toString() ?? "",
                     longitude: lokasi.longitude?.toString() ?? "",
+                    is_utama: lokasi.is_utama,
                 }}
                 jamBuka={jamBuka}
                 method="put"

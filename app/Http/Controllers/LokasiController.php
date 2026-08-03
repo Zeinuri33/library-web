@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\JamBuka;
+use App\Models\JenisLayanan;
 use App\Models\Lokasi;
+use App\Models\Tentang;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -40,6 +42,7 @@ class LokasiController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate($this->rules());
+        $isUtama = (bool) ($validated['is_utama'] ?? false);
 
         $lokasi = Lokasi::create([
             'nama' => $validated['nama'],
@@ -50,12 +53,27 @@ class LokasiController extends Controller
             'deskripsi' => $validated['deskripsi'] ?? null,
             'latitude' => $validated['latitude'] ?? null,
             'longitude' => $validated['longitude'] ?? null,
+            'is_utama' => $isUtama,
         ]);
 
         $this->simpanJamBuka($lokasi, $validated['jam_buka']);
+        $this->terapkanIsUtama($lokasi, $isUtama);
 
         return redirect()->route('lokasi.index')
             ->with('success', 'Lokasi berhasil ditambahkan');
+    }
+
+    public function publicShow(Lokasi $lokasi)
+    {
+        return Inertia::render('lokasi/show', [
+            'lokasi' => $lokasi,
+            'lokasiLainnya' => Lokasi::where('id', '!=', $lokasi->id)
+                ->orderByDesc('is_utama')
+                ->orderByDesc('created_at')
+                ->get(['id', 'nama', 'slug', 'alamat', 'is_utama']),
+            'tentangs' => Tentang::select('nama', 'slug', 'isi')->get(),
+            'jenisLayanans' => JenisLayanan::orderBy('nama')->get(),
+        ]);
     }
 
     public function edit(Lokasi $lokasi)
@@ -89,6 +107,7 @@ class LokasiController extends Controller
     public function update(Request $request, Lokasi $lokasi)
     {
         $validated = $request->validate($this->rules($lokasi));
+        $isUtama = (bool) ($validated['is_utama'] ?? false);
 
         $lokasi->update([
             'nama' => $validated['nama'],
@@ -99,9 +118,11 @@ class LokasiController extends Controller
             'deskripsi' => $validated['deskripsi'] ?? null,
             'latitude' => $validated['latitude'] ?? null,
             'longitude' => $validated['longitude'] ?? null,
+            'is_utama' => $isUtama,
         ]);
 
         $this->simpanJamBuka($lokasi, $validated['jam_buka']);
+        $this->terapkanIsUtama($lokasi, $isUtama);
 
         return redirect()->route('lokasi.index')
             ->with('success', 'Lokasi berhasil diperbarui');
@@ -126,6 +147,7 @@ class LokasiController extends Controller
             'deskripsi' => 'nullable|string',
             'latitude' => 'nullable|numeric|between:-90,90',
             'longitude' => 'nullable|numeric|between:-180,180',
+            'is_utama' => 'sometimes|boolean',
             'jam_buka' => 'required|array|size:21',
             'jam_buka.*.hari' => 'required|integer|between:0,6',
             'jam_buka.*.shif' => 'required|in:pagi,siang,malam',
@@ -133,6 +155,15 @@ class LokasiController extends Controller
             'jam_buka.*.jam_buka' => 'nullable|required_if:jam_buka.*.mode,custom|date_format:H:i',
             'jam_buka.*.jam_tutup' => 'nullable|required_if:jam_buka.*.mode,custom|date_format:H:i',
         ];
+    }
+
+    private function terapkanIsUtama(Lokasi $lokasi, bool $isUtama): void
+    {
+        if (! $isUtama) {
+            return;
+        }
+
+        Lokasi::where('id', '!=', $lokasi->id)->update(['is_utama' => false]);
     }
 
     private function simpanJamBuka(Lokasi $lokasi, array $items): void

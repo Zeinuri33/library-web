@@ -131,6 +131,52 @@ class LokasiCrudTest extends TestCase
             );
     }
 
+    public function test_admin_can_set_lokasi_utama(): void
+    {
+        $admin = $this->admin();
+
+        $this->actingAs($admin)->post(route('lokasi.index'), [
+            'nama' => 'Perpustakaan Pusat',
+            'slug' => 'perpustakaan-pusat',
+            'alamat' => 'Jl. Pusat No. 1',
+            'is_utama' => true,
+            'jam_buka' => $this->jamBukaData(),
+        ])->assertRedirect(route('lokasi.index'));
+
+        $pusat = Lokasi::where('slug', 'perpustakaan-pusat')->first();
+
+        $this->assertNotNull($pusat);
+        $this->assertTrue($pusat->is_utama);
+    }
+
+    public function test_lokasi_utama_hanya_satu(): void
+    {
+        $admin = $this->admin();
+
+        $this->actingAs($admin)->post(route('lokasi.index'), [
+            'nama' => 'Pusat',
+            'slug' => 'pusat',
+            'alamat' => 'Jl. A',
+            'is_utama' => true,
+            'jam_buka' => $this->jamBukaData(),
+        ])->assertRedirect(route('lokasi.index'));
+
+        $this->actingAs($admin)->post(route('lokasi.index'), [
+            'nama' => 'Cabang',
+            'slug' => 'cabang',
+            'alamat' => 'Jl. B',
+            'is_utama' => true,
+            'jam_buka' => $this->jamBukaData(),
+        ])->assertRedirect(route('lokasi.index'));
+
+        $pusat = Lokasi::where('slug', 'pusat')->first();
+        $cabang = Lokasi::where('slug', 'cabang')->first();
+
+        $this->assertFalse($pusat->is_utama);
+        $this->assertTrue($cabang->is_utama);
+        $this->assertSame(1, Lokasi::where('is_utama', true)->count());
+    }
+
     public function test_edit_page_prefills_jam_buka(): void
     {
         $admin = $this->admin();

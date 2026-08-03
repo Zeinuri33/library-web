@@ -1,7 +1,7 @@
 "use client"
 
 import { Link, router, useForm } from "@inertiajs/react"
-import { ArrowLeft, Save } from "lucide-react"
+import { ArrowLeft, Save, Star } from "lucide-react"
 import { useEffect, useState } from "react"
 
 import { toast } from "sonner"
@@ -17,6 +17,7 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
@@ -33,6 +34,7 @@ type LokasiFormProps = {
         deskripsi?: string
         latitude?: string
         longitude?: string
+        is_utama?: boolean
     }
     jamBuka: JamBukaItem[]
     method: "post" | "put"
@@ -66,6 +68,7 @@ export function LokasiForm({
             deskripsi: initial.deskripsi ?? "",
             latitude: initial.latitude ?? "",
             longitude: initial.longitude ?? "",
+            is_utama: initial.is_utama ?? false,
             jam_buka: jamBuka,
         },
     )
@@ -425,6 +428,34 @@ export function LokasiForm({
                                         <p className="text-xs text-muted-foreground">
                                             Gunakan format desimal. Contoh:
                                             -7.7800000, 112.4450000
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div className="mt-4 flex items-start gap-3 rounded-lg border border-border/80 bg-muted/40 p-4">
+                                    <Checkbox
+                                        id="is_utama"
+                                        checked={data.is_utama}
+                                        onCheckedChange={(checked) =>
+                                            set("is_utama", !!checked)
+                                        }
+                                        className="mt-0.5"
+                                    />
+
+                                    <div className="space-y-1">
+                                        <Label
+                                            htmlFor="is_utama"
+                                            className="flex cursor-pointer items-center gap-1.5 font-medium"
+                                        >
+                                            <Star className="h-3.5 w-3.5 text-amber-500" />
+                                            Jadikan Lokasi Utama
+                                        </Label>
+                                        <p className="text-xs text-muted-foreground">
+                                            Lokasi utama tampil paling menonjol
+                                            di beranda dengan jadwal 7 hari.
+                                            Jika ada lokasi utama lain, status
+                                            akan otomatis dipindahkan ke lokasi
+                                            ini.
                                         </p>
                                     </div>
                                 </div>

@@ -28,6 +28,7 @@ Route::get('/informasi/pengumuman', [PengumumanController::class, 'publicIndex']
 Route::get('/informasi/pengumuman/{pengumuman:slug}', [PengumumanController::class, 'publicShow'])->name('pengumuman.public.show');
 Route::get('/informasi/kegiatan', [KegiatanController::class, 'publicIndex'])->name('kegiatan.public');
 Route::get('/informasi/hari-libur', [HariLiburController::class, 'publicIndex'])->name('hari-libur.public');
+Route::get('/lokasi/{lokasi:slug}', [LokasiController::class, 'publicShow'])->name('lokasi.public.show');
 
 Route::middleware(['auth', 'verified'])->group(function () {
 

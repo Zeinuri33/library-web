@@ -17,6 +17,7 @@ class Lokasi extends Model
         'deskripsi',
         'latitude',
         'longitude',
+        'is_utama',
     ];
 
     protected $with = ['jamBuka'];
@@ -28,6 +29,7 @@ class Lokasi extends Model
         return [
             'latitude' => 'float',
             'longitude' => 'float',
+            'is_utama' => 'boolean',
             'created_at' => 'datetime',
             'updated_at' => 'datetime',
         ];

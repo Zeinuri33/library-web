@@ -129,7 +129,7 @@ export default function KegiatanPublic({
                     <AppearanceIcon className="h-5 w-5" />
                 </button>
 
-                <Footer tc={tc} />
+                <Footer tc={tc} tentangs={tentangs} jenisLayanans={jenisLayanans} />
             </div>
         </>
     )

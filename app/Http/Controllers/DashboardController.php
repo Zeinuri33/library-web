@@ -40,7 +40,14 @@ class DashboardController extends Controller
 
         return Inertia::render('welcome', [
             'tentangs' => $tentangs,
-            'jenisLayanans' => JenisLayanan::orderBy('nama')->get(),
+            'jenisLayanans' => JenisLayanan::withCount('layanans')->orderBy('nama')->get(),
+            'lokasis' => Lokasi::select('id', 'nama', 'slug', 'alamat', 'is_utama')
+                ->orderByDesc('is_utama')
+                ->orderByDesc('created_at')
+                ->get(),
+            'pengumumans' => Pengumuman::orderBy('created_at', 'desc')->take(3)->get(),
+            'kegiatans' => Kegiatan::orderBy('tanggal', 'desc')->take(3)->get(),
+            'beritas' => Berita::orderBy('tanggal', 'desc')->orderBy('created_at', 'desc')->take(3)->get(),
         ]);
     }
 }

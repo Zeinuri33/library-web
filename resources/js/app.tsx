@@ -61,6 +61,9 @@ createInertiaApp({
     case name === 'hari-libur/public':
       return null;
 
+    case name === 'lokasi/show':
+      return null;
+
     case name.startsWith('auth/'):
       return AuthLayout;
 
