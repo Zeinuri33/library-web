@@ -13,6 +13,7 @@ use Inertia\Inertia;
 use Laravel\Fortify\Features;
 use Laravel\Fortify\Fortify;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Lokasi;
 use App\Models\User;
 
 
@@ -65,6 +66,9 @@ class FortifyServiceProvider extends ServiceProvider
             'canResetPassword' => Features::enabled(Features::resetPasswords()),
             'canRegister' => Features::enabled(Features::registration()),
             'status' => $request->session()->get('status'),
+            'lokasis' => Lokasi::orderByDesc('is_utama')
+                ->orderByDesc('created_at')
+                ->get(['id', 'nama', 'alamat', 'telepon', 'email']),
         ]));
 
         Fortify::resetPasswordView(fn (Request $request) => Inertia::render('auth/reset-password', [
