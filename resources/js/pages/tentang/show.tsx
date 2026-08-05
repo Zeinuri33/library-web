@@ -6,10 +6,10 @@ import { ChevronRight, Link2, Moon, Sun } from "lucide-react"
 import { FaFacebookF, FaInstagram, FaWhatsapp } from "react-icons/fa"
 import { toast } from "sonner"
 import PublicHeader from "@/components/public-header"
-import { Button } from "@/components/ui/button"
 import { useAppearance } from "@/hooks/use-appearance"
 import { useThemeClasses } from "@/hooks/use-theme-classes"
 import Footer from "@/layouts/footer"
+import { waShareText } from "@/lib/excerpt"
 
 export default function ShowTentang({
     tentang,
@@ -25,7 +25,7 @@ export default function ShowTentang({
 
     const cycleAppearance = () => {
         const modes: Array<'light' | 'dark'> = ['light', 'dark']
-        const idx = modes.indexOf(appearance)
+        const idx = modes.indexOf(appearance as 'light' | 'dark')
         updateAppearance(modes[(idx + 1) % modes.length])
     }
 
@@ -41,8 +41,7 @@ export default function ShowTentang({
     }
 
     const pageUrl = typeof window !== 'undefined' ? window.location.href : ''
-
-    const waShare = `https://wa.me/?text=${encodeURIComponent(`${tentang.nama} - ${pageUrl}`)}`
+    const waShare = `https://wa.me/?text=${encodeURIComponent(waShareText(tentang.nama, tentang.isi, pageUrl))}`
     const fbShare = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`
 
     return (

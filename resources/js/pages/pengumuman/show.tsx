@@ -10,6 +10,7 @@ import PublicHero from "@/components/public-hero"
 import { useAppearance } from "@/hooks/use-appearance"
 import { useThemeClasses } from "@/hooks/use-theme-classes"
 import Footer from "@/layouts/footer"
+import { waShareText } from "@/lib/excerpt"
 import { formatTanggal } from "@/lib/format-date"
 
 type PengumumanPublic = {
@@ -52,7 +53,7 @@ export default function ShowPengumuman({
     }
 
     const pageUrl = typeof window !== 'undefined' ? window.location.href : ''
-    const waShare = `https://wa.me/?text=${encodeURIComponent(`${pengumuman.judul} - ${pageUrl}`)}`
+    const waShare = `https://wa.me/?text=${encodeURIComponent(waShareText(pengumuman.judul, pengumuman.isi, pageUrl))}`
     const fbShare = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`
 
     return (
