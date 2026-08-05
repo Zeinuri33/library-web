@@ -174,6 +174,15 @@ export default function Footer({ tc, tentangs, jenisLayanans }: FooterProps) {
                                         Hari Libur
                                     </Link>
                                 </li>
+
+                                <li>
+                                    <Link
+                                        className="transition-colors duration-300 hover:text-white"
+                                        href="/pengunjung"
+                                    >
+                                        Pengunjung
+                                    </Link>
+                                </li>
                             </ul>
                         </div>
 

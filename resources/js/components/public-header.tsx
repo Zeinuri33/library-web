@@ -206,6 +206,19 @@ export default function PublicHeader({ tentangs, jenisLayanans }: PublicHeaderPr
                                     <ChevronRight className="absolute top-1/2 right-2 h-3.5 w-3.5 -translate-y-1/2" />
                                 </Link>
                             </DropdownMenuItem>
+
+                            <DropdownMenuItem asChild>
+                                <Link
+                                    href="/pengunjung"
+                                    className="relative flex flex-col items-start gap-0 py-1.5 pr-6 focus:bg-gray-200! focus:text-black! dark:focus:bg-black! dark:focus:text-white!"
+                                >
+                                    <span className="font-medium leading-none">Pengunjung</span>
+                                    <span className="line-clamp-1 -mt-0.5 w-full text-xs leading-none text-muted-foreground">
+                                        Statistik kunjungan secara langsung
+                                    </span>
+                                    <ChevronRight className="absolute top-1/2 right-2 h-3.5 w-3.5 -translate-y-1/2" />
+                                </Link>
+                            </DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>
 
@@ -489,6 +502,13 @@ export default function PublicHeader({ tentangs, jenisLayanans }: PublicHeaderPr
                                                 className="text-sm"
                                             >
                                                 Hari Libur
+                                            </Link>
+                                            <Link
+                                                href="/pengunjung"
+                                                onClick={() => setOpen(false)}
+                                                className="text-sm"
+                                            >
+                                                Pengunjung
                                             </Link>
                                         </div>
                                     )}

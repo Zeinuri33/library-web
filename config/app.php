@@ -63,9 +63,14 @@ return [
     | will be used by the PHP date and date-time functions. The timezone
     | is set to "UTC" by default as it is suitable for most use cases.
     |
+    | Perpustakaan beroperasi pada waktu Indonesia Barat (WIB), dan jadwal
+    | jam buka yang disimpan memakai jam lokal WIB. Menyetel timezone ke
+    | Asia/Jakarta membuat deteksi shift pengunjung (dan filter tanggal
+    | kegiatan/hari libur) konsisten dengan jam buka yang diinput admin.
+    |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => env('APP_TIMEZONE', 'Asia/Jakarta'),
 
     /*
     |--------------------------------------------------------------------------

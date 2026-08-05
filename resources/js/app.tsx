@@ -57,6 +57,9 @@ createInertiaApp({
     case name === 'kegiatan/public':
       return null;
 
+    case name === 'pengunjung/public':
+      return null;
+
     case name === 'hari-libur/public':
       return null;
 

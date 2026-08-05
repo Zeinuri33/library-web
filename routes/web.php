@@ -9,6 +9,7 @@ use App\Http\Controllers\KegiatanController;
 use App\Http\Controllers\LayananController;
 use App\Http\Controllers\LokasiController;
 use App\Http\Controllers\PengumumanController;
+use App\Http\Controllers\PengunjungController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SearchController;
@@ -31,6 +32,8 @@ Route::get('/informasi/kegiatan', [KegiatanController::class, 'publicIndex'])->n
 Route::get('/informasi/hari-libur', [HariLiburController::class, 'publicIndex'])->name('hari-libur.public');
 Route::get('/lokasi/{lokasi:slug}', [LokasiController::class, 'publicShow'])->name('lokasi.public.show');
 Route::get('/search', [SearchController::class, 'index'])->name('search.index');
+Route::get('/pengunjung', [PengunjungController::class, 'publicIndex'])->name('pengunjung.public');
+Route::get('/pengunjung/data', [PengunjungController::class, 'data'])->name('pengunjung.data');
 
 Route::middleware(['auth', 'verified'])->group(function () {
 

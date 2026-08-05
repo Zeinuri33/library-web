@@ -29,6 +29,8 @@ export interface InfoTickerItem {
 
 interface InfoTickerProps {
     items: InfoTickerItem[];
+    /** Kelas tambahan untuk menyesuaikan lebar/posisi dari halaman pemakai. */
+    className?: string;
 }
 
 const ROTATE_MS = 4500;
@@ -40,7 +42,7 @@ const TYPE_META: Record<InfoTickerType, { icon: LucideIcon; chip: string; badge:
     'hari-libur': { icon: Sun, chip: 'bg-white/20 text-white', badge: 'bg-white/25 text-white' },
 };
 
-export default function InfoTicker({ items }: InfoTickerProps) {
+export default function InfoTicker({ items, className }: InfoTickerProps) {
     const [current, setCurrent] = useState(0);
     const [paused, setPaused] = useState(false);
     const reducedMotion = useReducedMotion();
@@ -91,7 +93,7 @@ export default function InfoTicker({ items }: InfoTickerProps) {
 
     return (
         <div
-            className="relative w-full max-w-lg overflow-hidden rounded-2xl border border-white/25 bg-white/10 shadow-xl shadow-black/10 backdrop-blur-md"
+            className={cn('relative w-full max-w-lg overflow-hidden rounded-2xl border border-white/25 bg-white/10 shadow-xl shadow-black/10 backdrop-blur-md', className)}
             onMouseEnter={() => setPaused(true)}
             onMouseLeave={() => setPaused(false)}
         >

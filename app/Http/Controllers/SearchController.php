@@ -30,6 +30,7 @@ class SearchController extends Controller
             ['group' => 'Halaman', 'title' => 'Pengumuman', 'description' => 'Informasi resmi terbaru', 'url' => '/informasi/pengumuman'],
             ['group' => 'Halaman', 'title' => 'Kegiatan', 'description' => 'Agenda kegiatan perpustakaan', 'url' => '/informasi/kegiatan'],
             ['group' => 'Halaman', 'title' => 'Hari Libur', 'description' => 'Jadwal libur dan tutup layanan', 'url' => '/informasi/hari-libur'],
+            ['group' => 'Halaman', 'title' => 'Pengunjung', 'description' => 'Statistik kunjungan perpustakaan secara langsung', 'url' => '/pengunjung'],
         ];
 
         $beritas = Berita::orderBy('tanggal', 'desc')

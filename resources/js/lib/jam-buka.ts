@@ -25,6 +25,41 @@ export function shiftsHari(jamBuka: JamBukaItem[] | undefined, hari: number): st
         .map((jb) => `${KAPITAL_SHIF[jb.shif] ?? jb.shif} ${formatJam(jb)}`);
 }
 
+/**
+ * Mencari jam buka berikutnya (paling cepat) setelah `now`.
+ * Hanya shift ber-mode `custom` dengan jam_buka yang dipertimbangkan,
+ * konsisten dengan statusHariIni(). Mengembalikan null jika tidak ada.
+ */
+export function nextBuka(jamBuka: JamBukaItem[] | undefined, now = new Date()): Date | null {
+    const candidates: Date[] = [];
+
+    for (let offset = 0; offset <= 7; offset++) {
+        const day = new Date(now.getFullYear(), now.getMonth(), now.getDate() + offset);
+
+        for (const jb of jamBuka ?? []) {
+            if (jb.hari !== day.getDay() || jb.mode !== 'custom' || !jb.jam_buka) {
+                continue;
+            }
+
+            const [h, m] = jb.jam_buka.split(':').map(Number);
+
+            if (Number.isNaN(h) || Number.isNaN(m)) {
+                continue;
+            }
+
+            const open = new Date(day.getFullYear(), day.getMonth(), day.getDate(), h, m, 0, 0);
+
+            if (open.getTime() > now.getTime()) {
+                candidates.push(open);
+            }
+        }
+    }
+
+    candidates.sort((a, b) => a.getTime() - b.getTime());
+
+    return candidates[0] ?? null;
+}
+
 export function statusHariIni(jamBuka: JamBukaItem[] | undefined, now = new Date()) {
     const hari = now.getDay();
     const sekarang = now.getHours() * 60 + now.getMinutes();
