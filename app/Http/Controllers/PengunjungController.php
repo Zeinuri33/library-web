@@ -9,11 +9,12 @@ use App\Models\Lokasi;
 use App\Models\Pengumuman;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
 
 class PengunjungController extends Controller
 {
-    private const API_URL = 'https://opac.ibrahimy.ac.id/api/PengunjungApiController.php?token=pengunjungAPI97';
+    private const DEFAULT_API_URL = 'https://opac.ibrahimy.ac.id/api/PengunjungApiController.php?token=pengunjungAPI97';
 
     /**
      * Mengambil data pengunjung dari API eksternal secara server-side.
@@ -45,23 +46,98 @@ class PengunjungController extends Controller
         }
     }
 
+    /**
+     * URL API pemantau pengunjung. Bisa di-override lewat env
+     * PENGUNJUNG_API_URL — misalnya menunjuk IP/internal host agar request
+     * tidak perlu melewati WAF SafeLine di depan domain publik.
+     */
+    private function apiUrl(): string
+    {
+        return (string) config('services.pengunjung.api_url', self::DEFAULT_API_URL);
+    }
+
+    /**
+     * Header yang meniru browser biasa. SafeLine WAF (dan banyak WAF lain)
+     * memblokir request otomatis ber-User-Agent bawaan Guzzle (mis.
+     * "GuzzleHttp/7"), sehingga dipalsukan seperti Chrome agar panggilan
+     * server-ke-server ini tidak dianggap bot.
+     */
+    private function browserHeaders(): array
+    {
+        return [
+            'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+            'Accept' => 'application/json, text/plain, */*',
+            'Accept-Language' => 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7',
+            'Referer' => url('/'),
+        ];
+    }
+
+    /**
+     * Mencatat kegagalan ke log server maksimal sekali per menit. Halaman
+     * dipoll tiap detik, jadi tanpa throttle log akan cepat banjir.
+     */
+    private function logApiFailure(string $message, array $context = []): void
+    {
+        try {
+            if (! Cache::add('pengunjung.api_failure_logged', true, 60)) {
+                return;
+            }
+        } catch (\Throwable) {
+            // Cache bermasalah — lanjutkan logging tanpa throttle.
+        }
+
+        Log::warning($message, $context);
+    }
+
     private function fetchFromApi(): ?array
     {
         try {
-            $response = Http::timeout(6)->acceptJson()->get(self::API_URL);
+            // Tanpa retry() di sini: halaman sudah di-poll tiap detik oleh klien,
+            // jadi kegagalan sesaat otomatis tertutup oleh poll berikutnya. Retry
+            // justru bisa menunda render halaman berdetik-detik bila WAF
+            // menggelantungkan koneksi (timeout × percobaan berulang).
+            $response = Http::timeout(6)
+                ->connectTimeout(3)
+                ->withHeaders($this->browserHeaders())
+                ->withOptions([
+                    // SafeLine yang melakukan inspeksi TLS (SSL bump) kadang
+                    // memakai sertifikat yang tidak dikenal CA server. Bila
+                    // muncul error sertifikat, nonaktifkan via env
+                    // PENGUNJUNG_VERIFY_SSL=false (tidak disarankan di produksi).
+                    'verify' => (bool) config('services.pengunjung.verify_ssl', true),
+                    'http_errors' => false,
+                ])
+                ->get($this->apiUrl());
 
             if (! $response->successful()) {
+                $this->logApiFailure('API pengunjung merespons dengan status gagal.', [
+                    'url' => $this->apiUrl(),
+                    'status' => $response->status(),
+                ]);
+
                 return null;
             }
 
             $result = $response->json();
 
-            if (($result['status'] ?? null) !== 'success') {
+            if (! is_array($result) || ($result['status'] ?? null) !== 'success') {
+                $this->logApiFailure('API pengunjung mengembalikan payload yang tidak dikenali.', [
+                    'url' => $this->apiUrl(),
+                    'body' => substr((string) $response->body(), 0, 500),
+                ]);
+
                 return null;
             }
 
             return $result['data'] ?? null;
-        } catch (\Throwable) {
+        } catch (\Throwable $e) {
+            // Catat penyebab sebenarnya (timeout, TLS, DNS, koneksi, dst.)
+            // agar mudah dilacak dari log server saat di-deploy.
+            $this->logApiFailure('Gagal terhubung ke API pengunjung.', [
+                'url' => $this->apiUrl(),
+                'error' => $e->getMessage(),
+            ]);
+
             return null;
         }
     }

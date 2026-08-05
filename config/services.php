@@ -35,4 +35,26 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | API Pemantau Pengunjung
+    |--------------------------------------------------------------------------
+    |
+    | Panggilan dilakukan server-side dari controller. `api_url` bisa di-override
+    | lewat env PENGUNJUNG_API_URL, misalnya menunjuk IP/internal host agar
+    | request tidak perlu melewati WAF SafeLine di depan domain publik.
+    |
+    | `verify_ssl` (PENGUNJUNG_VERIFY_SSL) di-nonaktifkan hanya jika WAF
+    | melakukan inspeksi TLS dengan sertifikat yang tidak dikenal server.
+    |
+    */
+
+    'pengunjung' => [
+        'api_url' => env(
+            'PENGUNJUNG_API_URL',
+            'https://opac.ibrahimy.ac.id/api/PengunjungApiController.php?token=pengunjungAPI97'
+        ),
+        'verify_ssl' => env('PENGUNJUNG_VERIFY_SSL', true),
+    ],
+
 ];
