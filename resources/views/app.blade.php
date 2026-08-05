@@ -1,9 +1,27 @@
+@php
+    $seo = app(\App\Services\SeoMetaService::class)->forPage($page ?? [], request()->url());
+@endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" @class(['dark' => ($appearance ?? 'system') == 'dark'])>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
+
+        {{-- SEO / Open Graph meta (dibaca crawler WhatsApp, Facebook, dll.) --}}
+        <meta name="description" content="{{ $seo['description'] }}">
+
+        <meta property="og:type" content="{{ $seo['type'] }}">
+        <meta property="og:title" content="{{ $seo['title'] }}">
+        <meta property="og:description" content="{{ $seo['description'] }}">
+        <meta property="og:image" content="{{ $seo['image'] }}">
+        <meta property="og:url" content="{{ $seo['url'] }}">
+        <meta property="og:site_name" content="{{ config('app.name') }}">
+
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="{{ $seo['title'] }}">
+        <meta name="twitter:description" content="{{ $seo['description'] }}">
+        <meta name="twitter:image" content="{{ $seo['image'] }}">
 
         {{-- Inline script to detect system dark mode preference and apply it immediately --}}
         <script>

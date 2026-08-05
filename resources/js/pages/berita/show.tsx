@@ -60,7 +60,27 @@ export default function ShowBerita({
     }
 
     const pageUrl = typeof window !== 'undefined' ? window.location.href : ''
-    const waShare = `https://wa.me/?text=${encodeURIComponent(`${berita.judul} - ${pageUrl}`)}`
+
+    // Cuplikan isi berita (tanpa tag HTML) untuk teks pesan WhatsApp
+    const excerpt = (berita.isi || '')
+        .replace(/<br\s*\/?>/gi, ' ')
+        .replace(/<\/(p|div|h[1-6]|li|ul|ol|blockquote|section|tr|td)>/gi, ' $&')
+        .replace(/<[^>]*>/g, ' ')
+        .replace(/&nbsp;/gi, ' ')
+        .replace(/&amp;/gi, '&')
+        .replace(/&lt;/gi, '<')
+        .replace(/&gt;/gi, '>')
+        .replace(/&quot;/gi, '"')
+        .replace(/&#0*39;/gi, "'")
+        .replace(/\s+/g, ' ')
+        .trim()
+    const truncatedExcerpt =
+        excerpt.length > 160 ? `${excerpt.slice(0, 160).trimEnd()}…` : excerpt
+
+    const waText = truncatedExcerpt
+        ? `${berita.judul}\n\n${truncatedExcerpt}\n\n${pageUrl}`
+        : `${berita.judul}\n\n${pageUrl}`
+    const waShare = `https://wa.me/?text=${encodeURIComponent(waText)}`
     const fbShare = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`
 
     return (
