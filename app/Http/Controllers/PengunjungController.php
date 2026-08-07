@@ -11,45 +11,31 @@ use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Inertia\Inertia;
+use Throwable;
 
 class PengunjungController extends Controller
 {
+    // URL Cadangan jika .env atau services.php gagal dimuat
     private const DEFAULT_API_URL = 'https://opac.ibrahimy.ac.id/api/PengunjungApiController.php?token=pengunjungAPI97';
 
     /**
-     * Mengambil data pengunjung dari API eksternal secara server-side.
-     *
-     * Data sukses di-cache 1 detik agar angka nyaris real-time. Nilai null
-     * (API sedang tidak terjangkau) sengaja TIDAK di-cache agar tombol muat
-     * ulang di sisi klien langsung mencoba ulang. Mengembalikan null jika
-     * API tidak dapat dijangkau sehingga halaman tetap bisa dirender.
+     * Mengambil data pengunjung dari API SLiMS/OPAC.
+     * Menggunakan Cache 1 detik agar beban server lebih ringan saat di-poll oleh banyak TV/Client.
      */
     private function fetchPengunjung(): ?array
     {
         try {
-            $cached = Cache::get('pengunjung.live');
-
-            if ($cached !== null) {
-                return $cached;
-            }
-
-            $fresh = $this->fetchFromApi();
-
-            if ($fresh !== null) {
-                Cache::put('pengunjung.live', $fresh, 1);
-            }
-
-            return $fresh;
-        } catch (\Throwable) {
-            // Cache store bermasalah (mis. DB turun) — ambil langsung dari API.
+            return Cache::remember('pengunjung.live', 1, function () {
+                return $this->fetchFromApi();
+            });
+        } catch (Throwable $e) {
+            // Jika Redis/File Cache bermasalah, paksa ambil langsung dari API
             return $this->fetchFromApi();
         }
     }
 
     /**
-     * URL API pemantau pengunjung. Bisa di-override lewat env
-     * PENGUNJUNG_API_URL — misalnya menunjuk IP/internal host agar request
-     * tidak perlu melewati WAF SafeLine di depan domain publik.
+     * Membaca URL API dari konfigurasi services (yang mengambil dari .env).
      */
     private function apiUrl(): string
     {
@@ -57,14 +43,14 @@ class PengunjungController extends Controller
     }
 
     /**
-     * Header yang meniru browser biasa. SafeLine WAF (dan banyak WAF lain)
-     * memblokir request otomatis ber-User-Agent bawaan Guzzle (mis.
-     * "GuzzleHttp/7"), sehingga dipalsukan seperti Chrome agar panggilan
-     * server-ke-server ini tidak dianggap bot.
+     * Memalsukan Headers agar tidak diblokir oleh WAF (seperti SafeLine/Cloudflare).
      */
     private function browserHeaders(): array
     {
         return [
+            // TAMBAHKAN BARIS INI UNTUK MENGAKALI VIRTUAL HOST SERVER
+            'Host' => 'opac.ibrahimy.ac.id',
+
             'User-Agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
             'Accept' => 'application/json, text/plain, */*',
             'Accept-Language' => 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7',
@@ -73,77 +59,66 @@ class PengunjungController extends Controller
     }
 
     /**
-     * Mencatat kegagalan ke log server maksimal sekali per menit. Halaman
-     * dipoll tiap detik, jadi tanpa throttle log akan cepat banjir.
+     * Mencatat error ke log maksimal 1 kali per menit agar file log tidak cepat penuh (banjir).
      */
     private function logApiFailure(string $message, array $context = []): void
     {
         try {
-            if (! Cache::add('pengunjung.api_failure_logged', true, 60)) {
-                return;
+            if (Cache::add('pengunjung.api_failure_logged', true, 60)) {
+                Log::warning($message, $context);
             }
-        } catch (\Throwable) {
-            // Cache bermasalah — lanjutkan logging tanpa throttle.
+        } catch (Throwable) {
+            Log::warning($message, $context);
         }
-
-        Log::warning($message, $context);
     }
 
+    /**
+     * Proses utama penarikan data dari API menggunakan cURL Laravel (Http).
+     */
     private function fetchFromApi(): ?array
     {
         try {
-            // Tanpa retry() di sini: halaman sudah di-poll tiap detik oleh klien,
-            // jadi kegagalan sesaat otomatis tertutup oleh poll berikutnya. Retry
-            // justru bisa menunda render halaman berdetik-detik bila WAF
-            // menggelantungkan koneksi (timeout × percobaan berulang).
             $response = Http::timeout(6)
                 ->connectTimeout(3)
                 ->withHeaders($this->browserHeaders())
                 ->withOptions([
-                    // SafeLine yang melakukan inspeksi TLS (SSL bump) kadang
-                    // memakai sertifikat yang tidak dikenal CA server. Bila
-                    // muncul error sertifikat, nonaktifkan via env
-                    // PENGUNJUNG_VERIFY_SSL=false (tidak disarankan di produksi).
+                    // Membaca PENGUNJUNG_VERIFY_SSL dari .env (Otomatis False sesuai setingan Anda)
                     'verify' => (bool) config('services.pengunjung.verify_ssl', true),
                     'http_errors' => false,
                 ])
                 ->get($this->apiUrl());
 
-            if (! $response->successful()) {
+            if (!$response->successful()) {
                 $this->logApiFailure('API pengunjung merespons dengan status gagal.', [
                     'url' => $this->apiUrl(),
                     'status' => $response->status(),
                 ]);
-
                 return null;
             }
 
             $result = $response->json();
 
-            if (! is_array($result) || ($result['status'] ?? null) !== 'success') {
-                $this->logApiFailure('API pengunjung mengembalikan payload yang tidak dikenali.', [
+            if (!is_array($result) || ($result['status'] ?? null) !== 'success') {
+                $this->logApiFailure('API pengunjung mengembalikan format JSON yang tidak dikenali.', [
                     'url' => $this->apiUrl(),
                     'body' => substr((string) $response->body(), 0, 500),
                 ]);
-
                 return null;
             }
 
             return $result['data'] ?? null;
-        } catch (\Throwable $e) {
-            // Catat penyebab sebenarnya (timeout, TLS, DNS, koneksi, dst.)
-            // agar mudah dilacak dari log server saat di-deploy.
+
+        } catch (Throwable $e) {
             $this->logApiFailure('Gagal terhubung ke API pengunjung.', [
                 'url' => $this->apiUrl(),
                 'error' => $e->getMessage(),
             ]);
-
             return null;
         }
     }
 
     /**
-     * Lokasi utama perpustakaan (tempat jadwal jam buka diambil).
+     * Mengambil data jadwal dari lokasi utama perpustakaan.
      */
     private function jadwalUtama(): ?Lokasi
     {
@@ -151,47 +126,29 @@ class PengunjungController extends Controller
     }
 
     /**
-     * Menentukan shift yang sedang aktif saat ini berdasarkan jadwal jam buka
-     * lokasi utama. Mengembalikan 'pagi'/'siang'/'malam', atau null jika tutup.
+     * Menentukan shift (pagi/siang/malam) yang sedang aktif berdasarkan jadwal jam buka.
      */
     private function currentShift(): ?string
     {
         try {
-            // Cache pendek (2 detik) agar TV yang mem-poll tiap detik tidak
-            // membebani DB dengan query jadwal berulang kali.
-            $cached = Cache::get('pengunjung.current_shift');
-
-            if (is_string($cached)) {
-                return $cached === 'closed' ? null : $cached;
-            }
-
-            $shift = $this->detectCurrentShift();
-
-            Cache::put('pengunjung.current_shift', $shift ?? 'closed', 2);
-
-            return $shift;
-        } catch (\Throwable) {
+            return Cache::remember('pengunjung.current_shift', 2, function () {
+                return $this->detectCurrentShift() ?? 'closed';
+            }) === 'closed' ? null : Cache::get('pengunjung.current_shift');
+        } catch (Throwable) {
             return null;
         }
     }
 
-    /**
-     * Mendeteksi shift aktif saat ini dari jadwal jam buka lokasi utama
-     * (tanpa cache). Mengembalikan 'pagi'/'siang'/'malam', atau null jika tutup.
-     */
     private function detectCurrentShift(): ?string
     {
         $lokasi = $this->jadwalUtama();
-
-        if (! $lokasi) {
-            return null;
-        }
+        if (!$lokasi) return null;
 
         $hari = (int) now()->format('w');
         $sekarang = now()->hour * 60 + now()->minute;
 
         foreach ($lokasi->jamBuka as $jb) {
-            if ((int) $jb->hari !== $hari || $jb->mode !== 'custom' || ! $jb->jam_buka || ! $jb->jam_tutup) {
+            if ((int) $jb->hari !== $hari || $jb->mode !== 'custom' || !$jb->jam_buka || !$jb->jam_tutup) {
                 continue;
             }
 
@@ -210,11 +167,7 @@ class PengunjungController extends Controller
     }
 
     /**
-     * Mencatat total pengunjung saat shift dimulai (baseline) dan mengembalikannya.
-     *
-     * Baseline dicatat SEKALI per shift per hari (cache dicek tanggalnya), lalu
-     * dibekukan pada angka saat shift berganti. Karena TV mem-poll tiap 1 detik,
-     * pencatatan terjadi nyaris tepat saat shift baru dimulai.
+     * Mencatat total pengunjung sebagai baseline setiap kali pergantian shift.
      */
     private function baselineShift(string $shift, int $total): ?int
     {
@@ -228,27 +181,18 @@ class PengunjungController extends Controller
             }
 
             Cache::put($key, ['tanggal' => $today, 'total' => $total], now()->addDay());
-
             return $total;
-        } catch (\Throwable) {
-            // Cache bermasalah — tidak bisa menghitung baseline, fallback ke total.
+        } catch (Throwable) {
             return null;
         }
     }
 
     /**
-     * Menambahkan info per shift ke data pengunjung:
-     *
-     * - total_shift_ini: total hari ini dikurangi baseline shift sebelumnya.
-     *   Pagi = tidak dikurangi; siang = dikurangi total pagi; malam = dikurangi
-     *   total pagi + siang (baseline malam dicatat saat malam dimulai).
-     * - current_shift: shift yang sedang aktif saat ini (atau null saat tutup).
+     * Menghitung dan menambahkan informasi pengunjung per-shift ke dalam array hasil.
      */
     private function withShiftInfo(?array $pengunjung): ?array
     {
-        if ($pengunjung === null) {
-            return null;
-        }
+        if ($pengunjung === null) return null;
 
         $total = (int) ($pengunjung['total_pengunjung_hari_ini'] ?? 0);
         $shift = $this->currentShift();
@@ -256,7 +200,6 @@ class PengunjungController extends Controller
 
         if ($shift !== null && $shift !== 'pagi') {
             $baseline = $this->baselineShift($shift, $total);
-
             if ($baseline !== null) {
                 $totalShift = max(0, $total - $baseline);
             }
@@ -268,9 +211,11 @@ class PengunjungController extends Controller
         return $pengunjung;
     }
 
+    /**
+     * Tampilan utama yang dirender menggunakan Inertia JS (Vue/React).
+     */
     public function publicIndex()
     {
-        // Kegiatan mendatang didahulukan; jika belum ada, tampilkan kegiatan terbaru.
         $kegiatans = Kegiatan::with('lokasi')
             ->where('tanggal', '>=', now()->toDateString())
             ->orderBy('tanggal')
@@ -285,25 +230,20 @@ class PengunjungController extends Controller
         }
 
         return Inertia::render('pengunjung/public', [
-            'pengunjung' => $this->withShiftInfo($this->fetchPengunjung()),
-            'beritas' => Berita::orderBy('tanggal', 'desc')
-                ->orderBy('created_at', 'desc')
-                ->take(3)
-                ->get(),
-            'kegiatans' => $kegiatans,
-            'pengumumans' => Pengumuman::orderBy('created_at', 'desc')
-                ->take(3)
-                ->get(),
-            'hariLiburs' => HariLibur::where('tanggal', '>=', now()->toDateString())
-                ->orderBy('tanggal')
-                ->take(3)
-                ->get(),
+            'pengunjung'  => $this->withShiftInfo($this->fetchPengunjung()),
+            'beritas'     => Berita::latest('tanggal')->latest()->take(3)->get(),
+            'kegiatans'   => $kegiatans,
+            'pengumumans' => Pengumuman::latest()->take(3)->get(),
+            'hariLiburs'  => HariLibur::where('tanggal', '>=', now()->toDateString())
+                                ->orderBy('tanggal')
+                                ->take(3)
+                                ->get(),
             'lokasiUtama' => $this->jadwalUtama(),
         ]);
     }
 
     /**
-     * Endpoint JSON untuk live update dari sisi klien (dipoll tiap beberapa detik).
+     * Endpoint API internal (diakses via AJAX/Axios oleh frontend) untuk memperbarui data live.
      */
     public function data()
     {
