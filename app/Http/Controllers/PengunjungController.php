@@ -239,6 +239,7 @@ class PengunjungController extends Controller
                                 ->take(3)
                                 ->get(),
             'lokasiUtama' => $this->jadwalUtama(),
+            'kiosk'       => (bool) config('services.pengunjung.kiosk', true),
         ]);
     }
 

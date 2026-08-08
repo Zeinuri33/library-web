@@ -60,6 +60,7 @@ return [
             'https://opac.ibrahimy.ac.id/api/PengunjungApiController.php?token=pengunjungAPI97'
         ),
         'verify_ssl' => env('PENGUNJUNG_VERIFY_SSL', true),
+        'kiosk' => env('PENGUNJUNG_KIOSK', true),
     ],
 
 ];

@@ -394,4 +394,17 @@
     }
 }
 
+/* ========== Mode kiosk layar TV pengunjung ========== */
+/* Sembunyikan kursor setelah beberapa detik tanpa gerakan mouse (dipasang/lepas oleh use-kiosk). */
+.kiosk-hide-cursor,
+.kiosk-hide-cursor * {
+    cursor: none !important;
+}
+
+/* Saat fullscreen, pastikan tidak ada ruang kosong di sekitar halaman. */
+:fullscreen,
+:-webkit-full-screen {
+    background: oklch(0.55 0.13 162); /* emerald-700 */
+}
+
 

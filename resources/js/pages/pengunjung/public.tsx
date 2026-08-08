@@ -16,6 +16,7 @@ import {
 import { useCallback, useEffect, useRef, useState } from 'react';
 import InfoTicker from '@/components/info-ticker';
 import type { InfoTickerItem } from '@/components/info-ticker';
+import { useKiosk } from '@/hooks/use-kiosk';
 import { formatTanggal } from '@/lib/format-date';
 import { nextBuka, statusHariIni } from '@/lib/jam-buka';
 import type { JamBukaItem } from '@/lib/jam-buka';
@@ -76,6 +77,7 @@ export default function PengunjungPublic({
     pengumumans,
     hariLiburs,
     lokasiUtama,
+    kiosk = false,
 }: {
     pengunjung: PengunjungData;
     beritas: BeritaItem[];
@@ -83,6 +85,8 @@ export default function PengunjungPublic({
     pengumumans: PengumumanItem[];
     hariLiburs: HariLiburItem[];
     lokasiUtama: LokasiUtama;
+    /** Mode kiosk otomatis (layar TV). Bisa dimatikan via `?kiosk=0`. */
+    kiosk?: boolean;
 }) {
     const [data, setData] = useState<PengunjungData>(pengunjung);
     const [lastSync, setLastSync] = useState<Date>(() => new Date());
@@ -136,6 +140,16 @@ export default function PengunjungPublic({
 
         return () => clearInterval(id);
     }, []);
+
+    // Mode kiosk otomatis untuk layar TV. `?kiosk=0` di URL menonaktifkannya
+    // (mis. saat tes/administrasi dari browser biasa).
+    const kioskParam =
+        typeof window !== 'undefined'
+            ? new URLSearchParams(window.location.search).get('kiosk')
+            : null;
+    const kioskEnabled = kioskParam === '0' ? false : kiosk;
+
+    useKiosk({ enabled: kioskEnabled });
 
     const tickerItems: InfoTickerItem[] = [
         ...beritas.map((b) => ({
@@ -212,7 +226,22 @@ export default function PengunjungPublic({
             <Head title="Pengunjung" />
 
             {/* Layar TV: tanpa scroll di md+; di layar kecil (mis. hp) diizinkan scroll agar konten tidak terpotong */}
-            <div className="relative flex min-h-dvh w-full flex-col overflow-y-auto bg-gradient-to-br from-emerald-700 via-green-600 to-emerald-900 font-sans md:h-dvh md:overflow-hidden">
+            <div
+                className={`relative flex min-h-dvh w-full flex-col overflow-y-auto bg-gradient-to-br from-emerald-700 via-green-600 to-emerald-900 font-sans md:h-dvh md:overflow-hidden ${kioskEnabled ? 'select-none' : ''}`}
+                onClickCapture={
+                    kioskEnabled
+                        ? (e) => {
+                              // Mode kiosk: cegah tautan mengarah keluar layar TV.
+                              const target = e.target as HTMLElement | null;
+
+                              if (target?.closest('a')) {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                              }
+                          }
+                        : undefined
+                }
+            >
                 {/* ANIMATED ORBS (seperti hero halaman beranda) */}
                 <motion.div
                     className="pointer-events-none absolute inset-0 z-0 opacity-60"
@@ -542,25 +571,27 @@ export default function PengunjungPublic({
                     </div>
                 )}
 
-                {/* BADGE SINKRON — pojok kanan atas */}
-                <div className="absolute top-4 right-4 z-[3] flex items-center gap-2 md:top-6 md:right-8">
-                    <p className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/10 px-3.5 py-2 text-xs font-medium text-white/80 backdrop-blur-md md:text-sm">
-                        <Clock className="h-4 w-4" />
-                        Sinkron: {lastSync.toLocaleTimeString('id-ID')}
-                    </p>
-                    <button
-                        type="button"
-                        onClick={refresh}
-                        disabled={refreshing}
-                        title="Perbarui data"
-                        aria-label="Perbarui data"
-                        className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/15 bg-white/10 text-white/80 backdrop-blur-md transition-all duration-300 hover:scale-110 hover:border-white/50 hover:text-white disabled:pointer-events-none disabled:opacity-60"
-                    >
-                        <RefreshCw
-                            className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`}
-                        />
-                    </button>
-                </div>
+                {/* BADGE SINKRON — pojok kanan atas (disembunyikan dalam mode kiosk) */}
+                {!kioskEnabled && (
+                    <div className="absolute top-4 right-4 z-[3] flex items-center gap-2 md:top-6 md:right-8">
+                        <p className="inline-flex items-center gap-1.5 rounded-lg border border-white/15 bg-white/10 px-3.5 py-2 text-xs font-medium text-white/80 backdrop-blur-md md:text-sm">
+                            <Clock className="h-4 w-4" />
+                            Sinkron: {lastSync.toLocaleTimeString('id-ID')}
+                        </p>
+                        <button
+                            type="button"
+                            onClick={refresh}
+                            disabled={refreshing}
+                            title="Perbarui data"
+                            aria-label="Perbarui data"
+                            className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/15 bg-white/10 text-white/80 backdrop-blur-md transition-all duration-300 hover:scale-110 hover:border-white/50 hover:text-white disabled:pointer-events-none disabled:opacity-60"
+                        >
+                            <RefreshCw
+                                className={`h-4 w-4 ${refreshing ? 'animate-spin' : ''}`}
+                            />
+                        </button>
+                    </div>
+                )}
 
                 {/* TEKS BERJALAN PENGUMUMAN — sepanjang layar di bagian bawah */}
                 {pengumumans.length > 0 && (
